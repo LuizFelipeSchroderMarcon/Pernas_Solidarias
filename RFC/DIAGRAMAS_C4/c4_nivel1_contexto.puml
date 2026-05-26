@@ -1,0 +1,34 @@
+@startuml C4_Contexto_Pernas_Solidarias
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+' ─── Configurações visuais ────────────────────────────────────────────────────
+LAYOUT_TOP_DOWN()
+LAYOUT_WITH_LEGEND()
+
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontSize 13
+
+' ─── Título ───────────────────────────────────────────────────────────────────
+title [Nível 1] Diagrama de Contexto — Sistema Pernas Solidárias
+
+' ─── Ator principal ───────────────────────────────────────────────────────────
+Person(coordenador, "Coordenador da ONG", "Responsável por cadastrar\nparticipantes e eventos,\nformar duplas e exportar\na relação para corridas.")
+
+' ─── Sistema principal (caixa preta) ─────────────────────────────────────────
+System(sistema, "Sistema Pernas Solidárias", "Aplicação web que centraliza\no gerenciamento de cadeirantes\ne condutores, automatiza a\nformação de duplas com base\nno histórico de participações\ne gera relatórios para envio\nàs organizações de corridas.")
+
+' ─── Sistemas externos ───────────────────────────────────────────────────────
+System_Ext(organizacao, "Organização da Corrida", "Entidade externa responsável\npela realização oficial do\nevento. Recebe a lista de\nduplas em formato de\nplanilha para registro\ne credenciamento.")
+
+System_Ext(planilha_legado, "Planilha Excel (Legado)", "Solução atual utilizada\npela ONG para controle\nmanual de participantes\ne formação de duplas.\nSubstituída pelo novo sistema.")
+
+' ─── Relacionamentos ─────────────────────────────────────────────────────────
+Rel(coordenador, sistema, "Acessa via navegador web\npara gerenciar participantes,\neventos e duplas", "HTTPS")
+
+Rel(sistema, organizacao, "Exporta lista de duplas\nformatada por corrida", ".xlsx / .csv")
+
+Rel_Back(sistema, planilha_legado, "Substitui e centraliza\nos dados anteriormente\ngerenciados manualmente", "Migração de dados")
+
+@enduml

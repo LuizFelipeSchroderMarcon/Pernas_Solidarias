@@ -1,0 +1,91 @@
+@startuml C4_Componentes_Pernas_Solidarias
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+' ─── Configurações visuais ────────────────────────────────────────────────────
+LAYOUT_LEFT_RIGHT()
+LAYOUT_WITH_LEGEND()
+
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+
+' ─── Título ───────────────────────────────────────────────────────────────────
+title [Nível 3] Diagrama de Componentes — API REST (Node.js + Express)
+
+' ─── Elementos externos ao container ─────────────────────────────────────────
+Container_Ext(frontend, "Aplicação Web (SPA)", "React + TypeScript", "Envia requisições HTTP\npara a API REST.")
+
+ContainerDb_Ext(banco, "Banco de Dados", "PostgreSQL", "Persiste todos os dados\ndo sistema.")
+
+' ─── Boundary: API REST ───────────────────────────────────────────────────────
+Container_Boundary(api, "API REST — Node.js + Express") {
+
+    ' ── Camada de Roteamento ─────────────────────────────────────────────────
+    Component(router, "Router (Express)", "Express Router", "Ponto de entrada da API.\nRecepciona as requisições HTTP\ne as direciona ao controller\ncorrespondente.")
+
+    ' ── Camada de Controllers ────────────────────────────────────────────────
+    Component(authController, "AuthController", "Controller", "Gerencia as requisições\nde autenticação e\nvalidação de credenciais.")
+
+    Component(eventoController, "EventoController", "Controller", "Gerencia as requisições\nde criação, edição,\nlistagem e exclusão\nde eventos.")
+
+    Component(participanteController, "ParticipanteController", "Controller", "Gerencia as requisições\nde cadastro, edição e\nativação/desativação de\ncadeirantes e condutores.")
+
+    Component(duplaController, "DuplaController", "Controller", "Gerencia as requisições\nde formação, edição\ne consulta de duplas\npor evento.")
+
+    Component(exportacaoController, "ExportacaoController", "Controller", "Gerencia as requisições\nde geração e download\nda planilha de duplas.")
+
+    ' ── Camada de Services (Regras de Negócio) ────────────────────────────────
+    Component(authService, "AuthService", "Service", "Valida as credenciais\ndo coordenador e\ngerencia a sessão\nde acesso.")
+
+    Component(eventoService, "EventoService", "Service", "Aplica as regras de\nnegócio para criação\ne gestão de eventos.")
+
+    Component(participanteService, "ParticipanteService", "Service", "Aplica as regras de\nnegócio para gestão\nde cadeirantes e\ncondutores.")
+
+    Component(formacaoService, "FormacaoDuplasService", "Service — Núcleo do Sistema", "Executa a lógica central\ndo sistema: ordena\nos participantes ativos\npelo histórico de\nparticipações e gera\nautomaticamente os pares\n(RN03, RN04, RN07).")
+
+    Component(exportacaoService, "ExportacaoService", "Service", "Gera o arquivo de\nplanilha (.xlsx ou .csv)\na partir das duplas\nconfirmadas do evento.")
+
+    ' ── Camada de Repositories (Acesso a Dados) ──────────────────────────────
+    Component(authRepo, "AuthRepository", "Repository", "Consulta os dados\nde acesso do\ncoordenador no banco.")
+
+    Component(eventoRepo, "EventoRepository", "Repository", "Executa as operações\nde leitura e escrita\nde eventos no banco.")
+
+    Component(participanteRepo, "ParticipanteRepository", "Repository", "Executa as operações\nde leitura e escrita\nde cadeirantes e\ncondutores no banco.")
+
+    Component(duplaRepo, "DuplaRepository", "Repository", "Executa as operações\nde leitura e escrita\nde duplas e histórico\nde participações.")
+
+}
+
+' ─── Relacionamentos externos ─────────────────────────────────────────────────
+Rel(frontend, router, "Envia requisições", "JSON / HTTPS")
+
+' ─── Roteamento → Controllers ────────────────────────────────────────────────
+Rel(router, authController,        "POST /auth/login")
+Rel(router, eventoController,      "GET, POST, PUT,\nDELETE /eventos")
+Rel(router, participanteController,"GET, POST, PUT\n/cadeirantes\n/condutores")
+Rel(router, duplaController,       "GET, POST, PUT\n/eventos/:id/duplas")
+Rel(router, exportacaoController,  "GET\n/eventos/:id/exportar")
+
+' ─── Controllers → Services ──────────────────────────────────────────────────
+Rel(authController,        authService,       "Delega validação\nde credenciais")
+Rel(eventoController,      eventoService,     "Delega regras\nde negócio")
+Rel(participanteController,participanteService,"Delega regras\nde negócio")
+Rel(duplaController,       formacaoService,   "Aciona formação\nautomática de duplas")
+Rel(exportacaoController,  exportacaoService, "Aciona geração\nda planilha")
+
+' ─── Services → Repositories ─────────────────────────────────────────────────
+Rel(authService,       authRepo,        "Consulta\ncoordenador")
+Rel(eventoService,     eventoRepo,      "Lê e persiste\neventos")
+Rel(participanteService,participanteRepo,"Lê e persiste\nparticipantes")
+Rel(formacaoService,   participanteRepo,"Consulta ativos\ne histórico")
+Rel(formacaoService,   duplaRepo,       "Persiste duplas\nformadas")
+Rel(exportacaoService, duplaRepo,       "Consulta duplas\ndo evento")
+
+' ─── Repositories → Banco ────────────────────────────────────────────────────
+Rel(authRepo,        banco, "SQL / TCP")
+Rel(eventoRepo,      banco, "SQL / TCP")
+Rel(participanteRepo,banco, "SQL / TCP")
+Rel(duplaRepo,       banco, "SQL / TCP")
+
+@enduml

@@ -1,0 +1,41 @@
+@startuml C4_Containers_Pernas_Solidarias
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+' ─── Configurações visuais ────────────────────────────────────────────────────
+LAYOUT_TOP_DOWN()
+LAYOUT_WITH_LEGEND()
+
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontSize 13
+
+' ─── Título ───────────────────────────────────────────────────────────────────
+title [Nível 2] Diagrama de Containers — Sistema Pernas Solidárias
+
+' ─── Ator e sistema externo ───────────────────────────────────────────────────
+Person(coordenador, "Coordenador da ONG", "Único usuário do sistema.\nAcessa via navegador web.")
+
+System_Ext(organizacao, "Organização da Corrida", "Recebe a planilha de duplas\nexportada pelo sistema.")
+
+' ─── Boundary: Sistema Pernas Solidárias ─────────────────────────────────────
+System_Boundary(sistema, "Sistema Pernas Solidárias") {
+
+    Container(frontend, "Aplicação Web (SPA)", "React + TypeScript\nTailwind CSS", "Interface de usuário acessada\npelo navegador. Responsável\npelas telas de login, gestão de\nparticipantes, eventos, formação\nde duplas e gráficos.")
+
+    Container(backend, "API REST", "Node.js + Express", "Processa as regras de negócio:\nautenticação, formação automática\nde duplas com priorização por\nhistórico, e geração dos arquivos\nde exportação.")
+
+    Container(banco, "Banco de Dados", "PostgreSQL", "Armazena de forma persistente\nos dados de cadeirantes,\ncondutores, eventos, duplas\ne histórico de participações.")
+
+}
+
+' ─── Relacionamentos ─────────────────────────────────────────────────────────
+Rel(coordenador, frontend, "Interage com a interface\ndo sistema", "HTTPS / Navegador")
+
+Rel(frontend, backend, "Realiza chamadas para\nobter e enviar dados", "JSON / HTTPS")
+
+Rel(backend, banco, "Lê e persiste\nos dados do sistema", "SQL / TCP")
+
+Rel(backend, organizacao, "Gera e disponibiliza\na planilha de duplas", ".xlsx / .csv")
+
+@enduml
