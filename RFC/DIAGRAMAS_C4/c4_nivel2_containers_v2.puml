@@ -1,5 +1,4 @@
-@startuml C4_Containers_Pernas_Solidarias
-
+@startuml
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
 
 ' ─── Configurações visuais ────────────────────────────────────────────────────
@@ -15,8 +14,6 @@ title [Nível 2] Diagrama de Containers — Sistema Pernas Solidárias
 
 ' ─── Ator e sistema externo ───────────────────────────────────────────────────
 Person(coordenador, "Coordenador da ONG", "Único usuário do sistema.\nAcessa via navegador web.")
-
-System_Ext(organizacao, "Organização da Corrida", "Recebe a planilha de duplas\nexportada pelo sistema.")
 
 ' ─── Boundary: Sistema Pernas Solidárias ─────────────────────────────────────
 System_Boundary(sistema, "Sistema Pernas Solidárias") {
@@ -35,7 +32,5 @@ Rel(coordenador, frontend, "Interage com a interface\ndo sistema", "HTTPS / Nave
 Rel(frontend, backend, "Realiza chamadas para\nobter e enviar dados", "JSON / HTTPS")
 
 Rel(backend, banco, "Lê e persiste\nos dados do sistema", "SQL / TCP")
-
-Rel(backend, organizacao, "Gera e disponibiliza\na planilha de duplas", ".xlsx / .csv")
 
 @enduml

@@ -1,0 +1,64 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Página-1" id="WiAwoZcRo0UHCU0SlBKd">
+    <mxGraphModel dx="1140" dy="518" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="jmMkIqzDXe24gvPvyDdm-24" parent="1" style="rounded=0;whiteSpace=wrap;html=1;rotation=90;" value="" vertex="1">
+          <mxGeometry height="410" width="520" x="155" y="115" as="geometry" />
+        </mxCell>
+        <mxCell id="jmMkIqzDXe24gvPvyDdm-14" parent="1" style="rounded=0;whiteSpace=wrap;html=1;rotation=90;" value="" vertex="1">
+          <mxGeometry height="147.5" width="467.5" x="266.25" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="jmMkIqzDXe24gvPvyDdm-15" edge="1" parent="1" source="jmMkIqzDXe24gvPvyDdm-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="jmMkIqzDXe24gvPvyDdm-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="jmMkIqzDXe24gvPvyDdm-16" edge="1" parent="1" source="jmMkIqzDXe24gvPvyDdm-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="jmMkIqzDXe24gvPvyDdm-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="jmMkIqzDXe24gvPvyDdm-17" edge="1" parent="1" source="jmMkIqzDXe24gvPvyDdm-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="jmMkIqzDXe24gvPvyDdm-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="jmMkIqzDXe24gvPvyDdm-18" edge="1" parent="1" source="jmMkIqzDXe24gvPvyDdm-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="jmMkIqzDXe24gvPvyDdm-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="jmMkIqzDXe24gvPvyDdm-20" edge="1" parent="1" source="jmMkIqzDXe24gvPvyDdm-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="jmMkIqzDXe24gvPvyDdm-10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="jmMkIqzDXe24gvPvyDdm-21" edge="1" parent="1" source="jmMkIqzDXe24gvPvyDdm-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="jmMkIqzDXe24gvPvyDdm-11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="jmMkIqzDXe24gvPvyDdm-22" edge="1" parent="1" source="jmMkIqzDXe24gvPvyDdm-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="jmMkIqzDXe24gvPvyDdm-12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="jmMkIqzDXe24gvPvyDdm-3" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" value="Coordenador da ONG" vertex="1">
+          <mxGeometry height="60" width="30" x="290" y="295" as="geometry" />
+        </mxCell>
+        <mxCell id="jmMkIqzDXe24gvPvyDdm-6" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#3384E0;" value="Fazer Login" vertex="1">
+          <mxGeometry height="50" width="80" x="460" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="jmMkIqzDXe24gvPvyDdm-7" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#3384E0;" value="Cadastrar Cadeirante" vertex="1">
+          <mxGeometry height="50" width="80" x="460" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="jmMkIqzDXe24gvPvyDdm-8" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#3384E0;" value="Cadastrar Corredor" vertex="1">
+          <mxGeometry height="50" width="80" x="460" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="jmMkIqzDXe24gvPvyDdm-9" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#3384E0;" value="Cadastrar Evento" vertex="1">
+          <mxGeometry height="50" width="80" x="460" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="jmMkIqzDXe24gvPvyDdm-10" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#3384E0;" value="Formar Duplas" vertex="1">
+          <mxGeometry height="50" width="80" x="460" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="jmMkIqzDXe24gvPvyDdm-11" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#3384E0;" value="Visualizar Gráficos" vertex="1">
+          <mxGeometry height="50" width="80" x="460" y="420" as="geometry" />
+        </mxCell>
+        <mxCell id="jmMkIqzDXe24gvPvyDdm-12" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#3384E0;" value="Visualizar o Histórico" vertex="1">
+          <mxGeometry height="50" width="80" x="460" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="jmMkIqzDXe24gvPvyDdm-13" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Sistema" vertex="1">
+          <mxGeometry height="30" width="60" x="470" y="90" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
