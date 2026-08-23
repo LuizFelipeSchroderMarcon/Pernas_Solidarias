@@ -6,11 +6,12 @@ const authService = new AuthService();
 export class AuthController {
   async register(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { email, senha } = req.body;
-      const user = await authService.register(email, senha);
+      const { email, senha, password } = req.body;
+      const pass = password || senha;
+      const data = await authService.register(email, pass);
       res.status(201).json({
-        message: 'Usuário registrado com sucesso!',
-        data: user,
+        message: 'Usuário cadastrado com sucesso!',
+        data,
       });
     } catch (error) {
       next(error);
@@ -19,11 +20,12 @@ export class AuthController {
 
   async login(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { email, senha } = req.body;
-      const result = await authService.login(email, senha);
+      const { email, senha, password } = req.body;
+      const pass = password || senha;
+      const data = await authService.login(email, pass);
       res.status(200).json({
         message: 'Login realizado com sucesso!',
-        data: result,
+        data,
       });
     } catch (error) {
       next(error);
@@ -32,15 +34,12 @@ export class AuthController {
 
   async me(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const userId = req.user?.userId;
-      if (!userId) {
-        res.status(401).json({ message: 'Não autorizado' });
+      if (!req.user?.userId) {
+        res.status(401).json({ message: 'Não autorizado.' });
         return;
       }
-      const user = await authService.getMe(userId);
-      res.status(200).json({
-        data: user,
-      });
+      const data = await authService.getMe(req.user.userId);
+      res.status(200).json({ data });
     } catch (error) {
       next(error);
     }

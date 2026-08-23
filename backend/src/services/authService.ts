@@ -10,8 +10,8 @@ export class AuthService {
     this.userRepository = new UserRepository();
   }
 
-  async register(email: string, senha: string) {
-    if (!email || !senha) {
+  async register(email: string, password: string) {
+    if (!email || !password) {
       throw new AppError('E-mail e senha são obrigatórios.');
     }
 
@@ -21,9 +21,9 @@ export class AuthService {
     }
 
     const saltRounds = 10;
-    const senhaHash = await bcrypt.hash(senha, saltRounds);
+    const passwordHash = await bcrypt.hash(password, saltRounds);
 
-    const newUser = await this.userRepository.create(email, senhaHash);
+    const newUser = await this.userRepository.create(email, passwordHash);
     return {
       cd_user: newUser.cd_user,
       email: newUser.email,
@@ -31,8 +31,8 @@ export class AuthService {
     };
   }
 
-  async login(email: string, senha: string) {
-    if (!email || !senha) {
+  async login(email: string, password: string) {
+    if (!email || !password) {
       throw new AppError('E-mail e senha são obrigatórios.');
     }
 
@@ -41,7 +41,7 @@ export class AuthService {
       throw new AppError('Credenciais inválidas.', 401);
     }
 
-    const passwordMatch = await bcrypt.compare(senha, user.senha);
+    const passwordMatch = await bcrypt.compare(password, user.senha);
     if (!passwordMatch) {
       throw new AppError('Credenciais inválidas.', 401);
     }
