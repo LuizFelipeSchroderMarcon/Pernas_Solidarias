@@ -43,7 +43,6 @@ CREATE TABLE IF NOT EXISTS DUPLA (
     CONSTRAINT unq_dupla_evento_condutor UNIQUE (cd_evento, cd_condutor)
 );
 
-
-CREATE INDEX idx_dupla_evento ON public.dupla(cd_evento);
-CREATE INDEX idx_dupla_cadeirante ON public.dupla(cd_cadeirante);
-CREATE INDEX idx_dupla_condutor ON public.dupla(cd_condutor);
+CREATE INDEX IF NOT EXISTS idx_dupla_evento ON public.DUPLA(cd_evento);
+CREATE INDEX IF NOT EXISTS idx_dupla_cadeirante ON public.DUPLA(cd_cadeirante);
+CREATE INDEX IF NOT EXISTS idx_dupla_condutor ON public.DUPLA(cd_condutor);

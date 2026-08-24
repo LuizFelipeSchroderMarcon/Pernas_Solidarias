@@ -1,11 +1,11 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Backend API para o Sistema Pernas Solidárias",
+  "main": "dist/server.js",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-    "db:init": "ts-node-dev --transpile-only src/database/setup.ts",
+    "dev": "tsx watch src/server.ts",
+    "db:init": "tsx src/database/setup.ts",
     "build": "tsc",
     "start": "node dist/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -29,7 +29,7 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^26.2.0",
     "@types/pg": "^8.21.0",
-    "ts-node-dev": "^2.0.0",
-    "typescript": "^7.0.2"
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.2"
   }
 }
