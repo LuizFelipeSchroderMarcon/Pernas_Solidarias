@@ -82,7 +82,7 @@ export const EventModal: React.FC<EventModalProps> = ({
       isOpen={isOpen}
       onClose={onClose}
       title={isEditing ? 'Editar Evento' : 'Novo Evento de Corrida'}
-      subtitle="Informe o nome e a data da corrida (RF02)"
+      subtitle="Informe o nome e a data da corrida"
       maxWidth="md"
       footer={
         <>

@@ -114,7 +114,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({
           </div>
         </div>
 
-        {/* Confirmação de inclusão de CPF (RF11 / LGPD) */}
+        {/* Confirmação de inclusão de CPF (LGPD) */}
         <div className="flex flex-col gap-2.5">
           <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
             2. Privacidade e Dados (LGPD)

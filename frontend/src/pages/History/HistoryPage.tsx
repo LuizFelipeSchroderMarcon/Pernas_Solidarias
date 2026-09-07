@@ -29,7 +29,7 @@ export const HistoryPage: React.FC = () => {
   const [events, setEvents] = useState<Evento[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Filters (RF09)
+  // Filters
   const [selectedEventId, setSelectedEventId] = useState<number | ''>('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -93,17 +93,17 @@ export const HistoryPage: React.FC = () => {
             Histórico de Participações
           </h2>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Registro imutável e somente leitura de todas as corridas e duplas realizadas (RF06, RN05)
+            Registro imutável e somente leitura de todas as corridas e duplas realizadas
           </p>
         </div>
       </div>
 
-      {/* Filter Bar (RF09) */}
+      {/* Filter Bar */}
       <Card className="p-5">
         <form onSubmit={handleSearchSubmit} className="space-y-4">
           <div className="flex items-center gap-2 pb-2 border-b border-slate-100 dark:border-slate-800 text-xs font-bold uppercase tracking-wider text-slate-500">
             <Filter className="w-4 h-4" />
-            <span>Filtros de Pesquisa (RF09)</span>
+            <span>Filtros de Pesquisa</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -229,14 +229,14 @@ export const HistoryPage: React.FC = () => {
                       {formatDate(item.created_at)}
                     </td>
 
-                    {/* Action: Export Event (RF10) */}
+                    {/* Action: Export Event */}
                     <td className="px-6 py-4 text-right">
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => handleOpenExport(item.cd_evento, item.nm_evento)}
                         leftIcon={<Download className="w-3.5 h-3.5" />}
-                        title="Exportar relatório deste evento (RF10)"
+                        title="Exportar relatório deste evento"
                       >
                         Exportar
                       </Button>

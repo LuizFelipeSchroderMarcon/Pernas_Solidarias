@@ -68,7 +68,7 @@ export const EditPairModal: React.FC<EditPairModalProps> = ({
     try {
       setIsSubmitting(true);
       await pairService.editPair(pair.cd_dupla, Number(selectedCadeirante), Number(selectedCondutor));
-      success('Dupla atualizada!', 'A alteração manual da dupla foi realizada com sucesso (RF05).');
+      success('Dupla atualizada!', 'A alteração manual da dupla foi realizada com sucesso.');
       onSuccess();
       onClose();
     } catch (err: any) {
@@ -86,7 +86,7 @@ export const EditPairModal: React.FC<EditPairModalProps> = ({
       isOpen={isOpen}
       onClose={onClose}
       title="Editar Dupla Manualmente"
-      subtitle="Altere o cadeirante ou o condutor respeitando as regras RN01 e RN02 (RF05)"
+      subtitle="Altere o cadeirante ou o condutor."
       maxWidth="md"
       footer={
         <>

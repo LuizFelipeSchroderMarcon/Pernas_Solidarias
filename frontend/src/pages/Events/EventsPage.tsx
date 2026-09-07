@@ -101,7 +101,7 @@ export const EventsPage: React.FC = () => {
             Gestão de Eventos
           </h2>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Cadastre as corridas e gerencie a formação de duplas (RF02, RF03, RF10)
+            Cadastre as corridas e gerencie a formação de duplas
           </p>
         </div>
 
@@ -199,7 +199,7 @@ export const EventsPage: React.FC = () => {
                   variant="outline"
                   size="sm"
                   onClick={() => handleOpenExport(evt)}
-                  title="Exportar Relatório (RF10)"
+                  title="Exportar Relatório"
                   leftIcon={<Download className="w-4 h-4" />}
                 >
                   Exportar

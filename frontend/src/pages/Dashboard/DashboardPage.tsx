@@ -237,7 +237,7 @@ export const DashboardPage: React.FC = () => {
                     onClick={() => handleOpenExport(nextEvent)}
                     leftIcon={<Download className="w-4 h-4" />}
                   >
-                    Exportar Relatório (RF10)
+                    Exportar Relatório
                   </Button>
                 </div>
               </div>

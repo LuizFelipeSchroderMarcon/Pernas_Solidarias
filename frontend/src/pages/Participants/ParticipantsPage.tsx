@@ -96,7 +96,7 @@ export const ParticipantsPage: React.FC = () => {
     });
   }, [condutores, searchTerm, statusFilter]);
 
-  // Handle status toggle (RF08)
+  // Handle status toggle
   const handleToggleStatus = async (item: Cadeirante | Condutor) => {
     try {
       if (activeTab === 'cadeirante') {
@@ -175,7 +175,7 @@ export const ParticipantsPage: React.FC = () => {
             Gestão de Participantes
           </h2>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Cadastre, edite e gerencie o status de cadeirantes e condutores (RF01, RF08)
+            Cadastre, edite e gerencie o status de cadeirantes e condutores
           </p>
         </div>
 
@@ -258,7 +258,7 @@ export const ParticipantsPage: React.FC = () => {
                     <th className="px-6 py-4">Telefone</th>
                     <th className="px-6 py-4">Camiseta</th>
                     <th className="px-6 py-4">Cadeira Própria</th>
-                    <th className="px-6 py-4">Status (RF08)</th>
+                    <th className="px-6 py-4">Status</th>
                     <th className="px-6 py-4 text-right">Ações</th>
                   </tr>
                 </thead>
@@ -359,7 +359,7 @@ export const ParticipantsPage: React.FC = () => {
                   <th className="px-6 py-4">CPF</th>
                   <th className="px-6 py-4">Telefone</th>
                   <th className="px-6 py-4">Camiseta</th>
-                  <th className="px-6 py-4">Status (RF08)</th>
+                  <th className="px-6 py-4">Status</th>
                   <th className="px-6 py-4 text-right">Ações</th>
                 </tr>
               </thead>

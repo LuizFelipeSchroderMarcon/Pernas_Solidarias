@@ -121,7 +121,6 @@ export const PairFormationPage: React.FC = () => {
   const activeCondutores = condutores.filter((c) => c.ativo);
   const maxPossiblePairs = Math.min(activeCadeirantes.length, activeCondutores.length);
 
-  // Generate Automatic Pairs (RF03, RF04)
   const handleGeneratePairs = async () => {
     if (!selectedEventId) {
       warning('Atenção', 'Selecione um evento para formar as duplas.');
@@ -130,7 +129,7 @@ export const PairFormationPage: React.FC = () => {
 
     if (activeCadeirantes.length === 0 || activeCondutores.length === 0) {
       error(
-        'Participantes Insuficientes (FA02)',
+        'Participantes Insuficientes',
         'É necessário ter ao menos um cadeirante e um condutor ativos cadastrados no sistema.'
       );
       return;
@@ -141,7 +140,7 @@ export const PairFormationPage: React.FC = () => {
       const result = await pairService.generatePairs(Number(selectedEventId));
       setPairs(result.duplas);
       success(
-        'Duplas Formadas com Sucesso! (RF03/RF04)',
+        'Duplas Formadas com Sucesso!',
         `${result.total_duplas} duplas foram geradas com base no histórico de participações.`
       );
     } catch (err: any) {
@@ -182,7 +181,7 @@ export const PairFormationPage: React.FC = () => {
             Formação de Duplas
           </h2>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Algoritmo inteligente com priorização por histórico de corrida (RF03, RF04, RF05)
+            Algoritmo inteligente com priorização por histórico de corrida
           </p>
         </div>
 
@@ -193,7 +192,7 @@ export const PairFormationPage: React.FC = () => {
             onClick={() => setExportModalOpen(true)}
             leftIcon={<Download className="w-4 h-4" />}
           >
-            Exportar Relatório (RF10/RF11)
+            Exportar Relatório
           </Button>
         )}
       </div>
@@ -285,12 +284,12 @@ export const PairFormationPage: React.FC = () => {
         )}
       </Card>
 
-      {/* Disparity Warning (FA02) */}
+      {/* Disparity Warning */}
       {selectedEvent && activeCadeirantes.length !== activeCondutores.length && (
         <div className="flex items-center gap-3 p-4 rounded-2xl bg-amber-50 border border-amber-200 dark:bg-amber-950/40 dark:border-amber-900 text-amber-800 dark:text-amber-200 text-xs sm:text-sm">
           <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0" />
           <p className="leading-relaxed">
-            <strong>Aviso de Participantes (FA02):</strong> Existem {activeCadeirantes.length}{' '}
+            <strong>Aviso de Participantes:</strong> Existem {activeCadeirantes.length}{' '}
             cadeirantes ativos e {activeCondutores.length} condutores ativos. O algoritmo formará{' '}
             <strong>{maxPossiblePairs} duplas</strong>, priorizando os participantes com maior tempo
             sem correr.
@@ -322,7 +321,7 @@ export const PairFormationPage: React.FC = () => {
                     setEditModalOpen(true);
                   }}
                   className="flex items-center gap-1 text-xs font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400 p-1.5 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-950/50 transition-colors"
-                  title="Trocar integrante (RF05)"
+                  title="Trocar integrante"
                 >
                   <Edit2 className="w-3.5 h-3.5" />
                   <span>Editar Dupla</span>
@@ -392,7 +391,7 @@ export const PairFormationPage: React.FC = () => {
               </div>
 
               <div className="flex items-center justify-between text-[11px] text-slate-400 pt-2">
-                <span>RN01: 1 Cadeirante + 1 Condutor</span>
+                <span>1 Cadeirante + 1 Condutor</span>
                 <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium">
                   <CheckCircle2 className="w-3 h-3" /> Válida
                 </span>
@@ -405,7 +404,7 @@ export const PairFormationPage: React.FC = () => {
           <EmptyState
             icon={<Layers className="w-8 h-8" />}
             title="Nenhuma dupla formada para este evento"
-            description="Clique no botão abaixo para executar o algoritmo de pareamento com base no histórico de participações (RF03, RF04)."
+            description="Clique no botão abaixo para executar o algoritmo de pareamento com base no histórico de participações."
             action={
               <Button
                 variant="primary"
@@ -439,7 +438,7 @@ export const PairFormationPage: React.FC = () => {
         </Card>
       )}
 
-      {/* Edit Pair Modal (RF05) */}
+      {/* Edit Pair Modal */}
       <EditPairModal
         isOpen={editModalOpen}
         onClose={() => setEditModalOpen(false)}
@@ -461,7 +460,7 @@ export const PairFormationPage: React.FC = () => {
         isLoading={isClearing}
       />
 
-      {/* Export Modal (RF07, RF10, RF11) */}
+      {/* Export Modal */}
       <ExportModal
         isOpen={exportModalOpen}
         onClose={() => setExportModalOpen(false)}

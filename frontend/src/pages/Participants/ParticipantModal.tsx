@@ -133,7 +133,7 @@ export const ParticipantModal: React.FC<ParticipantModalProps> = ({
       isOpen={isOpen}
       onClose={onClose}
       title={title}
-      subtitle="Preencha os dados do participante (RF01)"
+      subtitle="Preencha os dados do participante"
       maxWidth="md"
       footer={
         <>

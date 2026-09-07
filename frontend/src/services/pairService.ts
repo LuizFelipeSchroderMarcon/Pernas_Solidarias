@@ -2,19 +2,19 @@ import { api } from './api';
 import type { DuplaDetalhada, PairFormationResult, HistoryFilters, ApiSuccessResponse, ApiMessageResponse } from '../types';
 
 export const pairService = {
-  // Generate automatic pairs for an event (RF03, RF04)
+  // Generate automatic pairs for an event
   async generatePairs(eventId: number): Promise<PairFormationResult> {
     const response = await api.post<ApiSuccessResponse<PairFormationResult>>(`/duplas/evento/${eventId}/gerar`);
     return response.data.data;
   },
 
-  // List pairs formed for a specific event (RF06)
+  // List pairs formed for a specific event
   async listByEvent(eventId: number): Promise<DuplaDetalhada[]> {
     const response = await api.get<ApiSuccessResponse<DuplaDetalhada[]>>(`/duplas/evento/${eventId}`);
     return response.data.data;
   },
 
-  // Manually edit a pair (RF05, RN01, RN02, RN08)
+  // Manually edit a pair
   async editPair(pairId: number, cd_cadeirante: number, cd_condutor: number): Promise<DuplaDetalhada> {
     const response = await api.put<ApiSuccessResponse<DuplaDetalhada>>(`/duplas/${pairId}`, {
       cd_cadeirante,
@@ -28,7 +28,7 @@ export const pairService = {
     await api.delete<ApiMessageResponse>(`/duplas/evento/${eventId}`);
   },
 
-  // Retrieve pair history with filters (RF06, RF09)
+  // Retrieve pair history with filters
   async getHistory(filters?: HistoryFilters): Promise<DuplaDetalhada[]> {
     const params: Record<string, string | number> = {};
     if (filters?.cd_evento) params.cd_evento = filters.cd_evento;
