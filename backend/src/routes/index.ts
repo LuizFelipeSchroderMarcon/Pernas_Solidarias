@@ -5,6 +5,7 @@ import { runnerRoutes } from './runnerRoutes';
 import { eventRoutes } from './eventRoutes';
 import { pairRoutes } from './pairRoutes';
 import { exportRoutes } from './exportRoutes';
+import analyticsRoutes from './analyticsRoutes';
 
 const routes = Router();
 
@@ -30,5 +31,9 @@ routes.use('/duplas', pairRoutes);
 
 routes.use('/export', exportRoutes);
 routes.use('/exportar', exportRoutes);
+
+// Analytics / Gráficos routes
+routes.use('/analytics', analyticsRoutes);
+routes.use('/graficos', analyticsRoutes);
 
 export { routes };

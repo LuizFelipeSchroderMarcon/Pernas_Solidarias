@@ -5,6 +5,7 @@ import {
   Users,
   Calendar,
   Layers,
+  BarChart3,
   History,
   LogOut,
   X,
@@ -25,6 +26,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     { label: 'Participantes', path: '/participantes', icon: Users },
     { label: 'Eventos', path: '/eventos', icon: Calendar },
     { label: 'Formação de Duplas', path: '/duplas', icon: Layers },
+    { label: 'Gráficos', path: '/graficos', icon: BarChart3 },
     { label: 'Histórico', path: '/historico', icon: History },
   ];
 

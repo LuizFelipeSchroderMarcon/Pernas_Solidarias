@@ -8,6 +8,7 @@ import { ParticipantsPage } from '../pages/Participants/ParticipantsPage';
 import { EventsPage } from '../pages/Events/EventsPage';
 import { PairFormationPage } from '../pages/PairFormation/PairFormationPage';
 import { HistoryPage } from '../pages/History/HistoryPage';
+import { GraphicsPage } from '../pages/Graphics/GraphicsPage';
 
 export const AppRoutes: React.FC = () => {
   return (
@@ -28,6 +29,7 @@ export const AppRoutes: React.FC = () => {
         <Route path="participantes" element={<ParticipantsPage />} />
         <Route path="eventos" element={<EventsPage />} />
         <Route path="duplas" element={<PairFormationPage />} />
+        <Route path="graficos" element={<GraphicsPage />} />
         <Route path="historico" element={<HistoryPage />} />
       </Route>
 
