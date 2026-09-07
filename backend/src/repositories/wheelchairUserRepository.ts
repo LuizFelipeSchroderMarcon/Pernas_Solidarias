@@ -37,18 +37,22 @@ export class WheelchairUserRepository {
     cpf: string;
     telefone: string;
     tam_camisa: string;
+    data_nascimento?: string | Date;
+    sexo?: string;
     possui_cadeira_propria?: boolean;
     ativo?: boolean;
   }): Promise<Cadeirante> {
     const result = await query(
-      `INSERT INTO CADEIRANTE (nm_cadeirante, cpf, telefone, tam_camisa, possui_cadeira_propria, ativo)
-       VALUES ($1, $2, $3, $4, $5, $6)
+      `INSERT INTO CADEIRANTE (nm_cadeirante, cpf, telefone, tam_camisa, data_nascimento, sexo, possui_cadeira_propria, ativo)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
        RETURNING *`,
       [
         data.nm_cadeirante,
         data.cpf,
         data.telefone,
         data.tam_camisa,
+        data.data_nascimento || null,
+        data.sexo || null,
         data.possui_cadeira_propria ?? false,
         data.ativo ?? true,
       ]
@@ -63,6 +67,8 @@ export class WheelchairUserRepository {
       cpf: string;
       telefone: string;
       tam_camisa: string;
+      data_nascimento?: string | Date;
+      sexo?: string;
       possui_cadeira_propria: boolean;
       ativo: boolean;
     }
@@ -73,15 +79,19 @@ export class WheelchairUserRepository {
            cpf = $2,
            telefone = $3,
            tam_camisa = $4,
-           possui_cadeira_propria = $5,
-           ativo = $6
-       WHERE cd_cadeirante = $7
+           data_nascimento = $5,
+           sexo = $6,
+           possui_cadeira_propria = $7,
+           ativo = $8
+       WHERE cd_cadeirante = $9
        RETURNING *`,
       [
         data.nm_cadeirante,
         data.cpf,
         data.telefone,
         data.tam_camisa,
+        data.data_nascimento || null,
+        data.sexo || null,
         data.possui_cadeira_propria,
         data.ativo,
         id,

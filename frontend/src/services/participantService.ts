@@ -3,18 +3,22 @@ import type { Cadeirante, Condutor, ApiSuccessResponse, ApiMessageResponse } fro
 
 export interface CadeiranteFormData {
   nm_cadeirante: string;
-  cpf?: string;
+  cpf: string;
   telefone: string;
   tam_camisa: string;
+  data_nascimento?: string;
+  sexo?: string;
   possui_cadeira_propria: boolean;
   ativo?: boolean;
 }
 
 export interface CondutorFormData {
   nm_condutor: string;
-  cpf?: string;
+  cpf: string;
   telefone: string;
   tam_camisa: string;
+  data_nascimento?: string;
+  sexo?: string;
   ativo?: boolean;
 }
 

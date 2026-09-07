@@ -25,10 +25,19 @@ export class WheelchairUserService {
     cpf: string;
     telefone: string;
     tam_camisa: string;
+    data_nascimento?: string | Date;
+    sexo?: string;
     possui_cadeira_propria?: boolean;
     ativo?: boolean;
   }) {
-    if (!data.nm_cadeirante || !data.cpf || !data.telefone || !data.tam_camisa) {
+    if (
+      !data.nm_cadeirante ||
+      !data.cpf ||
+      !data.telefone ||
+      !data.tam_camisa ||
+      !data.data_nascimento ||
+      !data.sexo
+    ) {
       throw new AppError('Todos os campos obrigatórios devem ser preenchidos.');
     }
 
@@ -55,13 +64,22 @@ export class WheelchairUserService {
       cpf: string;
       telefone: string;
       tam_camisa: string;
+      data_nascimento?: string | Date;
+      sexo?: string;
       possui_cadeira_propria: boolean;
       ativo: boolean;
     }
   ) {
     await this.getById(id);
 
-    if (!data.nm_cadeirante || !data.cpf || !data.telefone || !data.tam_camisa) {
+    if (
+      !data.nm_cadeirante ||
+      !data.cpf ||
+      !data.telefone ||
+      !data.tam_camisa ||
+      !data.data_nascimento ||
+      !data.sexo
+    ) {
       throw new AppError('Todos os campos obrigatórios devem ser preenchidos.');
     }
 

@@ -4,7 +4,7 @@ import { Input } from '../../components/common/Input';
 import { Select } from '../../components/common/Select';
 import { Button } from '../../components/common/Button';
 import type { Cadeirante, Condutor } from '../../types';
-import { formatCPF, formatPhone, cleanDigits } from '../../utils/formatters';
+import { formatCPF, formatPhone, cleanDigits, toInputDateFormat } from '../../utils/formatters';
 import { useToast } from '../../hooks/useToast';
 import { participantService } from '../../services/participantService';
 
@@ -29,6 +29,8 @@ export const ParticipantModal: React.FC<ParticipantModalProps> = ({
   const [cpf, setCpf] = useState('');
   const [telefone, setTelefone] = useState('');
   const [tamCamisa, setTamCamisa] = useState('M');
+  const [dataNascimento, setDataNascimento] = useState('');
+  const [sexo, setSexo] = useState('Masculino');
   const [possuiCadeiraPropria, setPossuiCadeiraPropria] = useState(false);
   const [ativo, setAtivo] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -44,6 +46,8 @@ export const ParticipantModal: React.FC<ParticipantModalProps> = ({
       setCpf(formatCPF(participant.cpf || ''));
       setTelefone(formatPhone(participant.telefone || ''));
       setTamCamisa(participant.tam_camisa || 'M');
+      setDataNascimento(participant.data_nascimento ? toInputDateFormat(participant.data_nascimento) : '');
+      setSexo(participant.sexo || 'Masculino');
       setAtivo(participant.ativo !== undefined ? participant.ativo : true);
       setPossuiCadeiraPropria(
         isCadeirante ? !!(participant as Cadeirante).possui_cadeira_propria : false
@@ -53,6 +57,8 @@ export const ParticipantModal: React.FC<ParticipantModalProps> = ({
       setCpf('');
       setTelefone('');
       setTamCamisa('M');
+      setDataNascimento('');
+      setSexo('Masculino');
       setPossuiCadeiraPropria(false);
       setAtivo(true);
     }
@@ -62,8 +68,19 @@ export const ParticipantModal: React.FC<ParticipantModalProps> = ({
   const validate = () => {
     const newErrors: Record<string, string> = {};
     if (!nome.trim()) newErrors.nome = 'O nome completo é obrigatório.';
+    
+    const cleanCpf = cleanDigits(cpf);
+    if (!cleanCpf) {
+      newErrors.cpf = 'O CPF é obrigatório.';
+    } else if (cleanCpf.length !== 11) {
+      newErrors.cpf = 'O CPF deve conter exatamente 11 dígitos.';
+    }
+
     if (!telefone.trim()) newErrors.telefone = 'O telefone é obrigatório.';
     if (!tamCamisa) newErrors.tamCamisa = 'Selecione o tamanho da camiseta.';
+    if (!dataNascimento) newErrors.dataNascimento = 'A data de nascimento é obrigatória.';
+    if (!sexo) newErrors.sexo = 'Selecione o sexo.';
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -80,9 +97,11 @@ export const ParticipantModal: React.FC<ParticipantModalProps> = ({
       if (type === 'cadeirante') {
         const payload = {
           nm_cadeirante: nome.trim(),
-          cpf: rawCpf || undefined,
+          cpf: rawCpf,
           telefone: rawTelefone,
           tam_camisa: tamCamisa,
+          data_nascimento: dataNascimento,
+          sexo,
           possui_cadeira_propria: possuiCadeiraPropria,
           ativo,
         };
@@ -98,9 +117,11 @@ export const ParticipantModal: React.FC<ParticipantModalProps> = ({
       } else {
         const payload = {
           nm_condutor: nome.trim(),
-          cpf: rawCpf || undefined,
+          cpf: rawCpf,
           telefone: rawTelefone,
           tam_camisa: tamCamisa,
+          data_nascimento: dataNascimento,
+          sexo,
           ativo,
         };
 
@@ -164,12 +185,13 @@ export const ParticipantModal: React.FC<ParticipantModalProps> = ({
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Input
-            label="CPF (Opcional)"
+            label="CPF"
             placeholder="000.000.000-00"
             value={cpf}
             onChange={(e) => setCpf(formatCPF(e.target.value))}
             maxLength={14}
             error={errors.cpf}
+            required
           />
 
           <Input
@@ -180,6 +202,30 @@ export const ParticipantModal: React.FC<ParticipantModalProps> = ({
             maxLength={15}
             error={errors.telefone}
             required
+          />
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <Input
+            label="Data de Nascimento"
+            type="date"
+            value={dataNascimento}
+            onChange={(e) => setDataNascimento(e.target.value)}
+            error={errors.dataNascimento}
+            required
+          />
+
+          <Select
+            label="Sexo"
+            value={sexo}
+            onChange={(e) => setSexo(e.target.value)}
+            error={errors.sexo}
+            required
+            options={[
+              { value: 'Masculino', label: 'Masculino' },
+              { value: 'Feminino', label: 'Feminino' },
+              { value: 'Outro', label: 'Outro' },
+            ]}
           />
         </div>
 

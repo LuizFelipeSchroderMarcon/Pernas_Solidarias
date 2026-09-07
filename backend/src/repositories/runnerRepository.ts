@@ -37,13 +37,23 @@ export class RunnerRepository {
     cpf: string;
     telefone: string;
     tam_camisa: string;
+    data_nascimento?: string | Date;
+    sexo?: string;
     ativo?: boolean;
   }): Promise<Condutor> {
     const result = await query(
-      `INSERT INTO CONDUTOR (nm_condutor, cpf, telefone, tam_camisa, ativo)
-       VALUES ($1, $2, $3, $4, $5)
+      `INSERT INTO CONDUTOR (nm_condutor, cpf, telefone, tam_camisa, data_nascimento, sexo, ativo)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
        RETURNING *`,
-      [data.nm_condutor, data.cpf, data.telefone, data.tam_camisa, data.ativo ?? true]
+      [
+        data.nm_condutor,
+        data.cpf,
+        data.telefone,
+        data.tam_camisa,
+        data.data_nascimento || null,
+        data.sexo || null,
+        data.ativo ?? true,
+      ]
     );
     return result.rows[0];
   }
@@ -55,6 +65,8 @@ export class RunnerRepository {
       cpf: string;
       telefone: string;
       tam_camisa: string;
+      data_nascimento?: string | Date;
+      sexo?: string;
       ativo: boolean;
     }
   ): Promise<Condutor | null> {
@@ -64,10 +76,21 @@ export class RunnerRepository {
            cpf = $2,
            telefone = $3,
            tam_camisa = $4,
-           ativo = $5
-       WHERE cd_condutor = $6
+           data_nascimento = $5,
+           sexo = $6,
+           ativo = $7
+       WHERE cd_condutor = $8
        RETURNING *`,
-      [data.nm_condutor, data.cpf, data.telefone, data.tam_camisa, data.ativo, id]
+      [
+        data.nm_condutor,
+        data.cpf,
+        data.telefone,
+        data.tam_camisa,
+        data.data_nascimento || null,
+        data.sexo || null,
+        data.ativo,
+        id,
+      ]
     );
     return result.rows[0] || null;
   }
