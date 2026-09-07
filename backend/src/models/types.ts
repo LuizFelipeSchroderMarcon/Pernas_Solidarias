@@ -11,6 +11,8 @@ export interface User {
   cd_user: number;
   email: string;
   senha?: string;
+  tentativas_falhas?: number;
+  bloqueado_ate?: Date | null;
   created_at: Date;
 }
 
@@ -20,6 +22,8 @@ export interface Cadeirante {
   cpf: string;
   telefone: string;
   tam_camisa: string;
+  data_nascimento?: string | Date;
+  sexo?: string;
   possui_cadeira_propria: boolean;
   ativo: boolean;
   created_at: Date;
@@ -31,6 +35,8 @@ export interface Condutor {
   cpf: string;
   telefone: string;
   tam_camisa: string;
+  data_nascimento?: string | Date;
+  sexo?: string;
   ativo: boolean;
   created_at: Date;
 }
@@ -61,12 +67,16 @@ export interface DuplaDetalhada {
   cpf_cadeirante: string;
   telefone_cadeirante: string;
   tam_camisa_cadeirante: string;
+  data_nascimento_cadeirante?: string | Date;
+  sexo_cadeirante?: string;
   possui_cadeira_propria: boolean;
   cd_condutor: number;
   nm_condutor: string;
   cpf_condutor: string;
   telefone_condutor: string;
   tam_camisa_condutor: string;
+  data_nascimento_condutor?: string | Date;
+  sexo_condutor?: string;
   created_at: Date;
 }
 
@@ -83,8 +93,6 @@ export interface PrioritizedParticipant {
   total_participacoes: number;
 }
 
-
-
 export interface PairFormationResult {
   evento: Evento;
   total_duplas: number;
@@ -92,8 +100,6 @@ export interface PairFormationResult {
   cadeirantes_restantes: number;
   condutores_restantes: number;
 }
-
-
 
 export interface HistoryFilters {
   eventId?: number;
@@ -107,3 +113,21 @@ export interface ExportOptions {
   format?: 'xlsx' | 'csv';
 }
 
+export interface RankingParticipant {
+  id: number;
+  nome: string;
+  total_corridas: number;
+}
+
+export interface RankingEvent {
+  id: number;
+  nome: string;
+  data: string | Date;
+  total_duplas: number;
+}
+
+export interface AnalyticsRankingsResponse {
+  top_runners: RankingParticipant[];
+  top_wheelchair_users: RankingParticipant[];
+  top_events: RankingEvent[];
+}
