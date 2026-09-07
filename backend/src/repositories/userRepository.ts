@@ -22,4 +22,29 @@ export class UserRepository {
     );
     return result.rows[0];
   }
+
+  async incrementFailedAttempts(userId: number): Promise<User> {
+    const result = await query(
+      `UPDATE "USER"
+       SET tentativas_falhas = tentativas_falhas + 1,
+           bloqueado_ate = CASE 
+             WHEN tentativas_falhas + 1 >= 5 THEN NOW() + INTERVAL '15 minutes'
+             ELSE bloqueado_ate
+           END
+       WHERE cd_user = $1
+       RETURNING cd_user, email, tentativas_falhas, bloqueado_ate, created_at`,
+      [userId]
+    );
+    return result.rows[0];
+  }
+
+  async resetFailedAttempts(userId: number): Promise<void> {
+    await query(
+      `UPDATE "USER"
+       SET tentativas_falhas = 0,
+           bloqueado_ate = NULL
+       WHERE cd_user = $1`,
+      [userId]
+    );
+  }
 }
