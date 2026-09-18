@@ -29,8 +29,9 @@ export class PairFormationService {
     }
 
     // 2. Fetch active participants ordered by priority (RN03, RN07)
-    const wheelchairUsers = await this.pairRepository.findPrioritizedWheelchairUsers();
-    const runners = await this.pairRepository.findPrioritizedRunners();
+    const wheelchairUsers = await this.pairRepository.findPrioritizedWheelchairUsers(eventId);
+
+    const runners = await this.pairRepository.findPrioritizedRunners(eventId);
 
     // 3. Handle edge cases (FA02)
     if (wheelchairUsers.length === 0 && runners.length === 0) {
