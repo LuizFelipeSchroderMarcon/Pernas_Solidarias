@@ -5,6 +5,7 @@ import { useToast } from '../../hooks/useToast';
 import { Button } from '../../components/common/Button';
 import { Input } from '../../components/common/Input';
 import { HeartHandshake, Mail, Lock, LogIn } from 'lucide-react';
+import { mensagemDeErro } from '../../services/apiError';
 
 export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
@@ -34,7 +35,8 @@ export const LoginPage: React.FC = () => {
       success('Bem-vindo!', 'Login realizado com sucesso.');
       navigate(from, { replace: true });
     } catch (err: any) {
-      const msg = err.response?.data?.error || 'Erro ao realizar login. Verifique suas credenciais.';
+      // const msg = err.response?.data?.error || 'Erro ao realizar login. Verifique suas credenciais.';
+      const msg = mensagemDeErro(err, 'Erro ao realizar login. Verifique suas credenciais.');
       setErrorMessage(msg);
       error('Falha na autenticação', msg);
     } finally {

@@ -29,6 +29,7 @@ import {
   CheckCircle2,
   Calendar,
 } from 'lucide-react';
+import { mensagemDeErro } from '../../services/apiError';
 
 export const PairFormationPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -144,7 +145,8 @@ export const PairFormationPage: React.FC = () => {
         `${result.total_duplas} duplas foram geradas com base no histórico de participações.`
       );
     } catch (err: any) {
-      const msg = err.response?.data?.error || 'Erro ao gerar duplas automaticamente.';
+      // const msg = err.response?.data?.error || 'Erro ao gerar duplas automaticamente.';
+      const msg = mensagemDeErro(err, 'Não foi possível atualizar a dupla. Verifique se o participante já está em outra dupla.');
       error('Falha na formação', msg);
     } finally {
       setIsGenerating(false);
@@ -161,7 +163,8 @@ export const PairFormationPage: React.FC = () => {
       success('Duplas Limpas', 'As duplas deste evento foram desfeitas.');
       setClearDialogOpen(false);
     } catch (err: any) {
-      const msg = err.response?.data?.error || 'Erro ao limpar duplas do evento.';
+      // const msg = err.response?.data?.error || 'Erro ao limpar duplas do evento.';
+      const msg = mensagemDeErro(err, 'Erro ao limpar duplas do evento.');
       error('Falha ao limpar', msg);
     } finally {
       setIsClearing(false);
@@ -209,9 +212,9 @@ export const PairFormationPage: React.FC = () => {
               options={
                 events.length > 0
                   ? events.map((evt) => ({
-                      value: evt.cd_evento,
-                      label: `${evt.nm_evento} — ${formatDate(evt.dt_evento)}`,
-                    }))
+                    value: evt.cd_evento,
+                    label: `${evt.nm_evento} — ${formatDate(evt.dt_evento)}`,
+                  }))
                   : [{ value: '', label: 'Nenhum evento cadastrado' }]
               }
             />

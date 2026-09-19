@@ -7,6 +7,7 @@ import type { Cadeirante, Condutor } from '../../types';
 import { formatCPF, formatPhone, cleanDigits, toInputDateFormat } from '../../utils/formatters';
 import { useToast } from '../../hooks/useToast';
 import { participantService } from '../../services/participantService';
+import { mensagemDeErro } from '../../services/apiError';
 
 export interface ParticipantModalProps {
   isOpen: boolean;
@@ -68,7 +69,7 @@ export const ParticipantModal: React.FC<ParticipantModalProps> = ({
   const validate = () => {
     const newErrors: Record<string, string> = {};
     if (!nome.trim()) newErrors.nome = 'O nome completo é obrigatório.';
-    
+
     const cleanCpf = cleanDigits(cpf);
     if (!cleanCpf) {
       newErrors.cpf = 'O CPF é obrigatório.';
@@ -138,16 +139,16 @@ export const ParticipantModal: React.FC<ParticipantModalProps> = ({
       onSuccess();
       onClose();
     } catch (err: any) {
-      const errMsg = err.response?.data?.error || 'Erro ao salvar participante.';
+      // const errMsg = err.response?.data?.error || 'Erro ao salvar participante.';
+      const errMsg = mensagemDeErro(err, 'Erro ao salvar participante.');
       error('Falha na operação', errMsg);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const title = `${isEditing ? 'Editar' : 'Cadastrar'} ${
-    type === 'cadeirante' ? 'Cadeirante' : 'Condutor'
-  }`;
+  const title = `${isEditing ? 'Editar' : 'Cadastrar'} ${type === 'cadeirante' ? 'Cadeirante' : 'Condutor'
+    }`;
 
   return (
     <Modal

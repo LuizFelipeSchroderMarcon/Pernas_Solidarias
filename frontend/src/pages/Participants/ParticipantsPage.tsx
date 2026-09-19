@@ -23,6 +23,7 @@ import {
   Phone,
   Armchair,
 } from 'lucide-react';
+import { mensagemDeErro } from '../../services/apiError';
 
 export const ParticipantsPage: React.FC = () => {
   const { success, error } = useToast();
@@ -75,8 +76,8 @@ export const ParticipantsPage: React.FC = () => {
         statusFilter === 'todos'
           ? true
           : statusFilter === 'ativos'
-          ? item.ativo
-          : !item.ativo;
+            ? item.ativo
+            : !item.ativo;
       return matchSearch && matchStatus;
     });
   }, [cadeirantes, searchTerm, statusFilter]);
@@ -90,8 +91,8 @@ export const ParticipantsPage: React.FC = () => {
         statusFilter === 'todos'
           ? true
           : statusFilter === 'ativos'
-          ? item.ativo
-          : !item.ativo;
+            ? item.ativo
+            : !item.ativo;
       return matchSearch && matchStatus;
     });
   }, [condutores, searchTerm, statusFilter]);
@@ -141,9 +142,8 @@ export const ParticipantsPage: React.FC = () => {
       }
       setDeleteDialogOpen(false);
     } catch (err: any) {
-      const msg =
-        err.response?.data?.error ||
-        'Não foi possível excluir o participante (possui histórico vinculado).';
+      // const msg = err.response?.data?.error || 'Não foi possível excluir o participante (possui histórico vinculado).';
+      const msg = mensagemDeErro(err, 'Não foi possível excluir o participante (possui histórico vinculado).');
       error('Erro ao excluir', msg);
     } finally {
       setIsDeleting(false);
@@ -194,11 +194,10 @@ export const ParticipantsPage: React.FC = () => {
       <div className="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-px">
         <button
           onClick={() => setActiveTab('cadeirante')}
-          className={`flex items-center gap-2 px-5 py-3 text-sm font-semibold border-b-2 transition-all cursor-pointer ${
-            activeTab === 'cadeirante'
+          className={`flex items-center gap-2 px-5 py-3 text-sm font-semibold border-b-2 transition-all cursor-pointer ${activeTab === 'cadeirante'
               ? 'border-blue-600 text-blue-600 dark:text-blue-400 dark:border-blue-400'
               : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'
-          }`}
+            }`}
         >
           <Users className="w-4 h-4" />
           <span>Cadeirantes ({cadeirantes.length})</span>
@@ -206,11 +205,10 @@ export const ParticipantsPage: React.FC = () => {
 
         <button
           onClick={() => setActiveTab('condutor')}
-          className={`flex items-center gap-2 px-5 py-3 text-sm font-semibold border-b-2 transition-all cursor-pointer ${
-            activeTab === 'condutor'
+          className={`flex items-center gap-2 px-5 py-3 text-sm font-semibold border-b-2 transition-all cursor-pointer ${activeTab === 'condutor'
               ? 'border-blue-600 text-blue-600 dark:text-blue-400 dark:border-blue-400'
               : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'
-          }`}
+            }`}
         >
           <UserCheck className="w-4 h-4" />
           <span>Condutores ({condutores.length})</span>
