@@ -15,7 +15,9 @@ export class AuthService {
       throw new AppError('E-mail e senha são obrigatórios.');
     }
 
-    const userExists = await this.userRepository.findByEmail(email);
+    const emailNormalizado = email.trim().toLowerCase();
+
+    const userExists = await this.userRepository.findByEmail(emailNormalizado);
     if (userExists) {
       throw new AppError('E-mail já cadastrado.', 409);
     }
@@ -23,7 +25,7 @@ export class AuthService {
     const saltRounds = 10;
     const passwordHash = await bcrypt.hash(password, saltRounds);
 
-    const newUser = await this.userRepository.create(email, passwordHash);
+    const newUser = await this.userRepository.create(emailNormalizado, passwordHash);
     return {
       cd_user: newUser.cd_user,
       email: newUser.email,
