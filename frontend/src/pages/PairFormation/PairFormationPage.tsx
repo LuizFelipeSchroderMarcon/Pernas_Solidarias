@@ -162,7 +162,6 @@ export const PairFormationPage: React.FC = () => {
       success('Duplas Limpas', 'As duplas deste evento foram desfeitas.');
       setClearDialogOpen(false);
     } catch (err: any) {
-      // const msg = err.response?.data?.error || 'Erro ao limpar duplas do evento.';
       const msg = mensagemDeErro(err, 'Erro ao limpar duplas do evento.');
       error('Falha ao limpar', msg);
     } finally {
