@@ -139,7 +139,6 @@ export const ParticipantModal: React.FC<ParticipantModalProps> = ({
       onSuccess();
       onClose();
     } catch (err: any) {
-      // const errMsg = err.response?.data?.error || 'Erro ao salvar participante.';
       const errMsg = mensagemDeErro(err, 'Erro ao salvar participante.');
       error('Falha na operação', errMsg);
     } finally {
