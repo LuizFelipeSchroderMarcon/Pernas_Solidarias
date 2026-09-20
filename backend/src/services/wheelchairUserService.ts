@@ -1,5 +1,6 @@
 import { WheelchairUserRepository } from '../repositories/wheelchairUserRepository';
 import { AppError } from '../middlewares/errorHandler';
+import { cpfValido } from '../utils/validators';
 
 export class WheelchairUserService {
   private wheelchairUserRepository: WheelchairUserRepository;
@@ -42,8 +43,8 @@ export class WheelchairUserService {
     }
 
     const cleanCpf = data.cpf.replace(/\D/g, '');
-    if (cleanCpf.length !== 11) {
-      throw new AppError('CPF deve conter exatamente 11 dígitos.');
+    if (!cpfValido(cleanCpf)) {
+      throw new AppError('CPF inválido.');
     }
 
     const existing = await this.wheelchairUserRepository.findByCpf(cleanCpf);
