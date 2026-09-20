@@ -71,7 +71,6 @@ export const EventModal: React.FC<EventModalProps> = ({
       onSuccess();
       onClose();
     } catch (err: any) {
-      // const errMsg = err.response?.data?.error || 'Erro ao salvar evento.';
       const errMsg = mensagemDeErro(err, 'Erro ao salvar evento.');
       error('Falha ao salvar', errMsg);
     } finally {
