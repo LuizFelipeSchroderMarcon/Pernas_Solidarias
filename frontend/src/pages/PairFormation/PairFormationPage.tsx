@@ -145,7 +145,6 @@ export const PairFormationPage: React.FC = () => {
         `${result.total_duplas} duplas foram geradas com base no histórico de participações.`
       );
     } catch (err: any) {
-      // const msg = err.response?.data?.error || 'Erro ao gerar duplas automaticamente.';
       const msg = mensagemDeErro(err, 'Não foi possível atualizar a dupla. Verifique se o participante já está em outra dupla.');
       error('Falha na formação', msg);
     } finally {
