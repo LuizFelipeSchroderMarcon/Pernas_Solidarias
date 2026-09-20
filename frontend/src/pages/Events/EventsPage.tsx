@@ -78,7 +78,6 @@ export const EventsPage: React.FC = () => {
       success('Evento excluído', 'O evento foi removido com sucesso.');
       setDeleteDialogOpen(false);
     } catch (err: any) {
-      // const msg = err.response?.data?.error || 'Não foi possível excluir o evento (pode possuir duplas formadas).';
       const errMsg = mensagemDeErro(err, 'Não foi possível excluir o evento (pode possuir duplas formadas).');
       error('Falha na exclusão', errMsg);
     } finally {
