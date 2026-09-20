@@ -76,8 +76,8 @@ export const ParticipantsPage: React.FC = () => {
         statusFilter === 'todos'
           ? true
           : statusFilter === 'ativos'
-            ? item.ativo
-            : !item.ativo;
+          ? item.ativo
+          : !item.ativo;
       return matchSearch && matchStatus;
     });
   }, [cadeirantes, searchTerm, statusFilter]);
