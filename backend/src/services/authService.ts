@@ -16,7 +16,6 @@ export class AuthService {
     }
 
     const emailNormalizado = email.trim().toLowerCase();
-
     const userExists = await this.userRepository.findByEmail(emailNormalizado);
     if (userExists) {
       throw new AppError('E-mail já cadastrado.', 409);
