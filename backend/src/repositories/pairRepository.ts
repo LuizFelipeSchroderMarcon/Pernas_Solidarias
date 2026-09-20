@@ -5,7 +5,9 @@ export class PairRepository {
   /**
    * Fetches all active eligible wheelchair users, ordering by longest time without running (RN03, RN07).
    */
-  async findPrioritizedWheelchairUsers(): Promise<PrioritizedParticipant[]> {
+  async findPrioritizedWheelchairUsers(
+    excludeEventId: number
+  ): Promise<PrioritizedParticipant[]> {
     const sql = `
       SELECT 
         c.cd_cadeirante AS id,
@@ -19,20 +21,22 @@ export class PairRepository {
         MAX(e.dt_evento) AS dt_ultima_participacao,
         COUNT(d.cd_dupla)::int AS total_participacoes
       FROM CADEIRANTE c
-      LEFT JOIN DUPLA d ON d.cd_cadeirante = c.cd_cadeirante
+      LEFT JOIN DUPLA d ON d.cd_cadeirante = c.cd_cadeirante AND d.cd_evento <> $1
       LEFT JOIN EVENTO e ON e.cd_evento = d.cd_evento
       WHERE c.ativo = TRUE
       GROUP BY c.cd_cadeirante, c.nm_cadeirante, c.cpf, c.telefone, c.tam_camisa, c.possui_cadeira_propria, c.ativo, c.created_at
       ORDER BY MAX(e.dt_evento) ASC NULLS FIRST, c.created_at ASC, c.cd_cadeirante ASC
     `;
-    const result = await query(sql);
+    const result = await query(sql, [excludeEventId]);
     return result.rows;
   }
 
   /**
    * Fetches all active eligible runners with priority calculation (RN03, RN07).
    */
-  async findPrioritizedRunners(): Promise<PrioritizedParticipant[]> {
+  async findPrioritizedRunners(
+    excludeEventId: number
+  ): Promise<PrioritizedParticipant[]> {
     const sql = `
       SELECT 
         c.cd_condutor AS id,
@@ -45,13 +49,13 @@ export class PairRepository {
         MAX(e.dt_evento) AS dt_ultima_participacao,
         COUNT(d.cd_dupla)::int AS total_participacoes
       FROM CONDUTOR c
-      LEFT JOIN DUPLA d ON d.cd_condutor = c.cd_condutor
+      LEFT JOIN DUPLA d ON d.cd_condutor = c.cd_condutor AND d.cd_evento <> $1
       LEFT JOIN EVENTO e ON e.cd_evento = d.cd_evento
       WHERE c.ativo = TRUE
       GROUP BY c.cd_condutor, c.nm_condutor, c.cpf, c.telefone, c.tam_camisa, c.ativo, c.created_at
       ORDER BY MAX(e.dt_evento) ASC NULLS FIRST, c.created_at ASC, c.cd_condutor ASC
     `;
-    const result = await query(sql);
+    const result = await query(sql, [excludeEventId]);
     return result.rows;
   }
 
