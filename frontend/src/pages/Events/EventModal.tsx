@@ -6,6 +6,7 @@ import type { Evento } from '../../types';
 import { toInputDateFormat } from '../../utils/formatters';
 import { useToast } from '../../hooks/useToast';
 import { eventService } from '../../services/eventService';
+import { mensagemDeErro } from '../../services/apiError';
 
 export interface EventModalProps {
   isOpen: boolean;
@@ -70,7 +71,7 @@ export const EventModal: React.FC<EventModalProps> = ({
       onSuccess();
       onClose();
     } catch (err: any) {
-      const errMsg = err.response?.data?.error || 'Erro ao salvar evento.';
+      const errMsg = mensagemDeErro(err, 'Erro ao salvar evento.');
       error('Falha ao salvar', errMsg);
     } finally {
       setIsSubmitting(false);

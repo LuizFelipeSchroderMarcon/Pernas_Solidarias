@@ -6,6 +6,7 @@ import type { DuplaDetalhada, Cadeirante, Condutor } from '../../types';
 import { participantService } from '../../services/participantService';
 import { pairService } from '../../services/pairService';
 import { useToast } from '../../hooks/useToast';
+import { mensagemDeErro } from '../../services/apiError';
 
 export interface EditPairModalProps {
   isOpen: boolean;
@@ -72,9 +73,8 @@ export const EditPairModal: React.FC<EditPairModalProps> = ({
       onSuccess();
       onClose();
     } catch (err: any) {
-      const errMsg =
-        err.response?.data?.error ||
-        'Não foi possível atualizar a dupla. Verifique se o participante já está em outra dupla.';
+      // const errMsg = err.response?.data?.error || 'Não foi possível atualizar a dupla. Verifique se o participante já está em outra dupla.';
+      const errMsg = mensagemDeErro(err, 'Não foi possível atualizar a dupla. Verifique se o participante já está em outra dupla.');
       error('Falha na edição', errMsg);
     } finally {
       setIsSubmitting(false);
@@ -115,9 +115,8 @@ export const EditPairModal: React.FC<EditPairModalProps> = ({
             { value: '', label: 'Selecione um cadeirante...' },
             ...cadeirantes.map((c) => ({
               value: c.cd_cadeirante,
-              label: `${c.nm_cadeirante} (${c.ativo ? 'Ativo' : 'Inativo'}${
-                c.possui_cadeira_propria ? ' • Cadeira Própria' : ''
-              } • Camiseta ${c.tam_camisa})`,
+              label: `${c.nm_cadeirante} (${c.ativo ? 'Ativo' : 'Inativo'}${c.possui_cadeira_propria ? ' • Cadeira Própria' : ''
+                } • Camiseta ${c.tam_camisa})`,
             })),
           ]}
         />

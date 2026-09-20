@@ -26,8 +26,12 @@ export class UserRepository {
   async incrementFailedAttempts(userId: number): Promise<User> {
     const result = await query(
       `UPDATE "USER"
-       SET tentativas_falhas = tentativas_falhas + 1,
-           bloqueado_ate = CASE 
+       SET tentativas_falhas = CASE
+             WHEN bloqueado_ate IS NOT NULL AND bloqueado_ate <= NOW() THEN 1
+             ELSE tentativas_falhas + 1
+           END,
+           bloqueado_ate = CASE
+             WHEN bloqueado_ate IS NOT NULL AND bloqueado_ate <= NOW() THEN NULL
              WHEN tentativas_falhas + 1 >= 5 THEN NOW() + INTERVAL '15 minutes'
              ELSE bloqueado_ate
            END
