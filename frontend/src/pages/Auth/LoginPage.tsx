@@ -35,7 +35,6 @@ export const LoginPage: React.FC = () => {
       success('Bem-vindo!', 'Login realizado com sucesso.');
       navigate(from, { replace: true });
     } catch (err: any) {
-      // const msg = err.response?.data?.error || 'Erro ao realizar login. Verifique suas credenciais.';
       const msg = mensagemDeErro(err, 'Erro ao realizar login. Verifique suas credenciais.');
       setErrorMessage(msg);
       error('Falha na autenticação', msg);
