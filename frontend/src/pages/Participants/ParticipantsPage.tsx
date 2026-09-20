@@ -142,7 +142,6 @@ export const ParticipantsPage: React.FC = () => {
       }
       setDeleteDialogOpen(false);
     } catch (err: any) {
-      // const msg = err.response?.data?.error || 'Não foi possível excluir o participante (possui histórico vinculado).';
       const msg = mensagemDeErro(err, 'Não foi possível excluir o participante (possui histórico vinculado).');
       error('Erro ao excluir', msg);
     } finally {
