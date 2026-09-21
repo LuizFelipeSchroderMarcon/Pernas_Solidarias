@@ -60,3 +60,34 @@ ALTER TABLE CONDUTOR ADD COLUMN IF NOT EXISTS data_nascimento DATE;
 ALTER TABLE CONDUTOR ADD COLUMN IF NOT EXISTS sexo VARCHAR(20);
 ALTER TABLE "USER" ADD COLUMN IF NOT EXISTS tentativas_falhas INT NOT NULL DEFAULT 0;
 ALTER TABLE "USER" ADD COLUMN IF NOT EXISTS bloqueado_ate TIMESTAMP NULL;
+
+-- Triggers para validação de unicidade de CPF entre Cadeirantes e Condutores
+CREATE OR REPLACE FUNCTION check_cpf_cross_table_cadeirante()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM CONDUTOR WHERE cpf = NEW.cpf) THEN
+        RAISE EXCEPTION 'CPF já cadastrado para um condutor.';
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trg_check_cpf_cadeirante ON CADEIRANTE;
+CREATE TRIGGER trg_check_cpf_cadeirante
+BEFORE INSERT OR UPDATE OF cpf ON CADEIRANTE
+FOR EACH ROW EXECUTE FUNCTION check_cpf_cross_table_cadeirante();
+
+CREATE OR REPLACE FUNCTION check_cpf_cross_table_condutor()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM CADEIRANTE WHERE cpf = NEW.cpf) THEN
+        RAISE EXCEPTION 'CPF já cadastrado para um cadeirante.';
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trg_check_cpf_condutor ON CONDUTOR;
+CREATE TRIGGER trg_check_cpf_condutor
+BEFORE INSERT OR UPDATE OF cpf ON CONDUTOR
+FOR EACH ROW EXECUTE FUNCTION check_cpf_cross_table_condutor();
