@@ -287,9 +287,12 @@ export const DashboardPage: React.FC = () => {
                       backgroundColor: '#1e293b',
                       borderRadius: '12px',
                       color: '#fff',
-                      border: 'none',
+                      border: '1px solid #334155',
                       fontSize: '12px',
+                      boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.3)',
                     }}
+                    labelStyle={{ color: '#ffffff', fontWeight: 600, marginBottom: '4px' }}
+                    itemStyle={{ color: '#ffffff' }}
                     cursor={{ fill: 'rgba(59, 130, 246, 0.05)' }}
                   />
                   <Bar dataKey="Cadeirantes" fill="#3b82f6" radius={[6, 6, 0, 0]} />
