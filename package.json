@@ -3,11 +3,14 @@
   "version": "1.0.0",
   "description": "Sistema Pernas Solidárias - Monorepo Runner",
   "scripts": {
-    "dev": "concurrently -n \"backend,frontend\" -c \"blue,green\" \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
-    "dev:backend": "npm run dev --prefix backend",
-    "dev:frontend": "npm run dev --prefix frontend",
-    "install:all": "npm install && npm install --prefix backend && npm install --prefix frontend",
-    "build:all": "npm run build --prefix backend && npm run build --prefix frontend"
+    "dev": "docker compose up",
+    "dev:d": "docker compose up -d",
+    "down": "docker compose down",
+    "stop": "docker compose stop",
+    "logs": "docker compose logs -f",
+    "build": "docker compose build",
+    "db:init": "docker compose exec backend npm run db:init",
+    "dev:local": "concurrently -n \"backend,frontend\" -c \"blue,green\" \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\""
   },
   "devDependencies": {
     "concurrently": "^9.1.2"
