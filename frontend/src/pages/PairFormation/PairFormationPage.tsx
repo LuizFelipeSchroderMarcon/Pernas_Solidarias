@@ -31,6 +31,8 @@ import {
 } from 'lucide-react';
 import { mensagemDeErro } from '../../services/apiError';
 
+const LAST_SELECTED_EVENT_KEY = 'pernas_solidarias_selected_event';
+
 export const PairFormationPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -55,13 +57,17 @@ export const PairFormationPage: React.FC = () => {
 
   // Export modal
   const [exportModalOpen, setExportModalOpen] = useState(false);
+  const [isLoadingPairs, setIsLoadingPairs] = useState(false);
 
   const loadEventPairs = useCallback(async (eventId: number) => {
     try {
+      setIsLoadingPairs(true);
       const data = await pairService.listByEvent(eventId);
       setPairs(data);
     } catch {
       error('Erro', 'Não foi possível carregar as duplas do evento.');
+    } finally {
+      setIsLoadingPairs(false);
     }
   }, [error]);
 
@@ -81,11 +87,21 @@ export const PairFormationPage: React.FC = () => {
         setCondutores(conds);
 
         const paramEventId = searchParams.get('evento');
+        const savedEventId = localStorage.getItem(LAST_SELECTED_EVENT_KEY);
+
         if (paramEventId && evts.some((e) => e.cd_evento === Number(paramEventId))) {
-          setSelectedEventId(Number(paramEventId));
-        } else if (evts.length > 0) {
-          setSelectedEventId(evts[0].cd_evento);
-          setSearchParams({ evento: String(evts[0].cd_evento) });
+          const numId = Number(paramEventId);
+          setSelectedEventId(numId);
+          localStorage.setItem(LAST_SELECTED_EVENT_KEY, String(numId));
+        } else if (!paramEventId && savedEventId && evts.some((e) => e.cd_evento === Number(savedEventId))) {
+          const numId = Number(savedEventId);
+          setSelectedEventId(numId);
+          setSearchParams({ evento: String(numId) }, { replace: true });
+        } else {
+          setSelectedEventId('');
+          if (savedEventId) {
+            localStorage.removeItem(LAST_SELECTED_EVENT_KEY);
+          }
         }
       } catch {
         error('Erro', 'Não foi possível carregar os dados iniciais.');
@@ -96,6 +112,26 @@ export const PairFormationPage: React.FC = () => {
 
     loadInitialData();
   }, []);
+
+  // Sync when searchParams change externally (ex: browser back/forward or direct navigation)
+  useEffect(() => {
+    if (events.length === 0) return;
+
+    const paramEventId = searchParams.get('evento');
+    if (paramEventId) {
+      const numId = Number(paramEventId);
+      if (events.some((e) => e.cd_evento === numId)) {
+        setSelectedEventId(numId);
+        localStorage.setItem(LAST_SELECTED_EVENT_KEY, String(numId));
+      } else {
+        setSelectedEventId('');
+        localStorage.removeItem(LAST_SELECTED_EVENT_KEY);
+      }
+    } else {
+      setSelectedEventId('');
+      localStorage.removeItem(LAST_SELECTED_EVENT_KEY);
+    }
+  }, [searchParams, events]);
 
   // Load pairs when selected event changes
   useEffect(() => {
@@ -111,8 +147,11 @@ export const PairFormationPage: React.FC = () => {
     setSelectedEventId(id);
     if (id) {
       setSearchParams({ evento: String(id) });
+      localStorage.setItem(LAST_SELECTED_EVENT_KEY, String(id));
     } else {
       setSearchParams({});
+      localStorage.removeItem(LAST_SELECTED_EVENT_KEY);
+      setPairs([]);
     }
   };
 
@@ -209,10 +248,13 @@ export const PairFormationPage: React.FC = () => {
               onChange={(e) => handleEventChange(e.target.value)}
               options={
                 events.length > 0
-                  ? events.map((evt) => ({
-                    value: evt.cd_evento,
-                    label: `${evt.nm_evento} — ${formatDate(evt.dt_evento)}`,
-                  }))
+                  ? [
+                      { value: '', label: 'Selecione um evento...' },
+                      ...events.map((evt) => ({
+                        value: evt.cd_evento,
+                        label: `${evt.nm_evento} — ${formatDate(evt.dt_evento)}`,
+                      })),
+                    ]
                   : [{ value: '', label: 'Nenhum evento cadastrado' }]
               }
             />
@@ -299,7 +341,11 @@ export const PairFormationPage: React.FC = () => {
       )}
 
       {/* Pairs Grid */}
-      {pairs.length > 0 ? (
+      {isLoadingPairs ? (
+        <Card className="p-12 flex items-center justify-center">
+          <Spinner size="md" text="Carregando duplas do evento..." />
+        </Card>
+      ) : pairs.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {pairs.map((pair, index) => (
             <Card
