@@ -55,13 +55,17 @@ export const PairFormationPage: React.FC = () => {
 
   // Export modal
   const [exportModalOpen, setExportModalOpen] = useState(false);
+  const [isLoadingPairs, setIsLoadingPairs] = useState(false);
 
   const loadEventPairs = useCallback(async (eventId: number) => {
     try {
+      setIsLoadingPairs(true);
       const data = await pairService.listByEvent(eventId);
       setPairs(data);
     } catch {
       error('Erro', 'Não foi possível carregar as duplas do evento.');
+    } finally {
+      setIsLoadingPairs(false);
     }
   }, [error]);
 
@@ -299,7 +303,11 @@ export const PairFormationPage: React.FC = () => {
       )}
 
       {/* Pairs Grid */}
-      {pairs.length > 0 ? (
+      {isLoadingPairs ? (
+        <Card className="p-12 flex items-center justify-center">
+          <Spinner size="md" text="Carregando duplas do evento..." />
+        </Card>
+      ) : pairs.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {pairs.map((pair, index) => (
             <Card
