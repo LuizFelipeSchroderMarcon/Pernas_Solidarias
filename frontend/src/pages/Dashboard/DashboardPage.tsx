@@ -156,7 +156,7 @@ export const DashboardPage: React.FC = () => {
           subtitle={`Total de ${cadeirantes.length} cadastrados`}
           icon={<Users className="w-6 h-6" />}
           variant="blue"
-          onClick={() => navigate('/participantes')}
+          onClick={() => navigate('/participantes?tab=cadeirante')}
         />
         <StatCard
           title="Condutores Ativos"
@@ -164,7 +164,7 @@ export const DashboardPage: React.FC = () => {
           subtitle={`Total de ${condutores.length} cadastrados`}
           icon={<UserCheck className="w-6 h-6" />}
           variant="indigo"
-          onClick={() => navigate('/participantes')}
+          onClick={() => navigate('/participantes?tab=condutor')}
         />
         <StatCard
           title="Eventos Cadastrados"
