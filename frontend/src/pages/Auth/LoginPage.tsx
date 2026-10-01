@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { useToast } from '../../hooks/useToast';
 import { Button } from '../../components/common/Button';
@@ -9,7 +9,6 @@ import { mensagemDeErro } from '../../services/apiError';
 
 export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const { login } = useAuth();
   const { success, error } = useToast();
 
@@ -17,8 +16,6 @@ export const LoginPage: React.FC = () => {
   const [senha, setSenha] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-
-  const from = (location.state as any)?.from?.pathname || '/';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,7 +30,7 @@ export const LoginPage: React.FC = () => {
       setIsLoading(true);
       await login(email, senha);
       success('Bem-vindo!', 'Login realizado com sucesso.');
-      navigate(from, { replace: true });
+      navigate('/', { replace: true });
     } catch (err: any) {
       const msg = mensagemDeErro(err, 'Erro ao realizar login. Verifique suas credenciais.');
       setErrorMessage(msg);
