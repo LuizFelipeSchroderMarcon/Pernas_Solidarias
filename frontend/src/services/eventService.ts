@@ -8,26 +8,26 @@ export interface EventFormData {
 
 export const eventService = {
   async getEvents(): Promise<Evento[]> {
-    const response = await api.get<ApiSuccessResponse<Evento[]>>('/eventos');
+    const response = await api.get<ApiSuccessResponse<Evento[]>>('/events');
     return response.data.data;
   },
 
   async getEventById(id: number): Promise<Evento> {
-    const response = await api.get<ApiSuccessResponse<Evento>>(`/eventos/${id}`);
+    const response = await api.get<ApiSuccessResponse<Evento>>(`/events/${id}`);
     return response.data.data;
   },
 
   async createEvent(data: EventFormData): Promise<Evento> {
-    const response = await api.post<ApiSuccessResponse<Evento>>('/eventos', data);
+    const response = await api.post<ApiSuccessResponse<Evento>>('/events', data);
     return response.data.data;
   },
 
   async updateEvent(id: number, data: EventFormData): Promise<Evento> {
-    const response = await api.put<ApiSuccessResponse<Evento>>(`/eventos/${id}`, data);
+    const response = await api.put<ApiSuccessResponse<Evento>>(`/events/${id}`, data);
     return response.data.data;
   },
 
   async deleteEvent(id: number): Promise<void> {
-    await api.delete<ApiMessageResponse>(`/eventos/${id}`);
+    await api.delete<ApiMessageResponse>(`/events/${id}`);
   },
 };
