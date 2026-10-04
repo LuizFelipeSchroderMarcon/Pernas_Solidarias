@@ -16,24 +16,12 @@ routes.get('/health', (req, res) => {
 // Authentication routes
 routes.use('/auth', authRoutes);
 
-// Core resource routes (both English & PT-BR path aliases supported)
+// Core resource routes (standardized in English)
 routes.use('/wheelchair-users', wheelchairUserRoutes);
-routes.use('/cadeirantes', wheelchairUserRoutes);
-
 routes.use('/runners', runnerRoutes);
-routes.use('/condutores', runnerRoutes);
-
 routes.use('/events', eventRoutes);
-routes.use('/eventos', eventRoutes);
-
 routes.use('/pairs', pairRoutes);
-routes.use('/duplas', pairRoutes);
-
 routes.use('/export', exportRoutes);
-routes.use('/exportar', exportRoutes);
-
-// Analytics / Gráficos routes
 routes.use('/analytics', analyticsRoutes);
-routes.use('/graficos', analyticsRoutes);
 
 export { routes };

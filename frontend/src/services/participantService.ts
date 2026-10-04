@@ -25,61 +25,61 @@ export interface CondutorFormData {
 export const participantService = {
   // --- Cadeirantes ---
   async getCadeirantes(): Promise<Cadeirante[]> {
-    const response = await api.get<ApiSuccessResponse<Cadeirante[]>>('/cadeirantes');
+    const response = await api.get<ApiSuccessResponse<Cadeirante[]>>('/wheelchair-users');
     return response.data.data;
   },
 
   async getCadeiranteById(id: number): Promise<Cadeirante> {
-    const response = await api.get<ApiSuccessResponse<Cadeirante>>(`/cadeirantes/${id}`);
+    const response = await api.get<ApiSuccessResponse<Cadeirante>>(`/wheelchair-users/${id}`);
     return response.data.data;
   },
 
   async createCadeirante(data: CadeiranteFormData): Promise<Cadeirante> {
-    const response = await api.post<ApiSuccessResponse<Cadeirante>>('/cadeirantes', data);
+    const response = await api.post<ApiSuccessResponse<Cadeirante>>('/wheelchair-users', data);
     return response.data.data;
   },
 
   async updateCadeirante(id: number, data: CadeiranteFormData): Promise<Cadeirante> {
-    const response = await api.put<ApiSuccessResponse<Cadeirante>>(`/cadeirantes/${id}`, data);
+    const response = await api.put<ApiSuccessResponse<Cadeirante>>(`/wheelchair-users/${id}`, data);
     return response.data.data;
   },
 
   async toggleCadeiranteStatus(id: number): Promise<Cadeirante> {
-    const response = await api.patch<ApiSuccessResponse<Cadeirante>>(`/cadeirantes/${id}/toggle-status`);
+    const response = await api.patch<ApiSuccessResponse<Cadeirante>>(`/wheelchair-users/${id}/toggle-status`);
     return response.data.data;
   },
 
   async deleteCadeirante(id: number): Promise<void> {
-    await api.delete<ApiMessageResponse>(`/cadeirantes/${id}`);
+    await api.delete<ApiMessageResponse>(`/wheelchair-users/${id}`);
   },
 
   // --- Condutores ---
   async getCondutores(): Promise<Condutor[]> {
-    const response = await api.get<ApiSuccessResponse<Condutor[]>>('/condutores');
+    const response = await api.get<ApiSuccessResponse<Condutor[]>>('/runners');
     return response.data.data;
   },
 
   async getCondutorById(id: number): Promise<Condutor> {
-    const response = await api.get<ApiSuccessResponse<Condutor>>(`/condutores/${id}`);
+    const response = await api.get<ApiSuccessResponse<Condutor>>(`/runners/${id}`);
     return response.data.data;
   },
 
   async createCondutor(data: CondutorFormData): Promise<Condutor> {
-    const response = await api.post<ApiSuccessResponse<Condutor>>('/condutores', data);
+    const response = await api.post<ApiSuccessResponse<Condutor>>('/runners', data);
     return response.data.data;
   },
 
   async updateCondutor(id: number, data: CondutorFormData): Promise<Condutor> {
-    const response = await api.put<ApiSuccessResponse<Condutor>>(`/condutores/${id}`, data);
+    const response = await api.put<ApiSuccessResponse<Condutor>>(`/runners/${id}`, data);
     return response.data.data;
   },
 
   async toggleCondutorStatus(id: number): Promise<Condutor> {
-    const response = await api.patch<ApiSuccessResponse<Condutor>>(`/condutores/${id}/toggle-status`);
+    const response = await api.patch<ApiSuccessResponse<Condutor>>(`/runners/${id}/toggle-status`);
     return response.data.data;
   },
 
   async deleteCondutor(id: number): Promise<void> {
-    await api.delete<ApiMessageResponse>(`/condutores/${id}`);
+    await api.delete<ApiMessageResponse>(`/runners/${id}`);
   },
 };
