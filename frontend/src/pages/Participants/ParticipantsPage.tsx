@@ -36,6 +36,7 @@ export const ParticipantsPage: React.FC = () => {
   // Filters
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<'todos' | 'ativos' | 'inativos'>('todos');
+  const [cadeiraFilter, setCadeiraFilter] = useState<'todos' | 'com_cadeira' | 'sem_cadeira'>('todos');
 
   // Modals state
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -78,9 +79,15 @@ export const ParticipantsPage: React.FC = () => {
           : statusFilter === 'ativos'
           ? item.ativo
           : !item.ativo;
-      return matchSearch && matchStatus;
+      const matchCadeira =
+        cadeiraFilter === 'todos'
+          ? true
+          : cadeiraFilter === 'com_cadeira'
+          ? item.possui_cadeira_propria
+          : !item.possui_cadeira_propria;
+      return matchSearch && matchStatus && matchCadeira;
     });
-  }, [cadeirantes, searchTerm, statusFilter]);
+  }, [cadeirantes, searchTerm, statusFilter, cadeiraFilter]);
 
   const filteredCondutores = useMemo(() => {
     return condutores.filter((item) => {
@@ -226,6 +233,20 @@ export const ParticipantsPage: React.FC = () => {
             />
           </div>
 
+          {activeTab === 'cadeirante' && (
+            <div className="w-full sm:w-56">
+              <Select
+                value={cadeiraFilter}
+                onChange={(e) => setCadeiraFilter(e.target.value as any)}
+                options={[
+                  { value: 'todos', label: 'Cadeira: Todas' },
+                  { value: 'com_cadeira', label: 'Com Cadeira Própria' },
+                  { value: 'sem_cadeira', label: 'Sem Cadeira Própria' },
+                ]}
+              />
+            </div>
+          )}
+
           <div className="w-full sm:w-48">
             <Select
               value={statusFilter}
@@ -331,7 +352,7 @@ export const ParticipantsPage: React.FC = () => {
               icon={<Users className="w-8 h-8" />}
               title="Nenhum cadeirante encontrado"
               description={
-                searchTerm || statusFilter !== 'todos'
+                searchTerm || statusFilter !== 'todos' || cadeiraFilter !== 'todos'
                   ? 'Nenhum resultado corresponde aos filtros aplicados.'
                   : 'Nenhum cadeirante cadastrado no sistema.'
               }
