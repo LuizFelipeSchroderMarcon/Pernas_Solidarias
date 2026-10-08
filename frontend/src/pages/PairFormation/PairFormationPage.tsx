@@ -7,6 +7,7 @@ import { Badge } from '../../components/common/Badge';
 import { Spinner } from '../../components/common/Spinner';
 import { EmptyState } from '../../components/common/EmptyState';
 import { ConfirmDialog } from '../../components/feedback/ConfirmDialog';
+import { PageHeader } from '../../components/common/PageHeader';
 import { ExportModal } from '../../components/export/ExportModal';
 import { EditPairModal } from './EditPairModal';
 import { eventService } from '../../services/eventService';
@@ -176,27 +177,22 @@ export const PairFormationPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-            Formação de Duplas
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Algoritmo inteligente com priorização por histórico de corrida
-          </p>
-        </div>
-
-        {pairs.length > 0 && selectedEvent && (
-          <Button
-            variant="outline"
-            size="md"
-            onClick={() => setExportModalOpen(true)}
-            leftIcon={<Download className="w-4 h-4" />}
-          >
-            Exportar Relatório
-          </Button>
-        )}
-      </div>
+      <PageHeader
+        title="Formação de Duplas"
+        description="Algoritmo inteligente para geração automática de duplas com priorização baseada no histórico de participações."
+        actions={
+          pairs.length > 0 && selectedEvent ? (
+            <Button
+              variant="outline"
+              size="md"
+              onClick={() => setExportModalOpen(true)}
+              leftIcon={<Download className="w-4 h-4" />}
+            >
+              Exportar Relatório
+            </Button>
+          ) : undefined
+        }
+      />
 
       {/* Event Selection & Metrics Control Bar */}
       <Card className="p-6">
