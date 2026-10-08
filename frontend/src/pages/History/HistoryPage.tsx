@@ -6,6 +6,7 @@ import { Select } from '../../components/common/Select';
 import { Badge } from '../../components/common/Badge';
 import { Spinner } from '../../components/common/Spinner';
 import { EmptyState } from '../../components/common/EmptyState';
+import { PageHeader } from '../../components/common/PageHeader';
 import { ExportModal } from '../../components/export/ExportModal';
 import { HistoryPairsModal } from './HistoryPairsModal';
 import { pairService } from '../../services/pairService';
@@ -122,41 +123,35 @@ export const HistoryPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-            Histórico de Participações
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Registro imutável e somente leitura de todas as corridas e duplas realizadas
-          </p>
-        </div>
-
-        {/* Toggle View Mode */}
-        <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl self-start sm:self-auto">
-          <button
-            onClick={() => setViewMode('events')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-              viewMode === 'events'
-                ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm'
-                : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-            }`}
-          >
-            Visão por Eventos
-          </button>
-          <button
-            onClick={() => setViewMode('pairs')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-              viewMode === 'pairs'
-                ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm'
-                : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-            }`}
-          >
-            Lista de Duplas
-          </button>
-        </div>
-      </div>
+      {/* Page Header */}
+      <PageHeader
+        title="Histórico de Participações"
+        description="Registro imutável e somente leitura de todas as corridas e duplas realizadas."
+        actions={
+          <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl self-start sm:self-auto">
+            <button
+              onClick={() => setViewMode('events')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                viewMode === 'events'
+                  ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm'
+                  : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+              }`}
+            >
+              Visão por Eventos
+            </button>
+            <button
+              onClick={() => setViewMode('pairs')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                viewMode === 'pairs'
+                  ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm'
+                  : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+              }`}
+            >
+              Lista de Duplas
+            </button>
+          </div>
+        }
+      />
 
       {/* Filter Bar */}
       <Card className="p-5">

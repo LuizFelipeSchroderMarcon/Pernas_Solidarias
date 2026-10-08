@@ -3,12 +3,12 @@ import { Card } from '../../components/common/Card';
 import { Spinner } from '../../components/common/Spinner';
 import { Badge } from '../../components/common/Badge';
 import { EmptyState } from '../../components/common/EmptyState';
+import { PageHeader } from '../../components/common/PageHeader';
 import { analyticsService } from '../../services/analyticsService';
 import type { AnalyticsRankings } from '../../types';
 import { formatDate } from '../../utils/formatters';
 import { useToast } from '../../hooks/useToast';
 import {
-  BarChart3,
   Award,
   UserCheck,
   Users,
@@ -62,22 +62,11 @@ export const GraphicsPage: React.FC = () => {
 
   return (
     <div className="space-y-8">
-      {/* Header Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-700 via-indigo-700 to-indigo-800 p-6 sm:p-8 text-white shadow-xl shadow-indigo-600/15">
-        <div className="relative z-10 max-w-2xl">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-xs font-semibold text-white mb-3">
-            <BarChart3 className="w-3.5 h-3.5 text-amber-300" />
-            Estatísticas Oficiais da ONG
-          </span>
-          <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-            Gráficos e Indicadores
-          </h2>
-          <p className="text-sm text-blue-100 mt-2 leading-relaxed">
-            Acompanhe o engajamento e a participação histórica de cadeirantes, condutores e eventos na ONG Pernas Solidárias.
-          </p>
-        </div>
-        <div className="absolute -right-10 -bottom-10 w-72 h-72 bg-white/10 rounded-full blur-2xl pointer-events-none" />
-      </div>
+      {/* Page Header */}
+      <PageHeader
+        title="Gráficos e Indicadores"
+        description="Acompanhe o engajamento e a participação histórica de cadeirantes, condutores e eventos na ONG Pernas Solidárias."
+      />
 
       {/* Grid: 2 Rankings (Condutores e Cadeirantes) */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
