@@ -9,7 +9,6 @@ import {
   History,
   LogOut,
   X,
-  HeartHandshake,
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 
@@ -49,8 +48,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         {/* Brand header */}
         <div className="flex items-center justify-between px-6 h-20 border-b border-slate-800 shrink-0">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-blue-600 text-white shadow-md shadow-blue-500/30">
-              <HeartHandshake className="w-6 h-6" />
+            <div className="w-10 h-10 rounded-xl bg-white p-1.5 flex items-center justify-center shadow-md shadow-blue-500/10 shrink-0">
+              <img
+                src="/logo_pernas_solidarias.png"
+                alt="Pernas Solidárias"
+                className="w-full h-full object-contain"
+              />
             </div>
             <div className="flex flex-col">
               <span className="font-extrabold text-base tracking-tight leading-none text-white">
