@@ -16,11 +16,59 @@ export class PairController {
         return;
       }
 
-      const result = await pairFormationService.generateAutomaticPairs(eventId);
-      res.status(201).json({
-        message: 'Duplas formadas com sucesso!',
+      const isPreview = req.query.preview === 'true' || req.query.salvar === 'false';
+      const result = await pairFormationService.generateAutomaticPairs(eventId, isPreview);
+      res.status(isPreview ? 200 : 201).json({
+        message: isPreview ? 'Sugestão de duplas gerada com sucesso!' : 'Duplas formadas com sucesso!',
         data: result,
       });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * Saves all pairs for an event atomically (committing changes/draft).
+   */
+  async savePairs(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const eventIdParam = req.params.eventId || req.params.cd_evento;
+      const eventId = parseInt(eventIdParam as string, 10);
+      if (isNaN(eventId)) {
+        res.status(400).json({ error: 'ID do evento inválido.' });
+        return;
+      }
+
+      const pairsInput = req.body.pairs || req.body.duplas || [];
+      if (!Array.isArray(pairsInput)) {
+        res.status(400).json({ error: 'Formato inválido. Envie um array de duplas.' });
+        return;
+      }
+
+      const savedPairs = await pairFormationService.savePairs(eventId, pairsInput);
+      res.status(200).json({
+        message: 'Duplas salvas com sucesso no banco de dados!',
+        data: savedPairs,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * Deletes a specific pair.
+   */
+  async deletePair(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const pairIdParam = req.params.pairId || req.params.cd_dupla;
+      const pairId = parseInt(pairIdParam as string, 10);
+      if (isNaN(pairId)) {
+        res.status(400).json({ error: 'ID da dupla inválido.' });
+        return;
+      }
+
+      await pairFormationService.deletePair(pairId);
+      res.status(200).json({ message: 'Dupla removida com sucesso.' });
     } catch (error) {
       next(error);
     }

@@ -205,6 +205,14 @@ export class PairRepository {
   }
 
   /**
+   * Deletes a specific pair by ID.
+   */
+  async deleteById(pairId: number): Promise<boolean> {
+    const result = await query('DELETE FROM DUPLA WHERE cd_dupla = $1', [pairId]);
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  /**
    * Retrieves pair history with optional filters (RF06, RF09).
    */
   async findHistory(filters: HistoryFilters): Promise<DuplaDetalhada[]> {
