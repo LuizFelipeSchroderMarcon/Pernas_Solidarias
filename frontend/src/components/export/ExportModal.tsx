@@ -51,7 +51,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({
       onClose={onClose}
       title="Exportar Relatório de Duplas"
       subtitle={eventName ? `Evento: ${eventName}` : 'Selecione as opções de exportação para a organização'}
-      maxWidth="md"
+      maxWidth="xl"
       footer={
         <>
           <Button variant="ghost" size="sm" onClick={onClose} disabled={isExporting}>

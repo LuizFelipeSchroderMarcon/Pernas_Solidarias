@@ -90,9 +90,8 @@ export const CreatePairModal: React.FC<CreatePairModalProps> = ({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Criar Dupla Manualmente"
-      subtitle="Selecione um cadeirante e um condutor para formar uma nova dupla."
-      maxWidth="md"
+      title="Criar Dupla"
+      maxWidth="2xl"
       footer={
         <>
           <Button variant="ghost" size="sm" onClick={onClose} type="button">

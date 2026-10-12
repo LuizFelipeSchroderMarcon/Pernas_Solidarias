@@ -134,8 +134,7 @@ export const EditPairModal: React.FC<EditPairModalProps> = ({
       isOpen={isOpen}
       onClose={onClose}
       title="Editar Integrantes da Dupla"
-      subtitle="Altere o cadeirante ou o condutor desta dupla."
-      maxWidth="md"
+      maxWidth="2xl"
       footer={
         <>
           <Button variant="ghost" size="sm" onClick={onClose} disabled={isSubmitting}>
