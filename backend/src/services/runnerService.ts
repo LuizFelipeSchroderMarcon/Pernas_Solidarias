@@ -1,5 +1,6 @@
 import { RunnerRepository } from '../repositories/runnerRepository';
 import { AppError } from '../middlewares/errorHandler';
+import { cpfValido } from '../utils/validators';
 
 export class RunnerService {
   private runnerRepository: RunnerRepository;
@@ -41,8 +42,8 @@ export class RunnerService {
     }
 
     const cleanCpf = data.cpf.replace(/\D/g, '');
-    if (cleanCpf.length !== 11) {
-      throw new AppError('CPF deve conter exatamente 11 dígitos.');
+    if (!cpfValido(cleanCpf)) {
+      throw new AppError('CPF inválido.');
     }
 
     const existing = await this.runnerRepository.findByCpf(cleanCpf);
