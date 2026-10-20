@@ -11,7 +11,7 @@ import { HistoryPairsModal } from './HistoryPairsModal';
 import { pairService } from '../../services/pairService';
 import { eventService } from '../../services/eventService';
 import type { DuplaDetalhada, Evento } from '../../types';
-import { formatDate, formatPhone } from '../../utils/formatters';
+import { formatDate, formatPhone, isBeforeToday, toInputDateFormat } from '../../utils/formatters';
 import { useToast } from '../../hooks/useToast';
 import {
   History as HistoryIcon,
@@ -60,7 +60,7 @@ export const HistoryPage: React.FC = () => {
     try {
       setIsLoading(true);
       const [eventsList, historyList] = await Promise.all([
-        eventService.getEvents(),
+        eventService.getEvents('passados'),
         pairService.getHistory({
           cd_evento: selectedEventId ? Number(selectedEventId) : undefined,
           data_inicio: startDate || undefined,
@@ -69,8 +69,11 @@ export const HistoryPage: React.FC = () => {
         }),
       ]);
 
-      setEvents(eventsList);
-      setHistory(historyList);
+      const pastEvents = eventsList.filter((e) => isBeforeToday(e.dt_evento));
+      const pastHistory = historyList.filter((h) => isBeforeToday(h.dt_evento));
+
+      setEvents(pastEvents);
+      setHistory(pastHistory);
     } catch {
       error('Erro', 'Não foi possível carregar o histórico de duplas.');
     } finally {
@@ -108,14 +111,15 @@ export const HistoryPage: React.FC = () => {
     setPairsModalOpen(true);
   };
 
-  // Filtered events for Cards view
+  // Filtered events for Cards view (somente eventos com data anterior a hoje)
   const filteredEvents = useMemo(() => {
     return events.filter((evt) => {
+      if (!isBeforeToday(evt.dt_evento)) return false;
       const matchesSearch = search ? evt.nm_evento.toLowerCase().includes(search.toLowerCase()) : true;
       const matchesEvent = selectedEventId ? evt.cd_evento === selectedEventId : true;
-      const evtDate = new Date(evt.dt_evento);
-      const matchesStart = startDate ? evtDate >= new Date(startDate) : true;
-      const matchesEnd = endDate ? evtDate <= new Date(endDate) : true;
+      const evtDateStr = toInputDateFormat(evt.dt_evento);
+      const matchesStart = startDate ? evtDateStr >= startDate : true;
+      const matchesEnd = endDate ? evtDateStr <= endDate : true;
       return matchesSearch && matchesEvent && matchesStart && matchesEnd;
     });
   }, [events, search, selectedEventId, startDate, endDate]);
@@ -273,8 +277,14 @@ export const HistoryPage: React.FC = () => {
                   <Button
                     variant="primary"
                     size="sm"
+                    disabled={!evt.total_duplas || evt.total_duplas === 0}
                     onClick={() => handleOpenExport(evt.cd_evento, evt.nm_evento)}
                     leftIcon={<Download className="w-3.5 h-3.5" />}
+                    title={
+                      !evt.total_duplas || evt.total_duplas === 0
+                        ? 'Nenhuma dupla formada para este evento'
+                        : undefined
+                    }
                   >
                     Gerar Relatório
                   </Button>

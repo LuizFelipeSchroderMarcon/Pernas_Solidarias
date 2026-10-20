@@ -45,7 +45,6 @@ export function formatDate(dateString: string | Date | null | undefined): string
   }
 }
 
-// Formats date to input type="date" value (YYYY-MM-DD)
 export function toInputDateFormat(dateString: string | Date | null | undefined): string {
   if (!dateString) return '';
   try {
@@ -57,6 +56,17 @@ export function toInputDateFormat(dateString: string | Date | null | undefined):
   } catch {
     return '';
   }
+}
+
+export function isBeforeToday(dateString: string | Date | null | undefined): boolean {
+  if (!dateString) return false;
+  const evtDateStr = toInputDateFormat(dateString);
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const todayStr = `${year}-${month}-${day}`;
+  return evtDateStr < todayStr;
 }
 
 // Downloads a blob payload as a file in the browser

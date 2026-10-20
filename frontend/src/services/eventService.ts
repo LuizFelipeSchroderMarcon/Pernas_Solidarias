@@ -7,8 +7,10 @@ export interface EventFormData {
 }
 
 export const eventService = {
-  async getEvents(): Promise<Evento[]> {
-    const response = await api.get<ApiSuccessResponse<Evento[]>>('/eventos');
+  async getEvents(status?: 'futuros' | 'passados' | 'todos', search?: string): Promise<Evento[]> {
+    const response = await api.get<ApiSuccessResponse<Evento[]>>('/eventos', {
+      params: { status, search },
+    });
     return response.data.data;
   },
 
