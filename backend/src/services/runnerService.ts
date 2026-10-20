@@ -1,11 +1,14 @@
 import { RunnerRepository } from '../repositories/runnerRepository';
+import { WheelchairUserRepository } from '../repositories/wheelchairUserRepository';
 import { AppError } from '../middlewares/errorHandler';
 
 export class RunnerService {
   private runnerRepository: RunnerRepository;
+  private wheelchairUserRepository: WheelchairUserRepository;
 
   constructor() {
     this.runnerRepository = new RunnerRepository();
+    this.wheelchairUserRepository = new WheelchairUserRepository();
   }
 
   async listAll(active?: boolean, search?: string) {
@@ -45,9 +48,14 @@ export class RunnerService {
       throw new AppError('CPF deve conter exatamente 11 dígitos.');
     }
 
-    const existing = await this.runnerRepository.findByCpf(cleanCpf);
-    if (existing) {
-      throw new AppError('CPF já cadastrado para outro condutor.', 409);
+    const existingCondutor = await this.runnerRepository.findByCpf(cleanCpf);
+    if (existingCondutor) {
+      throw new AppError('Este CPF já está cadastrado para outro condutor.', 409);
+    }
+
+    const existingCadeirante = await this.wheelchairUserRepository.findByCpf(cleanCpf);
+    if (existingCadeirante) {
+      throw new AppError('Este CPF já está cadastrado para um cadeirante. O CPF deve ser único para todos os participantes.', 409);
     }
 
     return this.runnerRepository.create({
@@ -89,6 +97,11 @@ export class RunnerService {
     const existingWithCpf = await this.runnerRepository.findByCpf(cleanCpf);
     if (existingWithCpf && existingWithCpf.cd_condutor !== id) {
       throw new AppError('CPF já utilizado por outro condutor.', 409);
+    }
+
+    const existingCadeirante = await this.wheelchairUserRepository.findByCpf(cleanCpf);
+    if (existingCadeirante) {
+      throw new AppError('Este CPF já está cadastrado para um cadeirante. O CPF deve ser único para todos os participantes.', 409);
     }
 
     return this.runnerRepository.update(id, {

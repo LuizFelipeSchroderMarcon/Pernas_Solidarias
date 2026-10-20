@@ -1,11 +1,14 @@
 import { WheelchairUserRepository } from '../repositories/wheelchairUserRepository';
+import { RunnerRepository } from '../repositories/runnerRepository';
 import { AppError } from '../middlewares/errorHandler';
 
 export class WheelchairUserService {
   private wheelchairUserRepository: WheelchairUserRepository;
+  private runnerRepository: RunnerRepository;
 
   constructor() {
     this.wheelchairUserRepository = new WheelchairUserRepository();
+    this.runnerRepository = new RunnerRepository();
   }
 
   async listAll(active?: boolean, search?: string) {
@@ -46,9 +49,14 @@ export class WheelchairUserService {
       throw new AppError('CPF deve conter exatamente 11 dígitos.');
     }
 
-    const existing = await this.wheelchairUserRepository.findByCpf(cleanCpf);
-    if (existing) {
-      throw new AppError('CPF já cadastrado para outro participante.', 409);
+    const existingCadeirante = await this.wheelchairUserRepository.findByCpf(cleanCpf);
+    if (existingCadeirante) {
+      throw new AppError('Este CPF já está cadastrado para outro cadeirante.', 409);
+    }
+
+    const existingCondutor = await this.runnerRepository.findByCpf(cleanCpf);
+    if (existingCondutor) {
+      throw new AppError('Este CPF já está cadastrado para um condutor. O CPF deve ser único para todos os participantes.', 409);
     }
 
     return this.wheelchairUserRepository.create({
@@ -90,7 +98,12 @@ export class WheelchairUserService {
 
     const existingWithCpf = await this.wheelchairUserRepository.findByCpf(cleanCpf);
     if (existingWithCpf && existingWithCpf.cd_cadeirante !== id) {
-      throw new AppError('CPF já utilizado por outro participante.', 409);
+      throw new AppError('Este CPF já está utilizado por outro participante.', 409);
+    }
+
+    const existingCondutor = await this.runnerRepository.findByCpf(cleanCpf);
+    if (existingCondutor) {
+      throw new AppError('Este CPF já está cadastrado para um condutor. O CPF deve ser único para todos os participantes.', 409);
     }
 
     return this.wheelchairUserRepository.update(id, {
