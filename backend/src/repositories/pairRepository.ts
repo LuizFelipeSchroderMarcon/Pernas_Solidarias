@@ -230,7 +230,7 @@ export class PairRepository {
       INNER JOIN EVENTO e ON e.cd_evento = d.cd_evento
       INNER JOIN CADEIRANTE cad ON cad.cd_cadeirante = d.cd_cadeirante
       INNER JOIN CONDUTOR con ON con.cd_condutor = d.cd_condutor
-      WHERE 1=1
+      WHERE e.dt_evento < CURRENT_DATE
     `;
     const params: any[] = [];
 
