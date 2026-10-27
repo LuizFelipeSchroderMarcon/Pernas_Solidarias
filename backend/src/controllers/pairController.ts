@@ -56,6 +56,38 @@ export class PairController {
   }
 
   /**
+   * Creates a single pair manually for an event.
+   */
+  async createPair(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const eventIdParam = req.params.eventId || req.params.cd_evento;
+      const eventId = parseInt(eventIdParam as string, 10);
+      const wheelchairUserId = req.body.wheelchairUserId || req.body.cd_cadeirante;
+      const runnerId = req.body.runnerId || req.body.cd_condutor;
+
+      if (isNaN(eventId) || !wheelchairUserId || !runnerId) {
+        res.status(400).json({
+          error: 'Parâmetros inválidos. Informe o evento, cadeirante e condutor.',
+        });
+        return;
+      }
+
+      const createdPair = await pairFormationService.createPair(
+        eventId,
+        parseInt(wheelchairUserId, 10),
+        parseInt(runnerId, 10)
+      );
+
+      res.status(201).json({
+        message: 'Dupla criada com sucesso!',
+        data: createdPair,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
    * Deletes a specific pair.
    */
   async deletePair(req: Request, res: Response, next: NextFunction): Promise<void> {

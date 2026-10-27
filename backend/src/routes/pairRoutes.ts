@@ -21,6 +21,10 @@ pairRoutes.post('/evento/:cd_evento/gerar', pairController.generatePairs);
 pairRoutes.delete('/event/:eventId', pairController.clearPairs);
 pairRoutes.delete('/evento/:cd_evento', pairController.clearPairs);
 
+// Create single pair for an event
+pairRoutes.post('/event/:eventId', pairController.createPair);
+pairRoutes.post('/evento/:cd_evento', pairController.createPair);
+
 // Save pairs for an event
 pairRoutes.post('/event/:eventId/save', pairController.savePairs);
 pairRoutes.post('/evento/:cd_evento/salvar', pairController.savePairs);

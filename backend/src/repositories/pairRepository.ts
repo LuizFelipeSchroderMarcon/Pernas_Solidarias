@@ -60,6 +60,25 @@ export class PairRepository {
   }
 
   /**
+   * Creates a single pair and returns its full details.
+   */
+  async create(
+    eventId: number,
+    wheelchairUserId: number,
+    runnerId: number
+  ): Promise<DuplaDetalhada> {
+    const result = await query(
+      `INSERT INTO DUPLA (cd_evento, cd_cadeirante, cd_condutor)
+       VALUES ($1, $2, $3)
+       RETURNING cd_dupla`,
+      [eventId, wheelchairUserId, runnerId]
+    );
+    const newId = result.rows[0].cd_dupla;
+    const detailed = await this.findById(newId);
+    return detailed!;
+  }
+
+  /**
    * Inserts multiple pairs inside an atomic transaction.
    */
   async createMany(

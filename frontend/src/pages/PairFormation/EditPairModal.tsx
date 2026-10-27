@@ -15,13 +15,7 @@ export interface EditPairModalProps {
   allPairs?: DuplaDetalhada[];
   cadeirantesList?: Cadeirante[];
   condutoresList?: Condutor[];
-  onSaveDraft?: (
-    pairId: number,
-    cd_cadeirante: number,
-    cd_condutor: number,
-    cadeirante: Cadeirante,
-    condutor: Condutor
-  ) => void;
+  onSave?: (pairId: number, cd_cadeirante: number, cd_condutor: number) => Promise<void> | void;
   onSuccess?: () => void;
 }
 
@@ -32,7 +26,7 @@ export const EditPairModal: React.FC<EditPairModalProps> = ({
   allPairs = [],
   cadeirantesList,
   condutoresList,
-  onSaveDraft,
+  onSave,
   onSuccess,
 }) => {
   const { success, error } = useToast();
@@ -108,18 +102,15 @@ export const EditPairModal: React.FC<EditPairModalProps> = ({
       return;
     }
 
-    if (onSaveDraft) {
-      onSaveDraft(pair.cd_dupla, Number(selectedCadeirante), Number(selectedCondutor), cadObj, condObj);
-      success('Dupla alterada!', 'Alteração aplicada como rascunho. Lembre-se de salvar as duplas.');
-      onClose();
-      return;
-    }
-
     try {
       setIsSubmitting(true);
-      await pairService.editPair(pair.cd_dupla, Number(selectedCadeirante), Number(selectedCondutor));
-      success('Dupla atualizada!', 'A alteração manual da dupla foi realizada com sucesso.');
-      if (onSuccess) onSuccess();
+      if (onSave) {
+        await onSave(pair.cd_dupla, Number(selectedCadeirante), Number(selectedCondutor));
+      } else {
+        await pairService.editPair(pair.cd_dupla, Number(selectedCadeirante), Number(selectedCondutor));
+        success('Dupla atualizada!', 'A alteração da dupla foi salva com sucesso no sistema.');
+        if (onSuccess) onSuccess();
+      }
       onClose();
     } catch (err: any) {
       const errMsg = mensagemDeErro(err, 'Não foi possível atualizar a dupla. Verifique se o participante já está em outra dupla.');
@@ -141,7 +132,7 @@ export const EditPairModal: React.FC<EditPairModalProps> = ({
             Cancelar
           </Button>
           <Button variant="primary" size="sm" onClick={handleSubmit} isLoading={isSubmitting}>
-            Confirmar Alteração
+            Salvar Alteração
           </Button>
         </>
       }

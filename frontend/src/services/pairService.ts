@@ -22,6 +22,15 @@ export const pairService = {
     await api.delete<ApiMessageResponse>(`/duplas/${pairId}`);
   },
 
+  // Create a single pair for an event
+  async createPair(eventId: number, cd_cadeirante: number, cd_condutor: number): Promise<DuplaDetalhada> {
+    const response = await api.post<ApiSuccessResponse<DuplaDetalhada>>(`/duplas/evento/${eventId}`, {
+      cd_cadeirante,
+      cd_condutor,
+    });
+    return response.data.data;
+  },
+
   // List pairs formed for a specific event
   async listByEvent(eventId: number): Promise<DuplaDetalhada[]> {
     const response = await api.get<any>(`/duplas/evento/${eventId}`);

@@ -12,7 +12,7 @@ export interface CreatePairModalProps {
   existingPairs: DuplaDetalhada[];
   cadeirantes: Cadeirante[];
   condutores: Condutor[];
-  onAddPair: (cadeirante: Cadeirante, condutor: Condutor) => void;
+  onAddPair: (cadeirante: Cadeirante, condutor: Condutor) => Promise<void> | void;
 }
 
 export const CreatePairModal: React.FC<CreatePairModalProps> = ({
@@ -27,11 +27,13 @@ export const CreatePairModal: React.FC<CreatePairModalProps> = ({
 
   const [selectedCadeiranteId, setSelectedCadeiranteId] = useState<number | ''>('');
   const [selectedCondutorId, setSelectedCondutorId] = useState<number | ''>('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
       setSelectedCadeiranteId('');
       setSelectedCondutorId('');
+      setIsSubmitting(false);
     }
   }, [isOpen]);
 
@@ -53,7 +55,7 @@ export const CreatePairModal: React.FC<CreatePairModalProps> = ({
     (c) => !allocatedCondIds.has(c.cd_condutor)
   ).length;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!selectedCadeiranteId || !selectedCondutorId) {
@@ -79,8 +81,15 @@ export const CreatePairModal: React.FC<CreatePairModalProps> = ({
       return;
     }
 
-    onAddPair(cad, cond);
-    onClose();
+    try {
+      setIsSubmitting(true);
+      await onAddPair(cad, cond);
+      onClose();
+    } catch {
+      // Error handling is managed by onAddPair / toast
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const selectedCad = activeCadeirantes.find((c) => c.cd_cadeirante === Number(selectedCadeiranteId));
@@ -94,16 +103,17 @@ export const CreatePairModal: React.FC<CreatePairModalProps> = ({
       maxWidth="2xl"
       footer={
         <>
-          <Button variant="ghost" size="sm" onClick={onClose} type="button">
+          <Button variant="ghost" size="sm" onClick={onClose} type="button" disabled={isSubmitting}>
             Cancelar
           </Button>
           <Button
             variant="primary"
             size="sm"
             onClick={handleSubmit}
+            isLoading={isSubmitting}
             leftIcon={<UserPlus className="w-4 h-4" />}
           >
-            Adicionar à Lista
+            Salvar Dupla
           </Button>
         </>
       }

@@ -117,6 +117,68 @@ export class PairFormationService {
   }
 
   /**
+   * Creates a single pair manually and validates participants (RN01, RN02, RN08).
+   */
+  async createPair(
+    eventId: number,
+    wheelchairUserId: number,
+    runnerId: number
+  ): Promise<DetailedPair> {
+    // 1. Validate event exists
+    const event = await this.eventRepository.findById(eventId);
+    if (!event) {
+      throw new AppError('Evento não encontrado.', 404);
+    }
+
+    // 2. Validate wheelchair user
+    const wheelchairUser = await this.wheelchairUserRepository.findById(wheelchairUserId);
+    if (!wheelchairUser) {
+      throw new AppError('Cadeirante informado não encontrado.', 404);
+    }
+    if (!wheelchairUser.ativo) {
+      throw new AppError('O cadeirante selecionado está inativo no sistema.', 400);
+    }
+
+    // 3. Validate runner
+    const runner = await this.runnerRepository.findById(runnerId);
+    if (!runner) {
+      throw new AppError('Condutor informado não encontrado.', 404);
+    }
+    if (!runner.ativo) {
+      throw new AppError('O condutor selecionado está inativo no sistema.', 400);
+    }
+
+    // 4. Validate wheelchair uniqueness in event (RN02)
+    const isWheelchairAllocated = await this.pairRepository.isParticipantInEvent(
+      eventId,
+      'wheelchair',
+      wheelchairUserId
+    );
+    if (isWheelchairAllocated) {
+      throw new AppError(
+        `O cadeirante "${wheelchairUser.nm_cadeirante}" já está alocado em outra dupla neste mesmo evento.`,
+        400
+      );
+    }
+
+    // 5. Validate runner uniqueness in event (RN02)
+    const isRunnerAllocated = await this.pairRepository.isParticipantInEvent(
+      eventId,
+      'runner',
+      runnerId
+    );
+    if (isRunnerAllocated) {
+      throw new AppError(
+        `O condutor "${runner.nm_condutor}" já está alocado em outra dupla neste mesmo evento.`,
+        400
+      );
+    }
+
+    // 6. Insert pair and return details
+    return this.pairRepository.create(eventId, wheelchairUserId, runnerId);
+  }
+
+  /**
    * Allows manual editing of a pair (RF05, RN01, RN02, RN08).
    */
   async editPair(
