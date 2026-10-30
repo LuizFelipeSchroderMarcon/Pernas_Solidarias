@@ -32,7 +32,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
       isOpen={isOpen}
       onClose={onClose}
       title={title}
-      maxWidth="sm"
+      maxWidth="md"
       footer={
         <>
           <Button variant="ghost" size="sm" onClick={onClose} disabled={isLoading}>

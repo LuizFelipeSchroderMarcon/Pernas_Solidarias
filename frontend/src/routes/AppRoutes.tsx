@@ -1,5 +1,9 @@
-import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  Route,
+  Navigate,
+} from 'react-router-dom';
 import { MainLayout } from '../components/layout/MainLayout';
 import { ProtectedRoute } from '../components/layout/ProtectedRoute';
 import { LoginPage } from '../pages/Auth/LoginPage';
@@ -10,9 +14,9 @@ import { PairFormationPage } from '../pages/PairFormation/PairFormationPage';
 import { HistoryPage } from '../pages/History/HistoryPage';
 import { GraphicsPage } from '../pages/Graphics/GraphicsPage';
 
-export const AppRoutes: React.FC = () => {
-  return (
-    <Routes>
+export const router = createBrowserRouter(
+  createRoutesFromElements(
+    <>
       {/* Public Routes */}
       <Route path="/login" element={<LoginPage />} />
 
@@ -35,6 +39,6 @@ export const AppRoutes: React.FC = () => {
 
       {/* Fallback to root */}
       <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
-  );
-};
+    </>
+  )
+);

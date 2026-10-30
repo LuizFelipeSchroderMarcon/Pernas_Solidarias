@@ -9,6 +9,7 @@ import { EmptyState } from '../../components/common/EmptyState';
 import { ConfirmDialog } from '../../components/feedback/ConfirmDialog';
 import { ExportModal } from '../../components/export/ExportModal';
 import { EditPairModal } from './EditPairModal';
+import { CreatePairModal } from './CreatePairModal';
 import { eventService } from '../../services/eventService';
 import { participantService } from '../../services/participantService';
 import { pairService } from '../../services/pairService';
@@ -20,14 +21,16 @@ import {
   Sparkles,
   Users,
   UserCheck,
-  AlertTriangle,
   RotateCcw,
   Download,
   Edit2,
+  Trash2,
   Phone,
   Armchair,
-  CheckCircle2,
   Calendar,
+  UserPlus,
+  CheckCircle2,
+  Loader2,
 } from 'lucide-react';
 import { mensagemDeErro } from '../../services/apiError';
 
@@ -44,14 +47,24 @@ export const PairFormationPage: React.FC = () => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+
+  // Manual create pair modal
+  const [createModalOpen, setCreateModalOpen] = useState(false);
 
   // Edit pair modal
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editingPair, setEditingPair] = useState<DuplaDetalhada | null>(null);
 
-  // Clear pairs dialog
+  // Delete single pair confirm dialog
+  const [deletePairDialogOpen, setDeletePairDialogOpen] = useState(false);
+  const [pairToDelete, setPairToDelete] = useState<{ pair: DuplaDetalhada; index: number } | null>(null);
+
+  // Clear all pairs dialog
   const [clearDialogOpen, setClearDialogOpen] = useState(false);
-  const [isClearing, setIsClearing] = useState(false);
+
+  // Regenerate confirm dialog
+  const [regenerateDialogOpen, setRegenerateDialogOpen] = useState(false);
 
   // Export modal
   const [exportModalOpen, setExportModalOpen] = useState(false);
@@ -59,7 +72,8 @@ export const PairFormationPage: React.FC = () => {
   const loadEventPairs = useCallback(async (eventId: number) => {
     try {
       const data = await pairService.listByEvent(eventId);
-      setPairs(data);
+      const safeData = Array.isArray(data) ? data : (data as any)?.duplas || [];
+      setPairs(safeData);
     } catch {
       error('Erro', 'Não foi possível carregar as duplas do evento.');
     }
@@ -107,10 +121,10 @@ export const PairFormationPage: React.FC = () => {
   }, [selectedEventId, loadEventPairs]);
 
   const handleEventChange = (eventIdStr: string) => {
-    const id = eventIdStr ? Number(eventIdStr) : '';
-    setSelectedEventId(id);
-    if (id) {
-      setSearchParams({ evento: String(id) });
+    const targetId = eventIdStr ? Number(eventIdStr) : '';
+    setSelectedEventId(targetId);
+    if (targetId) {
+      setSearchParams({ evento: String(targetId) });
     } else {
       setSearchParams({});
     }
@@ -122,7 +136,8 @@ export const PairFormationPage: React.FC = () => {
   const activeCondutores = condutores.filter((c) => c.ativo);
   const maxPossiblePairs = Math.min(activeCadeirantes.length, activeCondutores.length);
 
-  const handleGeneratePairs = async () => {
+  // Automatic pair generation (persisted directly to database)
+  const executeGeneratePairs = async () => {
     if (!selectedEventId) {
       warning('Atenção', 'Selecione um evento para formar as duplas.');
       return;
@@ -138,34 +153,121 @@ export const PairFormationPage: React.FC = () => {
 
     try {
       setIsGenerating(true);
-      const result = await pairService.generatePairs(Number(selectedEventId));
-      setPairs(result.duplas);
+      setIsSaving(true);
+      const result = await pairService.generatePairs(Number(selectedEventId), false);
+      const generatedPairs = Array.isArray(result?.duplas) ? result.duplas : [];
+      setPairs(generatedPairs);
       success(
-        'Duplas Formadas com Sucesso!',
-        `${result.total_duplas} duplas foram geradas com base no histórico de participações.`
+        'Duplas Geradas e Salvas!',
+        `${result?.total_duplas ?? generatedPairs.length} duplas formadas e salvas automaticamente com base no histórico.`
       );
     } catch (err: any) {
-      const msg = mensagemDeErro(err, 'Não foi possível atualizar a dupla. Verifique se o participante já está em outra dupla.');
+      const msg = mensagemDeErro(err, 'Não foi possível gerar as duplas automaticamente.');
       error('Falha na formação', msg);
     } finally {
       setIsGenerating(false);
+      setIsSaving(false);
+      setRegenerateDialogOpen(false);
     }
   };
 
-  // Clear pairs
+  const handleGeneratePairs = () => {
+    if (pairs.length > 0) {
+      setRegenerateDialogOpen(true);
+    } else {
+      executeGeneratePairs();
+    }
+  };
+
+  // Add pair manually and save immediately
+  const handleAddPairManually = async (cadeirante: Cadeirante, condutor: Condutor) => {
+    if (!selectedEventId) return;
+
+    try {
+      setIsSaving(true);
+      const created = await pairService.createPair(
+        Number(selectedEventId),
+        cadeirante.cd_cadeirante,
+        condutor.cd_condutor
+      );
+      setPairs((prev) => [...prev, created]);
+      success(
+        'Dupla Salva com Sucesso!',
+        `Dupla "${cadeirante.nm_cadeirante}" + "${condutor.nm_condutor}" adicionada e salva automaticamente.`
+      );
+    } catch (err: any) {
+      const msg = mensagemDeErro(err, 'Não foi possível criar a dupla.');
+      error('Falha ao Salvar', msg);
+      throw err;
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // Edit a pair and save immediately
+  const handleEditPair = async (
+    pairId: number,
+    cd_cadeirante: number,
+    cd_condutor: number
+  ) => {
+    try {
+      setIsSaving(true);
+      const updated = await pairService.editPair(pairId, cd_cadeirante, cd_condutor);
+      setPairs((prev) => prev.map((p) => (p.cd_dupla === pairId ? updated : p)));
+      success('Dupla Atualizada!', 'A alteração foi salva automaticamente no sistema.');
+    } catch (err: any) {
+      const msg = mensagemDeErro(err, 'Não foi possível atualizar a dupla.');
+      error('Falha na Edição', msg);
+      throw err;
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // Request to delete a single specific pair
+  const handleRequestDeletePair = (pair: DuplaDetalhada, index: number) => {
+    setPairToDelete({ pair, index });
+    setDeletePairDialogOpen(true);
+  };
+
+  // Confirm delete of single pair and delete immediately in database
+  const handleConfirmDeletePair = async () => {
+    if (!pairToDelete) return;
+    try {
+      setIsSaving(true);
+      await pairService.deletePair(pairToDelete.pair.cd_dupla);
+      setPairs((prev) => prev.filter((p) => p.cd_dupla !== pairToDelete.pair.cd_dupla));
+      success(
+        'Dupla Removida',
+        `A Dupla #${pairToDelete.index + 1} foi excluída com sucesso.`
+      );
+      setDeletePairDialogOpen(false);
+      setPairToDelete(null);
+    } catch (err: any) {
+      const msg = mensagemDeErro(err, 'Não foi possível excluir a dupla.');
+      error('Falha ao Excluir', msg);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // Clear all pairs of the event immediately in database
   const handleConfirmClear = async () => {
     if (!selectedEventId) return;
     try {
-      setIsClearing(true);
+      setIsSaving(true);
       await pairService.clearPairs(Number(selectedEventId));
       setPairs([]);
-      success('Duplas Limpas', 'As duplas deste evento foram desfeitas.');
       setClearDialogOpen(false);
+      success(
+        'Duplas Removidas',
+        'Todas as duplas deste evento foram removidas com sucesso.'
+      );
     } catch (err: any) {
-      const msg = mensagemDeErro(err, 'Erro ao limpar duplas do evento.');
-      error('Falha ao limpar', msg);
+      const msg = mensagemDeErro(err, 'Não foi possível limpar as duplas.');
+      error('Falha ao Limpar', msg);
     } finally {
-      setIsClearing(false);
+      setIsSaving(false);
     }
   };
 
@@ -182,7 +284,7 @@ export const PairFormationPage: React.FC = () => {
             Formação de Duplas
           </h2>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Algoritmo inteligente com priorização por histórico de corrida
+            Geração inteligente automática ou criação manual com salvamento automático
           </p>
         </div>
 
@@ -246,57 +348,58 @@ export const PairFormationPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Action button bar */}
+        {/* Action button bar with auto-save indicator */}
         {selectedEvent && (
           <div className="flex flex-wrap items-center justify-between gap-4 mt-6 pt-5 border-t border-slate-100 dark:border-slate-800">
-            <div className="flex items-center gap-2">
-              <Badge variant={pairs.length > 0 ? 'success' : 'warning'} size="md">
+            <div className="flex flex-wrap items-center gap-2.5">
+              <Badge variant={pairs.length > 0 ? 'success' : 'neutral'} size="md">
                 {pairs.length > 0
-                  ? `${pairs.length} duplas formadas`
-                  : 'Nenhuma dupla formada ainda'}
+                  ? `${pairs.length} ${pairs.length === 1 ? 'dupla formada' : 'duplas formadas'}`
+                  : 'Nenhuma dupla formada'}
               </Badge>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2.5">
+              {/* Botão de Adicionar Dupla Manualmente */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCreateModalOpen(true)}
+                disabled={isSaving || isGenerating}
+                leftIcon={<UserPlus className="w-4 h-4 text-blue-600 dark:text-blue-400" />}
+              >
+                Criar Dupla Manualmente
+              </Button>
+
+              {/* Botão de Gerar Automaticamente */}
+              <Button
+                variant={pairs.length > 0 ? 'outline' : 'primary'}
+                size="sm"
+                onClick={handleGeneratePairs}
+                isLoading={isGenerating}
+                disabled={isSaving}
+                leftIcon={<Sparkles className="w-4 h-4 text-amber-500" />}
+              >
+                {pairs.length > 0 ? 'Regerar Automaticamente' : 'Gerar Automaticamente'}
+              </Button>
+
+              {/* Botão de Limpar Duplas */}
               {pairs.length > 0 && (
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => setClearDialogOpen(true)}
+                  disabled={isSaving || isGenerating}
                   leftIcon={<RotateCcw className="w-4 h-4 text-rose-500" />}
                   className="text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 border-rose-200"
                 >
                   Limpar Duplas
                 </Button>
               )}
-
-              <Button
-                variant="primary"
-                size="sm"
-                onClick={handleGeneratePairs}
-                isLoading={isGenerating}
-                leftIcon={<Sparkles className="w-4 h-4 text-amber-300" />}
-                className="shadow-sm shadow-blue-600/30"
-              >
-                {pairs.length > 0 ? 'Regerar Duplas Automaticamente' : 'Gerar Duplas Automaticamente'}
-              </Button>
             </div>
           </div>
         )}
       </Card>
-
-      {/* Disparity Warning */}
-      {selectedEvent && activeCadeirantes.length !== activeCondutores.length && (
-        <div className="flex items-center gap-3 p-4 rounded-2xl bg-amber-50 border border-amber-200 dark:bg-amber-950/40 dark:border-amber-900 text-amber-800 dark:text-amber-200 text-xs sm:text-sm">
-          <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0" />
-          <p className="leading-relaxed">
-            <strong>Aviso de Participantes:</strong> Existem {activeCadeirantes.length}{' '}
-            cadeirantes ativos e {activeCondutores.length} condutores ativos. O algoritmo formará{' '}
-            <strong>{maxPossiblePairs} duplas</strong>, priorizando os participantes com maior tempo
-            sem correr.
-          </p>
-        </div>
-      )}
 
       {/* Pairs Grid */}
       {pairs.length > 0 ? (
@@ -306,7 +409,7 @@ export const PairFormationPage: React.FC = () => {
               key={pair.cd_dupla}
               className="relative overflow-hidden border border-slate-200/80 dark:border-slate-800 shadow-xs hover:shadow-md transition-all duration-200 p-5 flex flex-col justify-between"
             >
-              {/* Header: Dupla number + Edit action */}
+              {/* Header: Dupla number + Edit & Delete actions */}
               <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
                 <div className="flex items-center gap-2">
                   <span className="flex items-center justify-center w-6 h-6 rounded-full bg-blue-600 text-white font-extrabold text-xs">
@@ -316,17 +419,33 @@ export const PairFormationPage: React.FC = () => {
                     Dupla #{index + 1}
                   </span>
                 </div>
-                <button
-                  onClick={() => {
-                    setEditingPair(pair);
-                    setEditModalOpen(true);
-                  }}
-                  className="flex items-center gap-1 text-xs font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400 p-1.5 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-950/50 transition-colors"
-                  title="Trocar integrante"
-                >
-                  <Edit2 className="w-3.5 h-3.5" />
-                  <span>Editar Dupla</span>
-                </button>
+
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditingPair(pair);
+                      setEditModalOpen(true);
+                    }}
+                    disabled={isSaving}
+                    className="flex items-center gap-1 text-xs font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400 p-1.5 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-950/50 transition-colors disabled:opacity-50"
+                    title="Editar integrantes desta dupla"
+                  >
+                    <Edit2 className="w-3.5 h-3.5" />
+                    <span>Editar</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleRequestDeletePair(pair, index)}
+                    disabled={isSaving}
+                    className="flex items-center gap-1 text-xs font-semibold text-rose-600 hover:text-rose-700 dark:text-rose-400 p-1.5 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-950/50 transition-colors disabled:opacity-50"
+                    title="Excluir esta dupla específica"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>Excluir</span>
+                  </button>
+                </div>
               </div>
 
               {/* Pair composition details: Cadeirante | Condutor */}
@@ -390,13 +509,6 @@ export const PairFormationPage: React.FC = () => {
                   </div>
                 </div>
               </div>
-
-              <div className="flex items-center justify-between text-[11px] text-slate-400 pt-2">
-                <span>1 Cadeirante + 1 Condutor</span>
-                <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium">
-                  <CheckCircle2 className="w-3 h-3" /> Válida
-                </span>
-              </div>
             </Card>
           ))}
         </div>
@@ -404,18 +516,28 @@ export const PairFormationPage: React.FC = () => {
         <Card className="p-0 overflow-hidden">
           <EmptyState
             icon={<Layers className="w-8 h-8" />}
-            title="Nenhuma dupla formada para este evento"
-            description="Clique no botão abaixo para executar o algoritmo de pareamento com base no histórico de participações."
+            title="Nenhuma dupla para este evento"
+            description="Você pode formar as duplas usando o algoritmo inteligente com base no histórico ou criar manualmente cada dupla."
             action={
-              <Button
-                variant="primary"
-                size="md"
-                onClick={handleGeneratePairs}
-                isLoading={isGenerating}
-                leftIcon={<Sparkles className="w-4 h-4 text-amber-300" />}
-              >
-                Gerar Duplas Automaticamente
-              </Button>
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <Button
+                  variant="primary"
+                  size="md"
+                  onClick={handleGeneratePairs}
+                  isLoading={isGenerating}
+                  leftIcon={<Sparkles className="w-4 h-4 text-amber-300" />}
+                >
+                  Gerar Automaticamente
+                </Button>
+                <Button
+                  variant="outline"
+                  size="md"
+                  onClick={() => setCreateModalOpen(true)}
+                  leftIcon={<UserPlus className="w-4 h-4 text-blue-600 dark:text-blue-400" />}
+                >
+                  Criar Dupla Manualmente
+                </Button>
+              </div>
             }
           />
         </Card>
@@ -439,14 +561,42 @@ export const PairFormationPage: React.FC = () => {
         </Card>
       )}
 
+      {/* Create Pair Modal */}
+      <CreatePairModal
+        isOpen={createModalOpen}
+        onClose={() => setCreateModalOpen(false)}
+        existingPairs={pairs}
+        cadeirantes={cadeirantes}
+        condutores={condutores}
+        onAddPair={handleAddPairManually}
+      />
+
       {/* Edit Pair Modal */}
       <EditPairModal
         isOpen={editModalOpen}
-        onClose={() => setEditModalOpen(false)}
-        pair={editingPair}
-        onSuccess={() => {
-          if (selectedEventId) loadEventPairs(Number(selectedEventId));
+        onClose={() => {
+          setEditModalOpen(false);
+          setEditingPair(null);
         }}
+        pair={editingPair}
+        allPairs={pairs}
+        cadeirantesList={cadeirantes}
+        condutoresList={condutores}
+        onSave={handleEditPair}
+      />
+
+      {/* Delete Single Pair Confirm Dialog */}
+      <ConfirmDialog
+        isOpen={deletePairDialogOpen}
+        onClose={() => {
+          setDeletePairDialogOpen(false);
+          setPairToDelete(null);
+        }}
+        onConfirm={handleConfirmDeletePair}
+        title="Excluir Dupla Específica"
+        message={`Tem certeza que deseja remover a Dupla #${(pairToDelete?.index ?? 0) + 1} (${pairToDelete?.pair.nm_cadeirante} + ${pairToDelete?.pair.nm_condutor}) deste evento? A exclusão será salva automaticamente.`}
+        confirmText="Excluir Dupla"
+        variant="danger"
       />
 
       {/* Clear pairs confirm dialog */}
@@ -455,10 +605,20 @@ export const PairFormationPage: React.FC = () => {
         onClose={() => setClearDialogOpen(false)}
         onConfirm={handleConfirmClear}
         title="Limpar Duplas do Evento"
-        message="Tem certeza que deseja desmanchar as duplas deste evento? Esta ação removerá a formação atual."
+        message="Tem certeza que deseja remover todas as duplas deste evento? A exclusão será salva automaticamente no banco de dados."
         confirmText="Limpar Duplas"
         variant="danger"
-        isLoading={isClearing}
+      />
+
+      {/* Regenerate confirm dialog */}
+      <ConfirmDialog
+        isOpen={regenerateDialogOpen}
+        onClose={() => setRegenerateDialogOpen(false)}
+        onConfirm={executeGeneratePairs}
+        title="Regerar Duplas Automaticamente?"
+        message="Já existem duplas cadastradas para este evento. Ao regerar, as duplas atuais serão substituídas pelas novas duplas calculadas pelo sistema e salvas automaticamente. Deseja continuar?"
+        confirmText="Regerar e Salvar"
+        variant="primary"
       />
 
       {/* Export Modal */}

@@ -5,7 +5,12 @@ export const exportService = {
   /**
    * Downloads pairs of an event in Excel (.xlsx) or CSV (.csv) format, with or without CPF.
    */
-  async exportEventReport(eventId: number, includeCpf: boolean, format: 'xlsx' | 'csv' = 'xlsx'): Promise<void> {
+  async exportEventReport(
+    eventId: number,
+    includeCpf: boolean,
+    format: 'xlsx' | 'csv' = 'xlsx',
+    eventName?: string
+  ): Promise<void> {
     const response = await api.get(`/exportar/evento/${eventId}`, {
       params: {
         comCpf: includeCpf,
@@ -15,7 +20,29 @@ export const exportService = {
     });
 
     const extension = format === 'csv' ? 'csv' : 'xlsx';
-    const filename = `duplas_evento_${eventId}_${includeCpf ? 'com_cpf' : 'sem_cpf'}.${extension}`;
+
+    let filename = '';
+    const disposition = response.headers?.['content-disposition'];
+    if (disposition && disposition.includes('filename=')) {
+      const match = disposition.match(/filename="?([^";]+)"?/);
+      if (match && match[1]) {
+        filename = match[1].trim();
+      }
+    }
+
+    if (!filename) {
+      const sanitizedName = eventName
+        ? eventName
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '_')
+            .replace(/^_+|_+$/g, '')
+        : `evento_${eventId}`;
+
+      filename = `relacao_${sanitizedName}_${includeCpf ? 'com_cpf' : 'sem_cpf'}.${extension}`;
+    }
+
     downloadBlob(response.data, filename);
   },
 };
