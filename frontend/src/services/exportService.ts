@@ -12,10 +12,10 @@ export const exportService = {
     eventName?: string
   ): Promise<void> {
     try {
-      const response = await api.get(`/exportar/evento/${eventId}`, {
+      const response = await api.get(`/export/event/${eventId}`, {
         params: {
-          comCpf: includeCpf,
-          formato: format,
+          includeCpf,
+          format,
         },
         responseType: 'blob',
       });
