@@ -11,6 +11,7 @@ import { eventService } from '../../services/eventService';
 import { pairService } from '../../services/pairService';
 import type { Cadeirante, Condutor, Evento } from '../../types';
 import { formatDate } from '../../utils/formatters';
+import { SHIRT_SIZES } from '../../constants/shirtSizes';
 import {
   Users,
   UserCheck,
@@ -85,7 +86,7 @@ export const DashboardPage: React.FC = () => {
   const nextEvent = upcomingEvents[0];
 
   // Shirt size distribution for active participants
-  const shirtDistribution = ['P', 'M', 'G', 'GG', 'XG'].map((size) => {
+  const shirtDistribution = SHIRT_SIZES.map((size) => {
     const cCount = cadeirantes.filter((c) => c.ativo && c.tam_camisa === size).length;
     const rCount = condutores.filter((c) => c.ativo && c.tam_camisa === size).length;
     return {
@@ -94,7 +95,7 @@ export const DashboardPage: React.FC = () => {
       Condutores: rCount,
       Total: cCount + rCount,
     };
-  });
+  }).filter((item) => item.Total > 0 || ['P', 'M', 'G', 'GG'].includes(item.tamanho));
 
   const handleOpenExport = (event: Evento) => {
     setSelectedExportEvent({ id: event.cd_evento, name: event.nm_evento });
