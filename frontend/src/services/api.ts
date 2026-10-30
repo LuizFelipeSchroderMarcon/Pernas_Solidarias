@@ -21,10 +21,18 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response interceptor: handles 401 Unauthorized by clearing auth and dispatching logout event
+// Response interceptor: handles Blob error decoding and 401 Unauthorized
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
+    if (error.response?.data instanceof Blob) {
+      try {
+        const text = await error.response.data.text();
+        error.response.data = JSON.parse(text);
+      } catch {
+        // Not a JSON blob, keep original
+      }
+    }
     if (error.response?.status === 401) {
       localStorage.removeItem('@PernasSolidarias:token');
       localStorage.removeItem('@PernasSolidarias:user');

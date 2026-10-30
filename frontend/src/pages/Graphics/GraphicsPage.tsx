@@ -8,7 +8,6 @@ import type { AnalyticsRankings } from '../../types';
 import { formatDate } from '../../utils/formatters';
 import { useToast } from '../../hooks/useToast';
 import {
-  BarChart3,
   Award,
   UserCheck,
   Users,
@@ -62,26 +61,7 @@ export const GraphicsPage: React.FC = () => {
 
   return (
     <div className="space-y-8">
-      {/* Header Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-700 via-indigo-700 to-indigo-800 p-6 sm:p-8 text-white shadow-xl shadow-indigo-600/15">
-        <div className="relative z-10 max-w-2xl">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-xs font-semibold text-white mb-3">
-            <BarChart3 className="w-3.5 h-3.5 text-amber-300" />
-            Estatísticas Oficiais da ONG
-          </span>
-          <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-            Gráficos e Indicadores
-          </h2>
-          <p className="text-sm text-blue-100 mt-2 leading-relaxed">
-            Acompanhe o engajamento e a participação histórica de cadeirantes, condutores e eventos na ONG Pernas Solidárias.
-          </p>
-        </div>
-        <div className="absolute -right-10 -bottom-10 w-72 h-72 bg-white/10 rounded-full blur-2xl pointer-events-none" />
-      </div>
-
-      {/* Grid: 2 Rankings (Condutores e Cadeirantes) */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Gráfico 1: Corredores que mais participaram */}
         <Card className="flex flex-col">
           <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
             <div className="flex items-center gap-2">
@@ -146,7 +126,6 @@ export const GraphicsPage: React.FC = () => {
                 </ResponsiveContainer>
               </div>
 
-              {/* Lista dos líderes */}
               <div className="divide-y divide-slate-100 dark:divide-slate-800 pt-2 text-xs">
                 {runners.slice(0, 3).map((r, i) => (
                   <div key={r.id} className="py-2 flex items-center justify-between">
@@ -166,7 +145,6 @@ export const GraphicsPage: React.FC = () => {
           )}
         </Card>
 
-        {/* Gráfico 2: Cadeirantes que mais participaram */}
         <Card className="flex flex-col">
           <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
             <div className="flex items-center gap-2">
@@ -231,7 +209,6 @@ export const GraphicsPage: React.FC = () => {
                 </ResponsiveContainer>
               </div>
 
-              {/* Lista dos líderes */}
               <div className="divide-y divide-slate-100 dark:divide-slate-800 pt-2 text-xs">
                 {wheelchairUsers.slice(0, 3).map((c, i) => (
                   <div key={c.id} className="py-2 flex items-center justify-between">
@@ -252,7 +229,6 @@ export const GraphicsPage: React.FC = () => {
         </Card>
       </div>
 
-      {/* Gráfico 3: Eventos com mais inscrições */}
       <Card>
         <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
           <div className="flex items-center gap-2">
@@ -311,7 +287,6 @@ export const GraphicsPage: React.FC = () => {
               </ResponsiveContainer>
             </div>
 
-            {/* Grid de destaques dos eventos */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
               {events.slice(0, 3).map((evt, idx) => (
                 <div

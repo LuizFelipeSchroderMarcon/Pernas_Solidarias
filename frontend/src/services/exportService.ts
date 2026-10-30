@@ -6,16 +6,28 @@ export const exportService = {
    * Downloads pairs of an event in Excel (.xlsx) or CSV (.csv) format, with or without CPF.
    */
   async exportEventReport(eventId: number, includeCpf: boolean, format: 'xlsx' | 'csv' = 'xlsx'): Promise<void> {
-    const response = await api.get(`/exportar/evento/${eventId}`, {
-      params: {
-        comCpf: includeCpf,
-        formato: format,
-      },
-      responseType: 'blob',
-    });
+    try {
+      const response = await api.get(`/exportar/evento/${eventId}`, {
+        params: {
+          comCpf: includeCpf,
+          formato: format,
+        },
+        responseType: 'blob',
+      });
 
-    const extension = format === 'csv' ? 'csv' : 'xlsx';
-    const filename = `duplas_evento_${eventId}_${includeCpf ? 'com_cpf' : 'sem_cpf'}.${extension}`;
-    downloadBlob(response.data, filename);
+      const extension = format === 'csv' ? 'csv' : 'xlsx';
+      const filename = `duplas_evento_${eventId}_${includeCpf ? 'com_cpf' : 'sem_cpf'}.${extension}`;
+      downloadBlob(response.data, filename);
+    } catch (err: any) {
+      if (err.response?.data instanceof Blob) {
+        try {
+          const text = await err.response.data.text();
+          err.response.data = JSON.parse(text);
+        } catch {
+          // ignore
+        }
+      }
+      throw err;
+    }
   },
 };

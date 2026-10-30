@@ -3,6 +3,7 @@ import { Modal } from '../common/Modal';
 import { Button } from '../common/Button';
 import { exportService } from '../../services/exportService';
 import { useToast } from '../../hooks/useToast';
+import { mensagemDeErro } from '../../services/apiError';
 import { FileSpreadsheet, FileText, Shield, ShieldAlert, Download } from 'lucide-react';
 
 export interface ExportModalProps {
@@ -38,7 +39,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({
       );
       onClose();
     } catch (err: any) {
-      const errMsg = err.response?.data?.error || 'Não foi possível gerar o relatório do evento.';
+      const errMsg = mensagemDeErro(err, 'Não foi possível gerar o relatório do evento.');
       error('Falha na exportação', errMsg);
     } finally {
       setIsExporting(false);
