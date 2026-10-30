@@ -1,7 +1,9 @@
+import crypto from 'crypto';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { UserRepository } from '../repositories/userRepository';
 import { AppError } from '../middlewares/errorHandler';
+import { SERVER_BOOT_ID } from '../config/serverInstance';
 
 export class AuthService {
   private userRepository: UserRepository;
@@ -78,9 +80,16 @@ export class AuthService {
     const expiresIn = process.env.JWT_EXPIRES_IN || '7d';
 
     const token = jwt.sign(
-      { userId: user.cd_user, email: user.email },
+      {
+        userId: user.cd_user,
+        email: user.email,
+        bootId: SERVER_BOOT_ID,
+      },
       secret,
-      { expiresIn } as jwt.SignOptions
+      {
+        expiresIn,
+        jwtid: crypto.randomUUID(),
+      } as jwt.SignOptions
     );
 
     return {
