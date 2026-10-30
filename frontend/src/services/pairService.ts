@@ -10,13 +10,13 @@ export const pairService = {
 
   // List pairs formed for a specific event
   async listByEvent(eventId: number): Promise<DuplaDetalhada[]> {
-    const response = await api.get<any>(`/duplas/evento/${eventId}`);
-    const data = response.data?.data;
+    const response = await api.get<ApiSuccessResponse<DuplaDetalhada[] | { evento?: unknown; duplas?: DuplaDetalhada[] }>>(`/duplas/evento/${eventId}`);
+    const data = response.data.data;
     if (Array.isArray(data)) {
       return data;
     }
-    if (data && Array.isArray(data.duplas)) {
-      return data.duplas;
+    if (data && typeof data === 'object' && Array.isArray((data as any).duplas)) {
+      return (data as any).duplas;
     }
     return [];
   },

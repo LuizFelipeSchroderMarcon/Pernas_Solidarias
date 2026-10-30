@@ -63,7 +63,7 @@ export const PairFormationPage: React.FC = () => {
     try {
       setIsLoadingPairs(true);
       const data = await pairService.listByEvent(eventId);
-      setPairs(data);
+      setPairs(Array.isArray(data) ? data : (data as any)?.duplas || []);
     } catch {
       error('Erro', 'Não foi possível carregar as duplas do evento.');
     } finally {
