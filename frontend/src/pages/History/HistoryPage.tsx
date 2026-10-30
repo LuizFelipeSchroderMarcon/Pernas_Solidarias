@@ -6,6 +6,7 @@ import { Select } from '../../components/common/Select';
 import { Badge } from '../../components/common/Badge';
 import { Spinner } from '../../components/common/Spinner';
 import { EmptyState } from '../../components/common/EmptyState';
+import { PageHeader } from '../../components/common/PageHeader';
 import { ExportModal } from '../../components/export/ExportModal';
 import { HistoryPairsModal } from './HistoryPairsModal';
 import { eventService } from '../../services/eventService';
@@ -102,15 +103,11 @@ export const HistoryPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-          Histórico de Participações
-        </h2>
-        <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-          Registro imutável e somente leitura de todas as corridas e duplas realizadas
-        </p>
-      </div>
+      {/* Page Header */}
+      <PageHeader
+        title="Histórico de Participações"
+        description="Registro imutável e somente leitura de todas as corridas e duplas realizadas."
+      />
 
       {/* Filter Bar */}
       <Card className="p-5">

@@ -9,6 +9,7 @@ import { ToggleSwitch } from '../../components/common/ToggleSwitch';
 import { Spinner } from '../../components/common/Spinner';
 import { EmptyState } from '../../components/common/EmptyState';
 import { ConfirmDialog } from '../../components/feedback/ConfirmDialog';
+import { PageHeader } from '../../components/common/PageHeader';
 import { ParticipantModal } from './ParticipantModal';
 import { participantService } from '../../services/participantService';
 import type { Cadeirante, Condutor } from '../../types';
@@ -188,27 +189,22 @@ export const ParticipantsPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header with Title and Action Button */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-            Gestão de Participantes
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Cadastre, edite e gerencie o status de cadeirantes e condutores
-          </p>
-        </div>
-
-        <Button
-          variant="primary"
-          size="md"
-          onClick={handleOpenCreate}
-          leftIcon={<Plus className="w-4 h-4" />}
-          className="shadow-sm shadow-blue-500/20"
-        >
-          {activeTab === 'cadeirante' ? 'Novo Cadeirante' : 'Novo Condutor'}
-        </Button>
-      </div>
+      {/* Page Header */}
+      <PageHeader
+        title="Gestão de Participantes"
+        description="Cadastre, edite e gerencie o status de cadeirantes e condutores."
+        actions={
+          <Button
+            variant="primary"
+            size="md"
+            onClick={handleOpenCreate}
+            leftIcon={<Plus className="w-4 h-4" />}
+            className="shadow-sm shadow-blue-500/20"
+          >
+            {activeTab === 'cadeirante' ? 'Novo Cadeirante' : 'Novo Condutor'}
+          </Button>
+        }
+      />
 
       {/* Tabs */}
       <div className="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-px">
