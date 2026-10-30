@@ -178,9 +178,9 @@ export class ExportService {
     }
 
     const buffer = await workbook.xlsx.writeBuffer();
-    const sanitizedEventName = event.nm_evento.replace(/[^a-zA-Z0-9_-]/g, '_');
+    const sanitizedEventName = this.sanitizeEventName(event.nm_evento);
     const cpfSuffix = includeCpf ? '_com_cpf' : '_sem_cpf';
-    const filename = `relatorio_${sanitizedEventName}${cpfSuffix}.xlsx`;
+    const filename = `relacao_${sanitizedEventName}${cpfSuffix}.xlsx`;
 
     return { buffer, filename };
   }
@@ -258,11 +258,20 @@ export class ExportService {
       lines.push(row.map((item) => `"${(item || '').replace(/"/g, '""')}"`).join(';'));
     });
 
-    const sanitizedEventName = event.nm_evento.replace(/[^a-zA-Z0-9_-]/g, '_');
+    const sanitizedEventName = this.sanitizeEventName(event.nm_evento);
     const cpfSuffix = includeCpf ? '_com_cpf' : '_sem_cpf';
-    const filename = `relatorio_${sanitizedEventName}${cpfSuffix}.csv`;
+    const filename = `relacao_${sanitizedEventName}${cpfSuffix}.csv`;
 
     return { csv: BOM + lines.join('\r\n'), filename };
+  }
+
+  private sanitizeEventName(name: string): string {
+    return name
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '_')
+      .replace(/^_+|_+$/g, '');
   }
 
   private formatSexo(sexoVal?: string): string {

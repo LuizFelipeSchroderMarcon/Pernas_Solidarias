@@ -156,7 +156,7 @@ export const ParticipantModal: React.FC<ParticipantModalProps> = ({
       onClose={onClose}
       title={title}
       subtitle="Preencha os dados do participante"
-      maxWidth="md"
+      maxWidth="xl"
       footer={
         <>
           <Button variant="ghost" size="sm" onClick={onClose} disabled={isSubmitting}>
