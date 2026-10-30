@@ -1,0 +1,1301 @@
+\documentclass[12pt,a4paper]{article}
+
+% ─── Codificação e idioma ─────────────────────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+
+% ─── Layout e geometria ───────────────────────────────────────────────────────
+\usepackage[a4paper, top=2cm, bottom=2cm, left=3cm, right=2cm]{geometry}
+\usepackage{setspace}
+\usepackage{ragged2e}
+\usepackage{float}
+\usepackage{placeins}
+
+% ─── Cabeçalho e rodapé ───────────────────────────────────────────────────────
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+
+% ─── Títulos e seções ─────────────────────────────────────────────────────────
+\usepackage{titling}
+\usepackage{titlesec}
+
+% ─── Tabelas ──────────────────────────────────────────────────────────────────
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+
+% ─── Gráficos e cores ─────────────────────────────────────────────────────────
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+% ─── Listas ───────────────────────────────────────────────────────────────────
+\usepackage{enumitem}
+
+% ─── Hiperlinks ───────────────────────────────────────────────────────────────
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    urlcolor=blue,
+    citecolor=black
+}
+
+\usepackage{tikz}
+\usepackage{pdflscape}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning,
+                fit, backgrounds, shadows, calc}
+
+\setlength{\parindent}{1.25cm}
+\setlength{\parskip}{0.2cm}
+\onehalfspacing
+
+\fancyhf{} % limpa tudo
+
+% -------------------------------------------------
+% CABEÇALHO E RODAPÉ
+% -------------------------------------------------
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\fancyhead[L]{Conteúdo}
+\fancyhead[R]{%
+  \IfFileExists{\logoarquivo}{\includegraphics[height=1.1cm]{\logoarquivo}}{\small \instituicao}%
+}
+\fancyfoot[L]{Turma:\hspace{0.5em}\turma}
+\fancyfoot[C]{Instituição:\hspace{0.5em}\instituicao}
+\fancyfoot[R]{Página:\hspace{0.5em}\thepage\ de \pageref{LastPage}}
+ 
+% Página inicial sem cabeçalho/rodapé padrão
+\fancypagestyle{plain}{
+  \fancyhf{}
+  \renewcommand{\headrulewidth}{0pt}
+  \renewcommand{\footrulewidth}{0.4pt}
+  \fancyfoot[L]{Turma:\hspace{0.5em}\turma}
+  \fancyfoot[C]{Instituição:\hspace{0.5em}\instituicao}
+  \fancyfoot[R]{Página:\hspace{0.5em}\thepage\ de \pageref{LastPage}}
+}
+
+% -------------------------------------------------
+% DADOS DO DOCUMENTO
+% -------------------------------------------------
+\newcommand{\logoarquivo}{logocatolica.png}
+\newcommand{\instituicao}{Católica SC}
+\newcommand{\turma}{B}
+\newcommand{\curso}{Engenharia de Software}
+\newcommand{\autor}{Maria Eduarda Nunes de Souza}
+\newcommand{\orientador}{Diogo Winck}
+\newcommand{\dataentrega}{\today}
+
+% ─── Espaçamento entre linhas ─────────────────────────────────────────────────
+\onehalfspacing
+
+% ─── Ajustes de título ────────────────────────────────────────────────────────
+\pretitle{\begin{center}\LARGE}
+\posttitle{\end{center}}
+\preauthor{}
+\postauthor{}
+\predate{}
+\postdate{}
+
+% ─── Definição de nova coluna para tabelas ────────────────────────────────────
+\newcolumntype{L}[1]{>{\RaggedRight\arraybackslash}p{#1}}
+
+% =============================================================================
+\begin{document}
+% =============================================================================
+
+% ─── CAPA ────────────────────────────────────────────────────────────────────
+\begin{titlepage}
+    \centering
+    \includegraphics[width=0.15\textwidth]{catolica.png}
+
+    \vspace{2cm}
+    {\Large Engenharia de Software \par}
+    \vspace{4cm}
+    {\Huge \bfseries Portfólio \par}
+    {\Huge \bfseries Web \par}
+
+    \vfill
+    \Large \textbf{Orientador:} \\[0.5cm]
+    DIOGO VINÍCIUS WINCK
+
+    \vspace{2cm}
+    \Large \textbf{Autor:} \\[0.5cm]
+    Luiz Felipe Schroder Marcon \\[1cm]
+
+    {\large 10 de Março de 2026 \par}
+    \vspace{1cm}
+    \Large \textbf{Versão: 1.0}
+\end{titlepage}
+
+\newpage
+
+% -------------------------------------------------
+% SUMÁRIO
+% -------------------------------------------------
+\pagenumbering{roman}
+\tableofcontents
+\clearpage
+\pagenumbering{arabic}
+
+% -------------------------------------------------
+% IDENTIFICAÇÃO
+% -------------------------------------------------
+\section*{Identificação}
+\addcontentsline{toc}{section}{Identificação}
+
+\begin{itemize}
+    \item \textbf{Título do Projeto:} Pernas Solidárias
+    \item \textbf{Linha de Projeto:} Web
+    \item \textbf{Autor:} Luiz Felipe Schroder Marcon
+    \item \textbf{Data da Proposta:} 10/03/2026
+    \item \textbf{Versão:} 1.0
+\end{itemize}
+
+% =============================================================================
+\section{Visão do Produto e Impacto}
+
+Este projeto busca solucionar uma dificuldade da ONG Pernas Solidárias, facilitando a
+criação das duplas que irão participar das corridas e disponibilizando uma maneira mais
+eficiente de controlar as participações ao longo dos anos.
+
+% ─── 1.1 ─────────────────────────────────────────────────────────────────────
+\subsection{Contexto e Problema}
+
+\begin{itemize}
+
+    \item \textbf{Quem sofre com esse problema:}
+    A coordenação da ONG Pernas Solidárias.
+
+    \item \textbf{Em que contexto ele ocorre:}
+    Ao ser necessário organizar a lista de corredores e cadeirantes que irão
+    participar das próximas corridas.
+
+    \item \textbf{Como esse problema é resolvido atualmente:}
+    O problema é resolvido por meio de uma planilha de Excel gerenciada pela
+    coordenadora da ONG que, com base nas duplas de corridas anteriores, decide
+    quais serão as duplas formadas na próxima corrida.
+
+    \item \textbf{Quais são as limitações das soluções atuais:}
+    O gerenciamento atual é difícil de atualizar, pois não há garantia de que as
+    duplas formadas correspondam às pessoas que estão há mais tempo sem participar.
+    Isso ocorre porque tudo é feito com base em registros de corridas anteriores,
+    que nem sempre são armazenados de forma adequada.
+
+\end{itemize}
+
+% ─── 1.2 ─────────────────────────────────────────────────────────────────────
+\subsection{Origem da Demanda e Evidências}
+
+\begin{itemize}
+
+    \item \textbf{Contexto da demanda:} ONG Pernas Solidárias.
+
+    \item \textbf{Descrição do problema relatado:}
+    Dificuldade de formar as duplas entre cadeirante e corredor para o envio do
+    relatório à organização da corrida. Por ser feito em uma planilha de Excel,
+    toda a atualização é realizada manualmente e por uma única pessoa; quando essa
+    pessoa não está disponível, a formação das duplas fica comprometida.
+
+    \item \textbf{Pesquisa com usuários:} Foi realizada uma entrevista qualitativa com o coordenador da ONG, Cleiton, no dia 7 de março de 2026. Durante o alinhamento, o responsável relatou a complexidade operacional no processo manual de formação de duplas para as corridas. Diante dessa dor central, propôs-se o desenvolvimento de uma plataforma web dedicada a automatizar esse emparelhamento, centralizar o controle de membros ativos e gerenciar de forma unificada o histórico de eventos participados.
+
+    \item \textbf{Número de pessoas entrevistadas:} 1
+
+    \item \textbf{Principais dores identificadas:}
+    \begin{itemize}
+        \item Todo o controle é realizado em planilhas.
+        \item Todo o controle é feito por somente uma pessoa.
+    \end{itemize}
+
+\end{itemize}
+
+% ─── 1.3 ─────────────────────────────────────────────────────────────────────
+\subsection{Análise de Soluções Existentes (Benchmark)}
+
+\begin{itemize}
+
+    \item \textbf{Google Sheets}
+    \begin{itemize}
+        \item \textbf{Nome do produto:} Google Sheets
+        \item \textbf{Link:} \url{https://sheets.google.com}
+        \item \textbf{Público-alvo:} Usuários gerais, empresas e organizações que
+        precisam organizar dados em planilhas.
+        \item \textbf{Funcionalidades principais:}
+        \begin{itemize}
+            \item Criação e edição de planilhas online
+            \item Compartilhamento em tempo real
+            \item Fórmulas e automações básicas
+            \item Histórico de alterações
+        \end{itemize}
+        \item \textbf{Limitações:}
+        \begin{itemize}
+            \item Não é especializado para formação de duplas
+            \item Depende de manipulação manual
+            \item Alta chance de erro humano
+            \item Não possui lógica automatizada para priorização de participantes
+        \end{itemize}
+    \end{itemize}
+    Na Figura~\ref{fig:exemplo-google-sheets} é apresentada a interface do Google Sheets.
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.90\textwidth]{solucoes_existentes/exemplo-google-sheets.png}
+        \caption{Interface do Google Sheets utilizado atualmente para controle de participantes}
+        \label{fig:exemplo-google-sheets}
+    \end{figure}
+
+    \item \textbf{Microsoft Excel}
+    \begin{itemize}
+        \item \textbf{Nome do produto:} Microsoft Excel
+        \item \textbf{Link:} \url{https://www.microsoft.com/excel}
+        \item \textbf{Público-alvo:} Empresas e usuários que precisam de controle
+        de dados estruturados.
+        \item \textbf{Funcionalidades principais:}
+        \begin{itemize}
+            \item Criação de planilhas complexas
+            \item Uso de fórmulas avançadas
+            \item Tabelas dinâmicas
+            \item Automação com macros
+        \end{itemize}
+        \item \textbf{Limitações:}
+        \begin{itemize}
+            \item Processo manual ainda predominante
+            \item Requer conhecimento técnico para automação
+            \item Não resolve o problema de centralização dos dados
+            \item Não possui lógica específica para o problema da ONG
+        \end{itemize}
+    \end{itemize}
+    Na Figura~\ref{fig:exemplo-excel} é apresentada a interface do Microsoft Excel.
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.90\textwidth]{solucoes_existentes/exemplo-excel.png}
+        \caption{Interface do Microsoft Excel com planilha de controle de dados}
+        \label{fig:exemplo-excel}
+    \end{figure}
+
+    \item \textbf{Trello}
+    \begin{itemize}
+        \item \textbf{Nome do produto:} Trello
+        \item \textbf{Link:} \url{https://trello.com/}
+        \item \textbf{Público-alvo:} Equipes que precisam organizar tarefas e
+        fluxos de trabalho.
+        \item \textbf{Funcionalidades principais:}
+        \begin{itemize}
+            \item Organização por quadros e cartões
+            \item Atribuição de tarefas
+            \item Controle visual de processos
+        \end{itemize}
+        \item \textbf{Limitações:}
+        \begin{itemize}
+            \item Não estruturado para controle de participantes
+            \item Não automatiza a formação de duplas
+            \item Organização totalmente manual
+            \item Não mantém histórico estruturado de participações em corridas
+        \end{itemize}
+    \end{itemize}
+    Na Figura~\ref{fig:exemplo-trello} é apresentada a interface do Trello.
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.90\textwidth]{solucoes_existentes/exemplo-trello.png}
+        \caption{Interface do Trello com organização de tarefas por quadros e cartões}
+        \label{fig:exemplo-trello}
+    \end{figure}
+
+    \item \textbf{Eventbrite}
+    \begin{itemize}
+        \item \textbf{Nome do produto:} Eventbrite
+        \item \textbf{Link:} \url{https://www.eventbrite.com/}
+        \item \textbf{Público-alvo:} Organizadores de eventos.
+        \item \textbf{Funcionalidades principais:}
+        \begin{itemize}
+            \item Gestão de inscrições
+            \item Controle de participantes
+            \item Emissão de ingressos
+        \end{itemize}
+        \item \textbf{Limitações:}
+        \begin{itemize}
+            \item Não permite a formação de duplas específicas
+            \item Não considera o histórico de participação
+            \item Não é voltado para inclusão social ou ONGs
+            \item Foco em eventos pagos, não em logística de equipes
+        \end{itemize}
+    \end{itemize}
+    Nas Figuras~\ref{fig:exemplo-eventbrite-1} e~\ref{fig:exemplo-eventbrite-2} são apresentadas as interfaces do Eventbrite.
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.90\textwidth]{solucoes_existentes/exemplo-eventbrite-1.png}
+        \caption{Interface do Eventbrite — tela de criação de evento}
+        \label{fig:exemplo-eventbrite-1}
+    \end{figure}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.90\textwidth]{solucoes_existentes/exemplo-eventbrite-2.png}
+        \caption{Interface do Eventbrite — tela de gestão de inscrições}
+        \label{fig:exemplo-eventbrite-2}
+    \end{figure}
+
+\end{itemize}
+
+Na Tabela~\ref{tab:benchmark} são comparadas as soluções existentes analisadas no benchmark.
+
+\begin{table}[H]
+    \centering
+    \caption{Comparação entre soluções existentes}
+    \label{tab:benchmark}
+    \begin{tabular}{|L{3cm}|L{5cm}|L{5cm}|}
+        \hline
+        \textbf{Solução} & \textbf{Pontos Fortes} & \textbf{Limitações} \\ \hline
+        Google Sheets & Simples, gratuito, colaborativo        & Manual, sem automação inteligente         \\ \hline
+        Excel         & Poderoso, flexível                     & Complexo, depende de conhecimento técnico \\ \hline
+        Trello        & Visual, fácil de usar                  & Não estruturado para dados ou lógica      \\ \hline
+        Eventbrite    & Gestão de eventos eficiente            & Não resolve a formação de duplas          \\ \hline
+    \end{tabular}
+\end{table}
+
+\textbf{Diferencial do projeto}
+\begin{itemize}
+    \item \textbf{Por que criar algo novo:} As soluções existentes são genéricas e não
+    foram projetadas para o problema específico da ONG Pernas Solidárias. O processo
+    atual depende de trabalho manual e do conhecimento de uma única pessoa, gerando
+    risco operacional.
+
+    \item \textbf{Qual lacuna não foi resolvida:}
+    \begin{itemize}
+        \item Formação automática de duplas
+        \item Priorização baseada em histórico de participações
+        \item Armazenamento centralizado e acessível dos dados
+        \item Registro histórico estruturado das participações
+    \end{itemize}
+
+    \item \textbf{Qual nicho específico será atendido:}
+    \begin{itemize}
+        \item ONGs e projetos sociais de inclusão esportiva
+        \item Organizações que trabalham com cadeirantes e voluntários corredores
+        \item Gestão de eventos com necessidade de pareamento entre participantes
+    \end{itemize}
+\end{itemize}
+
+% ─── 1.4 ─────────────────────────────────────────────────────────────────────
+\subsection{Público-Alvo}
+
+\begin{itemize}
+
+    \item \textbf{Coordenador da ONG:}
+    \begin{itemize}
+        \item \textbf{Perfil do usuário:} Pessoa responsável pela organização das
+        inscrições do grupo em corridas dentro da ONG. Possui conhecimento sobre os
+        participantes (cadeirantes e condutores), histórico de participações e regras
+        internas para a formação de duplas.
+        \item \textbf{Contexto de uso:} O sistema será utilizado no momento de
+        planejamento das corridas, especialmente na formação de duplas entre cadeirantes
+        e condutores. Também será usado para consultar o histórico de participações,
+        garantir uma distribuição justa entre os participantes e gerar listas para envio
+        às organizações dos eventos.
+        \item \textbf{Nível de conhecimento técnico esperado:} Conhecimento básico em
+        informática: uso de computador, navegador de internet e ferramentas simples como
+        planilhas.
+    \end{itemize}
+
+\end{itemize}
+
+% ─── 1.5 ─────────────────────────────────────────────────────────────────────
+\subsection{Objetivos do Projeto}
+
+\begin{itemize}
+    \item \textbf{Objetivo geral:} Desenvolver um sistema que permita a gestão eficiente
+    das participações da ONG Pernas Solidárias em corridas, facilitando a formação de
+    duplas entre cadeirantes e condutores, centralizando o armazenamento de dados
+    históricos e possibilitando a análise das participações ao longo do tempo.
+
+    \item \textbf{Objetivos específicos:}
+    \begin{itemize}
+        \item Automatizar o processo de formação de duplas, atualmente realizado
+        manualmente em planilhas.
+        \item Desenvolver uma lógica de priorização na formação de duplas com base no
+        histórico de participações.
+        \item Centralizar o armazenamento das informações dos participantes e das corridas
+        em um único sistema acessível.
+        \item Implementar mecanismos de visualização do histórico de participações ao
+        longo do tempo.
+        \item Permitir a geração de planilhas para envio às organizações de eventos.
+    \end{itemize}
+\end{itemize}
+
+% ─── 1.6 ─────────────────────────────────────────────────────────────────────
+\subsection{Métricas de Sucesso (KPIs)}
+
+\begin{itemize}
+
+    \item \textbf{Redução do tempo de formação de duplas em pelo menos 50\%
+    em relação ao processo manual.} \\
+    \textit{Critério de medição:} o tempo será cronometrado em duas situações: antes da implantação, registrando quanto tempo a coordenadora leva para formar as duplas manualmente na planilha; e após a implantação, medindo o tempo desde o acesso à tela de formação até o clique em \textit{``Gerar Relatório''}. A meta será considerada atingida se o tempo com o sistema for igual ou inferior à metade do tempo registrado no processo manual.
+
+    \item \textbf{Tempo de resposta inferior a 2 segundos em operações comuns.} \\
+    \textit{Critério de medição:} as operações de listagem de participantes e geração de exportação serão executadas e cronometradas diretamente no navegador por meio da aba \textit{Network} das ferramentas de desenvolvedor (DevTools). A meta será considerada atingida se o tempo de resposta da API for inferior a 2 segundos em todas as operações medidas, em condições normais de uso.
+
+    \item \textbf{Eliminação do uso de planilhas para a formação de duplas, com 100\% dos dados centralizados e acessíveis via sistema.} \\
+    \textit{Critério de medição:} será verificado, junto à coordenadora da ONG, se todo o processo de cadastro de participantes, formação de duplas e geração do relatório passou a ser realizado exclusivamente pelo sistema, sem uso paralelo de planilhas. A meta será considerada atingida se a coordenadora confirmar que nenhuma planilha externa foi utilizada durante a organização de ao menos um evento completo com o sistema implantado.
+
+\end{itemize}
+
+% =============================================================================
+\section{Engenharia de Requisitos}
+% =============================================================================
+
+% ─── 2.1 ─────────────────────────────────────────────────────────────────────
+\subsection{Personas}
+
+\begin{itemize}
+
+    \item \textbf{Persona: Mariana – Coordenadora da ONG}
+    \begin{itemize}
+        \item \textbf{Contexto:} Mariana é a principal responsável pela organização das
+        corridas na ONG Pernas Solidárias. Ela atua há anos no projeto e possui grande
+        conhecimento sobre os participantes, o histórico de corridas e as regras internas.
+        Atualmente, utiliza planilhas para organizar as duplas e gerenciar as inscrições.
+
+        \item \textbf{Objetivos:}
+        \begin{itemize}
+            \item Agilizar o processo de formação de duplas
+            \item Reduzir erros manuais
+            \item Ter acesso rápido ao histórico de corridas
+        \end{itemize}
+
+        \item \textbf{Principais dificuldades:}
+        \begin{itemize}
+            \item Processo manual e demorado
+            \item Dependência de memória ou registros incompletos
+            \item Dificuldade em manter os dados organizados e atualizados
+        \end{itemize}
+    \end{itemize}
+
+\end{itemize}
+
+% ─── 2.2 ─────────────────────────────────────────────────────────────────────
+\subsection{Casos de Uso Principais}
+
+Os casos de uso a seguir descrevem as principais interações entre o coordenador da ONG e as funcionalidades oferecidas pelo sistema. Na Figura~\ref{fig:caso-uso-principal} é apresentado o diagrama de casos de uso do sistema.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.80\textwidth]{caso_uso_principal/Caso de Uso Principal.png}
+    \caption{Diagrama de casos de uso do perfil Coordenador da ONG, contemplando as
+    funcionalidades de Login, Cadastrar Cadeirante, Cadastrar Corredor, Cadastrar
+    Evento, Formar Duplas, Visualizar Gráficos e Visualizar o Histórico.}
+    \label{fig:caso-uso-principal}
+\end{figure}
+
+% ─── 2.3 ─────────────────────────────────────────────────────────────────────
+\subsection{Requisitos Funcionais (RF)}
+
+Na Tabela~\ref{tab:rf} são apresentados os requisitos funcionais do sistema, organizados por código, descrição e prioridade.
+
+\begin{longtable}{|L{1.5cm}|L{9cm}|L{2.5cm}|}
+    \caption{Requisitos Funcionais} \label{tab:rf} \\
+
+    \hline
+    \textbf{Código} & \textbf{Descrição} & \textbf{Prioridade} \\
+    \hline
+    \endfirsthead
+
+    % Cabeçalho repetido nas páginas seguintes
+    \multicolumn{3}{r}{\small\textit{Continuação da página anterior}} \\
+    \hline
+    \textbf{Código} & \textbf{Descrição} & \textbf{Prioridade} \\
+    \hline
+    \endhead
+
+    % Rodapé de continuação
+    \hline
+    \multicolumn{3}{r}{\small\textit{Continua na próxima página}} \\
+    \endfoot
+
+    % Rodapé final
+    \hline
+    \endlastfoot
+
+    % ── Linhas da tabela ──────────────────────────────────────────────
+        RF01 & O sistema deve permitir que o coordenador cadastre, edite e desative participantes (cadeirantes e condutores) informando nome completo, CPF, tamanho de camisa, data de nascimento, sexo e telefone, sendo todos os campos obrigatórios.
+              & Alta \\ \hline
+        RF02 & O sistema deve permitir que o coordenador cadastre novas corridas, informando nome do evento, data e local.
+              & Alta \\ \hline
+        RF03 & O sistema deve gerar automaticamente as duplas entre cadeirantes e condutores para uma corrida selecionada.
+              & Alta \\ \hline
+        RF04 & O sistema deve priorizar, na formação automática de duplas, os participantes que estão há mais tempo sem participar de corridas.
+              & Alta \\ \hline
+        RF05 & O sistema deve permitir que o coordenador edite manualmente as duplas geradas, podendo realocar participantes.
+              & Alta \\ \hline
+        RF06 & O sistema deve registrar o histórico completo de todos os eventos realizados, permitindo que o coordenador consulte as duplas formadas em cada corrida anterior. 
+              & Alta \\ \hline
+        RF07 & O sistema deve permitir que o coordenador exporte a lista de duplas em formato de planilha (\texttt{.xlsx} ou \texttt{.csv}) conforme o padrão aceito pela organização do evento.
+              & Alta \\ \hline
+        RF08 & O sistema deve permitir que o coordenador ative ou desative participantes (cadeirantes e condutores) individualmente por meio de um botão de alternância (\textit{toggle switch}) presente na listagem de cada participante. Participantes inativos são excluídos da formação automática de duplas, mas seu histórico é preservado.
+              & Média \\ \hline
+        RF09 & O sistema deve permitir a consulta e filtragem do histórico de corridas por período, participante ou número de participações.
+              & Baixa \\ \hline
+        RF10 & O sistema deve permitir a geração do relatório de duplas tanto a partir da tela de histórico geral quanto a partir da tela de detalhe de um evento específico do histórico. 
+              & Alta \\ \hline
+        RF11 & O sistema deve exibir, no momento da geração do relatório, uma janela de confirmação perguntando ao coordenador se o arquivo deve ser gerado com ou sem o CPF dos participantes.       & Alta \\ \hline
+
+\end{longtable}
+
+% ─── 2.4 ─────────────────────────────────────────────────────────────────────
+\subsection{Requisitos Não Funcionais (RNF)}
+
+Os requisitos não funcionais descrevem as qualidades e restrições do sistema que não estão diretamente relacionadas às funcionalidades, mas que são essenciais para garantir uma boa experiência de uso e o correto
+funcionamento da solução. Na Tabela~\ref{tab:rnf} são apresentados os requisitos não funcionais definidos para o sistema.
+
+\begin{table}[H]
+    \centering
+    \caption{Requisitos Não Funcionais}
+    \label{tab:rnf}
+    \begin{tabular}{|L{1.5cm}|L{2.8cm}|L{8.7cm}|}
+        \hline
+        \textbf{Código} & \textbf{Categoria} & \textbf{Descrição} \\ \hline
+        RNF01 & Desempenho      & O sistema deve responder a operações comuns
+                                  (consultas, formação de duplas, exportações) em menos
+                                  de 2 segundos. \\ \hline
+        RNF02 & Disponibilidade & O sistema deve estar disponível via navegador web,
+                                  sem necessidade de instalação de software adicional
+                                  pelo usuário. \\ \hline
+        RNF03 & Usabilidade     & A interface deve ser intuitiva e acessível a usuários
+                                  com nível básico de conhecimento em informática, sem
+                                  necessidade de treinamento especializado. \\ \hline
+        RNF04 & Segurança       & O sistema deve exigir autenticação para acesso e
+                                  garantir que apenas o coordenador autorizado realize
+                                  operações de escrita e exportação. \\ \hline
+        RNF05 & Manutenção      & O código deve ser documentado e organizado de forma
+                                  modular, facilitando futuras manutenções e evoluções
+                                  do sistema. \\ \hline
+        RNF06 & Escalabilidade  & O sistema deve suportar o crescimento no número de
+                                  participantes e corridas registradas sem degradação
+                                  perceptível de desempenho. \\ \hline
+    \end{tabular}
+\end{table}
+
+% ─── 2.5 ─────────────────────────────────────────────────────────────────────
+\subsection{Regras de Negócio}
+
+As regras de negócio definem as restrições e condições que devem ser respeitadas pelo
+sistema para refletir corretamente as políticas e o funcionamento da ONG Pernas
+Solidárias.
+
+\begin{itemize}
+
+    \item \textbf{RN01 – Composição de dupla:} Uma dupla é composta obrigatoriamente
+    por exatamente um cadeirante e um condutor; não é permitida a formação de duplas
+    entre dois cadeirantes ou dois condutores.
+
+    \item \textbf{RN02 – Unicidade por corrida:} Um participante não pode integrar mais
+    de uma dupla na mesma corrida, garantindo que cada membro participe apenas uma vez
+    por evento.
+
+    \item \textbf{RN03 – Prioridade na formação:} A formação automática de duplas deve
+    priorizar os participantes que estão há mais tempo sem participar de corridas.
+
+    \item \textbf{RN04 – Limite de duplas:} O número máximo de duplas em uma corrida é
+    determinado pela menor quantidade entre cadeirantes e condutores disponíveis (ativos)
+    naquele evento.
+
+    \item \textbf{RN05 – Imutabilidade do histórico:} O histórico de participações não
+    pode ser excluído do sistema; os registros anteriores são somente leitura e servem
+    como base para a lógica de priorização.
+
+    \item \textbf{RN06 – Formato de exportação:} A exportação da lista de duplas deve
+    respeitar o formato padrão aceito pela organização da corrida.
+
+    \item \textbf{RN07 – Participantes inativos:} Participantes marcados como inativos
+    não devem ser incluídos na formação automática de duplas, mas seu histórico de
+    participações deve ser preservado.
+
+    \item \textbf{RN08 – Edição pós-formação:} Após a formação automática, o
+    coordenador pode editar as duplas manualmente, desde que sejam respeitadas as regras
+    RN01 e RN02.
+
+    % \item \textbf{RN09 – CPF opcional:} O CPF de cadeirantes e condutores não é um campo obrigatório no cadastro. Caso não informado, o campo será armazenado como nulo e omitido automaticamente no relatório gerado, independentemente da escolha feita na modal de exportação.
+
+\end{itemize}
+
+% ─── 2.6 ─────────────────────────────────────────────────────────────────────
+\subsection{Fora do Escopo}
+
+Esta seção delimita funcionalidades e responsabilidades que não serão cobertas pelo
+sistema, evitando ambiguidades sobre o que o projeto se propõe a entregar.
+
+\begin{itemize}
+
+    \item \textbf{Processamento de pagamentos:} O sistema não realizará cobranças,
+    emissão de recibos ou qualquer tipo de transação financeira relacionada à
+    participação nas corridas.
+
+    \item \textbf{Comunicação direta com participantes:} O sistema não enviará
+    notificações automáticas, e-mails ou mensagens aos membros da ONG; a comunicação
+    continuará sendo responsabilidade da coordenação.
+
+    \item \textbf{Gestão de treinamentos:} O controle de treinos, desempenho físico ou
+    programas de preparação dos participantes está fora do escopo deste projeto.
+
+    \item \textbf{Integração com sistemas externos de corridas:} O sistema não se
+    integrará automaticamente com plataformas de inscrição ou gestão de eventos de
+    terceiros; a exportação em planilha será o mecanismo de intercâmbio de dados.
+
+    \item \textbf{Aplicativo mobile nativo:} Não será desenvolvido um aplicativo nativo
+    para iOS ou Android; o acesso será exclusivamente via navegador web responsivo.
+
+    \item \textbf{Gerenciamento financeiro da ONG:} Controles de orçamento, prestação
+    de contas ou finanças internas da organização não fazem parte do escopo deste
+    sistema.
+
+    \item \textbf{Funcionalidades de comunicação interna:} O sistema não oferecerá
+    recursos de chat, publicações ou interações sociais entre os membros.
+
+\end{itemize}
+
+% =============================================================================
+\section{Fluxos e Comportamento do Sistema}
+% =============================================================================
+
+Esta seção demonstra como o sistema se comporta durante a interação do coordenador
+com as principais funcionalidades. Os diagramas ilustram o fluxo principal de uso,
+o processo de formação de duplas e os cenários alternativos contemplados pelo sistema.
+
+% ─── 3.1 ─────────────────────────────────────────────────────────────────────
+\subsection{Fluxo Principal do Usuário}
+
+O fluxo principal descreve a jornada mais comum dentro do sistema: o coordenador acessa o sistema (caso o login não seja efetuado com sucesso, o usuário é alertado de que não utilizou as credenciais corretas). Após a autenticação, o coordenador é redirecionado para a tela principal, onde é possível visualizar os eventos que ainda irão acontecer, ele pode acessar formar as duplas para o evento e se as duplas formadas não forem satisfatórias é necessário entrar na tela de cadeirante ou de corredor para registrar o voluntário que está faltando. Também é possível acessar logo no início a tela de gráficos e a tela de histórico. Na Figura~\ref{fig:fluxo-principal} é apresentado o fluxo principal do usuário no sistema.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.80\textwidth]{diagrama_fluxo/diagrama-fluxo-principal.png}
+    \caption{Fluxo principal do usuário no sistema}
+    \label{fig:fluxo-principal}
+\end{figure}
+
+\FloatBarrier
+
+% ─── 3.2 ─────────────────────────────────────────────────────────────────────
+\subsection{Fluxos Alternativos}
+
+% ── FA01 ──────────────────────────────────────────────────────────────────────
+\subsubsection{FA01 – Falha na Autenticação}
+
+\begin{itemize}
+    \item \textbf{Condição:} As credenciais informadas são inválidas ou o usuário não
+    está cadastrado no sistema.
+    \item \textbf{Resposta do sistema:} É exibida uma mensagem de erro informando sobre
+    as credenciais inválidas e permitindo uma nova tentativa. O coordenador pode acionar
+    a opção \textit{``Esqueci minha senha''}. Após 5 tentativas consecutivas
+    malsucedidas, o acesso é bloqueado temporariamente por 15 minutos.
+\end{itemize}
+
+\FloatBarrier
+
+% ── FA02 ──────────────────────────────────────────────────────────────────────
+\subsubsection{FA02 – Participantes Insuficientes para Formação de Duplas}
+
+\begin{itemize}
+    \item \textbf{Condição:} Não há ao menos um cadeirante e um condutor ativos
+    disponíveis para a corrida selecionada.
+    \item \textbf{Resposta do sistema:} É exibida uma mensagem na seção referente ao
+    tipo de participante em falta. O coordenador pode acessar a aba correspondente na
+    navegação superior para cadastrar o participante necessário.
+\end{itemize}
+
+\FloatBarrier
+
+% ── FA03 ──────────────────────────────────────────────────────────────────────
+\subsubsection{FA03 – Falha na Exportação da Planilha}
+
+\begin{itemize}
+    \item \textbf{Condição:} Ocorre um erro de servidor durante a exportação da planilha.
+    \item \textbf{Resposta do sistema:} O sistema exibe uma mensagem de erro informando
+    que não foi possível gerar o arquivo e solicitando que o usuário tente novamente.
+\end{itemize}
+
+% ── FA04 ──────────────────────────────────────────────────────────────────────
+\subsubsection{FA04 – Cancelamento Durante a Formação de Duplas}
+
+\begin{itemize}
+    \item \textbf{Condição:} O coordenador sai da tela antes de concluir a formação
+    das duplas.
+    \item \textbf{Resposta do sistema:} O sistema mantém o estado das alterações
+    realizadas. Ao retornar à tela de formação de duplas daquela corrida, as informações
+    anteriormente definidas permanecem disponíveis.
+\end{itemize}
+
+Na tabela~\ref{tab:fa-resumo} são apresentados os fluxos alternativos identificados para o sistema.
+
+% ── Tabela resumo ─────────────────────────────────────────────────────────────
+\vspace{0.4cm}
+\begin{table}[H]
+    \centering
+    \caption{Resumo dos fluxos alternativos}
+    \label{tab:fa-resumo}
+    \begin{tabular}{|L{1.4cm}|L{4.4cm}|L{7.2cm}|}
+        \hline
+        \textbf{Código} & \textbf{Cenário} & \textbf{Resposta do Sistema} \\ \hline
+        FA01 & Credenciais inválidas no login
+             & Exibe erro, bloqueia após 5 tentativas consecutivas \\ \hline
+        FA02 & Participantes insuficientes para formar duplas
+             & Exibe alerta e sugere o cadastro do participante faltante \\ \hline
+        FA03 & Falha na geração do arquivo de exportação
+             & Exibe mensagem de erro e disponibiliza nova tentativa \\ \hline
+        FA04 & Saída da tela antes de concluir a formação de duplas
+             & Mantém o estado das duplas para retomada posterior \\ \hline
+    \end{tabular}
+\end{table}
+
+% =============================================================================
+\section{Mockups e Experiência do Usuário (UX)}
+% =============================================================================
+
+% ─── 4.1 ─────────────────────────────────────────────────────────────────────
+\subsection{Fluxo de Navegação}
+
+O esquema a seguir descreve a arquitetura de navegação e o encadeamento das telas do sistema. Na Figura~\ref{fig:fluxo-tela} é apresentado o fluxo de navegação entre as telas do sistema.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.80\textwidth]{fluxo_navegacao/Fluxo_Tela.png}
+    \caption{Fluxo de navegação entre as telas do sistema}
+    \label{fig:fluxo-tela}
+\end{figure}
+
+% ─── 4.2 ─────────────────────────────────────────────────────────────────────
+\subsection{Wireframes ou Mockups das Telas}
+
+O software é composto por 7 telas principais, descritas a seguir com suas respectivas funcionalidades e ações disponíveis ao usuário.
+
+\subsubsection{Tela de Login} Tela responsável por verificar se o login e a senha digitados estão corretos, possibilitando a entrada no sistema. Caso os valores informados estejam incorretos, é exibido um aviso é exibido um aviso informando que o login ou a senha estão errados. Na Figura~\ref{fig:tela_login_sistema} é apresentado o mockup desta tela. 
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Telas/01-Tela_Login.png}
+    \caption{Tela de Login do sistema}
+    \label{fig:tela_login_sistema}
+\end{figure}
+
+\subsubsection{Tela Inicial} Primeira tela que é mostrada após efetuar o login da maneira correta, ela mostra todos os eventos que ainda irão acontecer em formato de cards. No card há 3 botões, 'Formar Duplas' que abre uma modal em tela para a realizar a formação das duplas para o evento em específico. 'Editar Evento' serve para poder editar as informações do evento em específico sem a necessidade de navegar até à página de eventos para localizá-lo.. 'Excluir Evento' serve para remover o evento em específico sem ser necessário ir a página de eventos e achar o evento e assim poder excluir. Na Figura~\ref{fig:tela_inicio} é apresentado o mockup desta tela. 
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Telas/02-Tela_Inicio.png}
+    \caption{Tela Inicial}
+    \label{fig:tela_inicio}
+\end{figure}
+
+\newpage
+
+\subsubsection{Tela formação de duplas} Modal aberta ao clicar em 'Formar Duplas' na tela de Ínicio. Na Figura~\ref{fig:tela_formacao_duplas} é apresentado o mockup desta tela. 
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Telas/03-Tela_Formacao_Duplas.png}
+    \caption{Tela formação de duplas}
+    \label{fig:tela_formacao_duplas}
+\end{figure}
+
+\subsubsection{Tela formação de duplas preenchido} Ao selecionar um cadeirante e um condutor essa dupla será formada e ocupará uma linha na tabela logo abaixo que contém as duplas formadas. Na Figura~\ref{fig:tela_formacao_duplas_preenchido} é apresentado o mockup desta tela. 
+\begin{figure} [H] 
+    \centering
+    \includegraphics[width=0.8\textwidth]{Telas/04-Tela_Formacao_Duplas_Preenchido.png}
+    \caption{Tela formação de duplas preenchido}
+    \label{fig:tela_formacao_duplas_preenchido}
+\end{figure}
+
+\subsubsection{Tela inicial edição de evento} Modal que abre ao clicar no botão 'Editar Evento' no card do evento. Na Figura~\ref{fig:tela_inicio_edicao_evento} é apresentado o mockup desta tela. 
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Telas/06-Tela_Inicio_Edicao_Evento.png}
+    \caption{Tela inicial edição de evento}
+    \label{fig:tela_inicio_edicao_evento}
+\end{figure}
+
+\subsubsection{Tela inicial exclusão de evento} Modal que abre ao clicar no botão 'Excluir Evento' no card do evento. Na Figura~\ref{fig:tela_inicio_exclusao_evento} é apresentado o mockup desta tela. 
+\begin{figure} [H] 
+    \centering
+    \includegraphics[width=0.8\textwidth]{Telas/07-Tela_Inicio_Exclusao_Evento.png}
+    \caption{Tela inicial exclusão de evento}
+    \label{fig:tela_inicio_exclusao_evento}
+\end{figure}
+
+\subsubsection{Tela Evento} Tela que contém todos os evento que ainda irão acontecer. Na Figura~\ref{fig:tela_evento} é apresentado o mockup desta tela. 
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Telas/08-Tela_Evento.png}
+    \caption{Tela Evento}
+    \label{fig:tela_evento}
+\end{figure}
+
+\subsubsection{Tela cadastro evento} Modal aberta ao clicar no botão 'Novo Evento' contendo as informações necessárias a serem preenchidas para o registro de um novo evento. Na Figura~\ref{fig:tela_evento_cadastro} é apresentado o mockup desta tela. 
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Telas/09-Tela_Evento_Cadastro.png}
+    \caption{Tela cadastro evento}
+    \label{fig:tela_evento_cadastro}
+\end{figure}
+
+\subsubsection{Tela Cadeirantes} Tela que contém todos os cadeirantes que estão ativos e inativos na organização. Na Figura~\ref{fig:tela_cadeirante} é apresentado o mockup desta tela. 
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Telas/10-Tela_Cadeirante.png}
+    \caption{Tela Cadeirantes}
+    \label{fig:tela_cadeirante}
+\end{figure}
+
+\subsubsection{Tela cadastro Cadeirante} Modal aberta ao clicar no botão 'Novo cadeirante' contendo as informações necessárias a serem preenchidas para o registro de um novo cadeirante. Na Figura~\ref{fig:tela_cadeirante_cadastro} é apresentado o mockup desta tela. 
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Telas/11-Tela_Cadeirante_Cadastro.png}
+    \caption{Tela cadastro Cadeirante}
+    \label{fig:tela_cadeirante_cadastro}
+\end{figure}
+
+\subsubsection{Tela Condutores} Tela que contém todos os condutores que estão ativos e inativos na organização. Na Figura~\ref{fig:tela_condutores} é apresentado o mockup desta tela. 
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Telas/12-Tela_Condutore.png}
+    \caption{Tela Condutores}
+    \label{fig:tela_condutores}
+\end{figure}
+
+\subsubsection{Tela cadastro condutores} Modal aberta ao clicar no botão 'Novo condutor' contendo as informações necessárias a serem preenchidas para o registro de um novo condutor. Na Figura~\ref{fig:tela_condutores_cadastro} é apresentado o mockup desta tela. 
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Telas/13-Tela_Condutores_Cadastro.png}
+    \caption{Tela cadastro condutores}
+    \label{fig:tela_condutores_cadastro}
+\end{figure}
+
+\subsubsection{Tela Gráficos} Tela que demonstra os gráficos solicitados pela organização da ONG, sendo eles 'Corredores que mais participaram', 'Cadeirantes que mais participaram' e 'Eventos com mais inscrições'. Na Figura~\ref{fig:tela_graficos} é apresentado o mockup desta tela. 
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Telas/14-Tela_Graficos.png}
+    \caption{Tela Gráficos}
+    \label{fig:tela_graficos}
+\end{figure}
+
+\subsubsection{Tela Histórico} Tela que contém os eventos que a ONG participou, sendo possível filtrar pelo nome do evento e pelo mês e ano. Nos cards está presente o nome e a data do evento. Na parte dos botões o 'Exibir duplas' mostrar uma modal somente com as duplas que foram formadas para aquele evento. No botão 'Gerar Relatório' é baixado automaticamente o relatório desse evento. Na Figura~\ref{fig:tela_historico} é apresentado o mockup desta tela.  
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Telas/15-Tela_Historico.png}
+    \caption{Tela de Histórico}
+    \label{fig:tela_historico}
+\end{figure}
+
+\subsubsection{Tela Duplas formadas no Histórico} Modal que aparece ao clicar no botão 'Exibir Duplas'. Na Figura~\ref{fig:tela_historico_duplas} é apresentado o mockup desta tela. 
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Telas/16-Tela_Historico_Duplas.png}
+    \caption{Tela Duplas formadas no Histórico}
+    \label{fig:tela_historico_duplas}
+\end{figure}
+
+\subsubsection{Modal perguntando se o relatório deve vir com CPF ou não} Modal que vai ser aberta depois de pedir para gerar relatório tanto na tela de histórico quanto na tela inicial, perguntando se deve ser gerado o relatório com ou sem o cpf dos membro que irão participar do evento. Na Figura~\ref{fig:tela_relatorio_cpf} é apresentado o mockup desta tela. 
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Telas/18-Tela_Relatorio_CPF.png}
+    \caption{Modal de confirmação para geração de relatório com ou sem CPF dos participantes}
+    \label{fig:tela_relatorio_cpf}
+\end{figure}
+
+\subsubsection{Relatório sendo baixado na tela de Histórico} Notificação em tela que aparece ao ser solicitado para gerar o relatório. Na Figura~\ref{fig:tela_historico_relatorio} é apresentado o mockup desta tela. 
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Telas/17-Tela_Historico_Relatorio.png}
+    \caption{Notificação de download do relatório na tela de Histórico}
+\label{fig:tela_historico_relatorio}
+\end{figure}
+
+% ─── 4.3 ─────────────────────────────────────────────────────────────────────
+\subsection{Fluxo de Interação do Usuário}
+
+\subsubsection{Cadastrar duplas:}
+\begin{enumerate}
+    \item Usuário acessa o sistema.
+    \item Digita o login e a senha corretamente.
+    \item Redirecionado para a tela de início.
+    \item Clica em formar duplas de um evento.
+    \item Forma as duplas necessárias.
+    \item Clica em \textit{``Gerar Relatório''}; o sistema exibe uma modal perguntando se o relatório deve ser gerado com ou sem o CPF dos participantes.
+    \item O coordenador seleciona a opção desejada e confirma.
+    \item É feito o download do relatório no computador
+\end{enumerate}
+
+\subsubsection{Cadastrar eventos:}
+\begin{enumerate}
+    \item Usuário acessa o sistema.
+    \item Digita o login e a senha corretamente.
+    \item Redirecionado para a tela de início.
+    \item Acessa a tela de eventos.
+    \item Clica em novo evento.
+    \item Preenche as informações e cadastra o evento.
+\end{enumerate}
+
+\subsubsection{Cadastrar cadeirantes:}
+\begin{enumerate}
+    \item Usuário acessa o sistema.
+    \item Digita o login e a senha corretamente.
+    \item Redirecionado para a tela de início.
+    \item Acessa a tela de cadeirantes.
+    \item Clica em novo cadeirante.
+    \item Preenche todos os campos obrigatórios: nome completo, CPF, tamanho de camisa, data de nascimento, sexo e telefone. Para cadeirantes, informa também se possui cadeira de rodas própria.
+    \item Após o cadastro, o participante aparece na listagem com o toggle switch  por padrão. O coordenador pode alternar o estado a qualquer momento clicando no botão, que muda visualmente de verde (ativo) para cinza (inativo).
+\end{enumerate}
+
+\subsubsection{Cadastrar condutores:}
+\begin{enumerate}
+    \item Usuário acessa o sistema.
+    \item Digita o login e a senha corretamente.
+    \item Redirecionado para a tela de início.
+    \item Acessa a tela de condutores.
+    \item Clica em novo condutor.
+    \item Preenche todos os campos obrigatórios: nome completo, CPF, tamanho de camisa, data de nascimento, sexo e telefone.
+    \item Após o cadastro, o participante aparece na listagem com o toggle switch  por padrão. O coordenador pode alternar o estado a qualquer momento clicando no botão, que muda visualmente de verde (ativo) para cinza (inativo).
+\end{enumerate}
+
+\subsubsection{Acessar tela de gráficos:}
+\begin{enumerate}
+    \item Usuário acessa o sistema.
+    \item Digita o login e a senha corretamente.
+    \item Redirecionado para a tela de início.
+    \item Acessa a tela de gráficos.
+    \item Visualiza os gráficos dos corredores e cadeirantes que mais participaram e também dos eventos que tiveram mais inscrições. 
+\end{enumerate}
+
+\subsubsection{Consultar Histórico e Gerar Relatório}
+
+\begin{enumerate}
+    \item usuário acessa o sistema.
+    \item digita o login e a senha corretamente
+    \item redirecionado para a tela de início
+    \item clica em Histórico no menu de navegação.
+    \item O sistema exibe a listagem de todos os eventos já realizados,
+    com nome e data de cada corrida.
+    \item O coordenador pode clicar em Gerar Relatório diretamente na listagem para baixar o arquivo do evento desejado, ou clicar no nome do evento para acessar o detalhe.
+    \item Na tela de detalhe, o sistema exibe todas as duplas formadas para aquela corrida, com nome do cadeirante, nome do condutor e número da dupla.
+    \item O coordenador clica em Gerar Relatório e o sistema disponibiliza o arquivo .xlsx ou .csv para download.
+\end{enumerate}
+
+\FloatBarrier
+
+% =============================================================================
+\section{Arquitetura do Sistema}
+% =============================================================================
+
+\subsection{Diagrama C4}
+
+\subsubsection{Nível 1: Diagrama de Contexto}
+
+O Diagrama de Contexto representa o primeiro nível do modelo C4 e tem como objetivo apresentar o sistema como uma "caixa preta", evidenciando sua posição no ecossistema e suas interações com o mundo externo, sem entrar em detalhes técnicos de implementação. No contexto do Sistema Pernas Solidárias, o diagrama identifica o Coordenador da ONG como único ator do sistema, responsável por acessá-lo via navegador web para gerenciar participantes, eventos e a formação de duplas. Além do ator principal, são representados dois sistemas externos: a Organização da Corrida, que recebe a lista de duplas exportada em formato de planilha, e a Planilha Excel, solução legada atualmente utilizada pela ONG que o novo sistema se propõe a substituir. Na Figura~\ref{fig:c4-contexto} é apresentado o Diagrama de Contexto
+do Sistema Pernas Solidárias.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.60\textwidth]{c4/c4-nivel1-contexto-v2.png}
+    \caption{Diagrama C4 — Nível 1: Contexto do Sistema Pernas Solidárias}
+    \label{fig:c4-contexto}
+\end{figure}
+
+\subsubsection{Nível 2: Diagrama de Containers}
+
+O Diagrama de Containers representa o segundo nível do modelo C4 e aprofunda a visão do sistema, decompondo-o em suas unidades de execução independentes e revelando as principais decisões tecnológicas adotadas. No Sistema Pernas Solidárias, a arquitetura é composta por três containers: a Aplicação Web (Desenvolvida em React com TypeScript), que é a interface acessada pelo coordenador via navegador. A API REST (construída em Node.js com Express), responsável por processar as regras de negócio, incluindo a lógica de formação automática de duplas por histórico de participação e a geração dos arquivos de exportação e o Banco de Dados (PostgreSQL), onde são persistidos de forma centralizada os dados de cadeirantes, condutores, eventos e o histórico de participações. A comunicação entre o frontend e o backend ocorre via JSON sobre HTTPS, enquanto a API acessa o banco de dados via SQL e os arquivos exportados são baixados localmente no computador do coordenador da ONG no formato .xlsx ou .csv. Na Figura~\ref{fig:c4-containers} é apresentado o Diagrama de
+Containers do Sistema Pernas Solidárias.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.60\textwidth]{c4/c4-nivel2-containers-v2.png}
+    \caption{Diagrama C4 — Nível 2: Containers do Sistema Pernas Solidárias}
+    \label{fig:c4-containers}
+\end{figure}
+
+
+\subsubsection{Nível 3: Diagrama de Componentes}
+
+O Diagrama de Componentes representa o terceiro nível do modelo C4 e aprofunda a visão para o interior de um único container neste caso, a API REST do Sistema Pernas Solidárias. A arquitetura interna segue o padrão de três camadas: Controllers, que recebem as requisições HTTP vindas do frontend e as direcionam adequadamente, Services, que encapsulam as regras de negócio do domínio e Repositories, responsáveis exclusivamente pelo acesso ao banco de dados. O componente central do sistema é o FormacaoDuplasService, que implementa a lógica de ordenação dos participantes ativos pelo histórico de participações e executa o pareamento automático entre cadeirantes e condutores, respeitando as regras de negócio RN03, RN04 e RN07 definidas no documento de requisitos. Complementam a arquitetura o ExportacaoService, que gera os arquivos .xlsx/.csv a partir das duplas confirmadas e o AuthService, responsável pela autenticação do coordenador. Todas as requisições externas entram pelo Router do Express, que atua como ponto de entrada único da API e distribui cada rota ao controller. Na Figura~\ref{fig:c4-componentes} é apresentado o Diagrama de
+Componentes da API REST do Sistema Pernas Solidárias.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.90\textwidth]{c4/c4-nivel3-componentes.png}
+    \caption{Diagrama C4 — Nível 3: Componentes do Sistema Pernas Solidárias}
+    \label{fig:c4-componentes}
+\end{figure}
+
+\subsection{Modelo de Dados}
+
+O modelo de dados do Sistema Pernas Solidárias é composto por cinco entidades que refletem diretamente o domínio do problema: o coordenador que opera o sistema, os eventos (corridas) cadastrados, os cadeirantes, os condutores e as duplas formadas para cada evento. O relacionamento central do modelo é a tabela dupla, que associa um cadeirante e um condutor a um evento específico, registrando o número sequencial da dupla e servindo como base para o histórico de participações utilizado na lógica de priorização automática. Os atributos \texttt{cpf}, \texttt{telefone}, \texttt{data\_nascimento} e \texttt{sexo} são obrigatórios para ambos os tipos de participante. Na Figura~\ref{fig:diagrama-entidade-relacionamento} é apresentado o Diagrama Entidade-Relacionamento do sistema.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.10\textwidth]{modelo_dados/esquema_bd.png}
+    \caption{Diagrama Entidade Relacionamento do Sistema Pernas Solidárias}
+    \label{fig:diagrama-entidade-relacionamento}
+\end{figure}
+
+\subsection{Principais Componentes}
+
+\subsubsection{Aplicação Web (Frontend)}
+Interface de usuário responsiva desenvolvida para navegadores web, responsável por permitir ao coordenador da ONG gerenciar os cadastros de participantes (cadeirantes e condutores) e eventos, visualizar o dashboard de métricas e acionar/ajustar a formação automática de duplas. Comunica-se com a API por meio de requisições HTTPS e dados em formato JSON.
+
+\subsubsection{API Rest (Backend)}
+Núcleo lógico do sistema encarregado de intermediar as requisições enviadas pela interface visual e acionar as regras de negócio adequadas. Atua como ponto único de entrada para a validação, distribuição e orquestração de chamadas para os serviços especializados internos através de rotas estruturadas.
+
+\subsubsection{Sistema de Autenticação (AuthService)}
+
+Componente de segurança integrado à API backend encarregado de validar as credenciais de acesso informadas pelo coordenador da ONG. Protege o ecossistema garantindo que apenas usuários autorizados acessem os dados e efetuem operações de escrita, modificação ou exportação de relatórios.
+
+\subsubsection{Módulo de Formação de Duplas}
+Unidade central de processamento de inteligência do negócio. Este módulo implementa a lógica do algoritmo que consulta a base histórica de dados, filtra os participantes marcados como ativos, ordena-os priorizando aqueles que estão há mais tempo sem participar e realiza o pareamento automático e justo entre cadeirantes e condutores.
+
+\subsubsection{Módulo de Exportação}
+Módulo responsável por ler os dados das duplas validadas e consolidadas para uma corrida específica e transformá-los em estruturas de arquivos compatíveis com o Microsoft Excel (.xlsx) ou texto separado por vírgulas (.csv). Ele viabiliza o envio do relatório final padronizado para as organizações externas das corridas. Antes de gerar o arquivo, o módulo aciona a exibição de uma modal de confirmação na interface, permitindo que o coordenador escolha se o CPF dos participantes deve ser incluído ou omitido no relatório gerado. O módulo também é acessível a partir da tela de histórico de eventos, permitindo que o coordenador gere o relatório de duplas de corridas já encerradas sem necessidade de navegar até o evento pela tela de início.
+
+\subsubsection{Camada de Persistência}
+Camada arquitetural isolada que encapsula todas as instruções e interações SQL diretas com o banco de dados. É responsável por centralizar o armazenamento de informações cadastrais, eventos e todo o histórico imutável de participações, garantindo o isolamento da lógica de negócios em relação à infraestrutura física de armazenamento de dados. O atributo ativo das tabelas cadeirante e condutor, controlado pelo toggle switch da interface, é consultado pelo FormacaoDuplasService antes de qualquer formação de duplas, garantindo que participantes inativos nunca sejam incluídos no pareamento (RN07).
+
+\subsection{Stack Tecnológica}
+
+\subsubsection{React}
+Escolhido por permitir a criação de interfaces de usuário dinâmicas, modulares e baseadas em componentes reutilizáveis.
+
+\subsubsection{TypeScript}
+Escolhido por introduzir tipagem estática e recursos avançados de orientação a objetos ao ambiente JavaScript. Sua adoção garante maior segurança ao código durante a fase de desenvolvimento, reduz erros em tempo de execução, melhora a legibilidade do sistema e facilita futuras manutenções na lógica de regras de negócio.
+
+\subsubsection{Node.js}
+Escolhido pela alta eficiência no tratamento de múltiplas requisições simultâneas de maneira assíncrona.
+
+\subsubsection{Express}
+Escolhido por ser um framework minimalista e otimizado para estruturar rotas e middlewares no ecossistema Node.js. Ele atua de maneira simplificada no gerenciamento de requisições HTTP, formatação de middlewares de segurança e na distribuição de dados no formato JSON integrada aos controladores do backend.
+
+\subsubsection{PostgreSQL}
+Escolhido por ser um sistema de gerenciamento de banco de dados relacional. Sua escolha é justificada pela necessidade crítica de garantir a consistência de relacionamentos complexos e a imutabilidade dos registros estruturados de participantes e históricos de corridas.
+
+% =============================================================================
+\section{Segurança e Privacidade}
+% =============================================================================
+
+A segurança do Sistema Pernas Solidárias foi planejada considerando o perfil de uso acesso exclusivo pelo coordenador da ONG e a presença de dados pessoais de cadeirantes e condutores, como nome completo e CPF.
+
+% ─── 6.1 ─────────────────────────────────────────────────────────────────────
+\subsection{Autenticação e Controle de Acesso}
+
+O acesso ao sistema é protegido por autenticação baseada em JWT. Após o login com e-mail e senha, a API gera um token com validade definida que deve ser enviado no cabeçalho de todas as requisições seguintes. Requisições sem token válido são rejeitadas com HTTP 401 Unauthorized. Todas as rotas da API são protegidas por middleware de autenticação, impedindo qualquer operação sem credencial válida. 
+
+As senhas são armazenadas como hash gerado pelo algoritmo bcrypt, garantindo que a senha original nunca seja persistida em texto simples. Para reduzir o risco de ataques de força bruta, o sistema bloqueia o acesso por 15 minutos após 5 tentativas consecutivas malsucedidas.
+
+
+Para cadeirantes e condutores o nome completo, CPF, tamanho de camisa, data de nascimento, sexo e telefone, todos obrigatórios.
+A inclusão do CPF nos relatórios exportados fica a critério do coordenador no momento da geração do arquivo.
+
+% Para cadeirantes e condutores o nome completo, tamanho de camisa, data de nascimento e sexo como campos obrigatórios são campos obrigatórios. O CPF é coletado de forma opcional, somente quando fornecido pelo próprio participante ou pela coordenação, e sua inclusão nos relatórios exportados fica a critério do coordenador no momento da geração do arquivo.
+
+\subsection{Proteção de Dados em Trânsito e Armazenamento}
+
+Toda a comunicação entre o navegador e a API ocorre sobre HTTPS.
+As consultas ao banco de dados são realizadas por meio de queries
+parametrizadas, prevenindo injeção de SQL. Variáveis sensíveis como a chave
+secreta do JWT e as credenciais do banco são armazenadas em arquivos .env, fora do repositório de código.
+
+% ─── 6.2 ─────────────────────────────────────────────────────────────────────
+\subsection{Privacidade e LGPD}
+
+O sistema coleta dados pessoais de cadeirantes e condutores estritamente
+necessários para a operação da ONG, em conformidade com o princípio da minimização de dados da LGPD (Lei n\textordmasculine{} 13.709/2018): nome completo, CPF, tamanho de camisa, data de nascimento, sexo e telefone. Para cadeirantes, também é registrado se possuem cadeira de rodas própria. O histórico de participações é mantido exclusivamente para a lógica de priorização na formação de duplas.
+
+Os CPFs são armazenados sem formatação e não são exibidos na interface após o cadastro. O acesso ao banco de dados é restrito à API, sem exposição pública.
+
+Em relação aos direitos dos titulares, o sistema permite:
+
+\begin{itemize}
+    \item \textbf{Correção:} edição dos dados cadastrais diretamente pela interface do coordenador.
+    \item \textbf{Inativação:} o toggle de ativo/inativo remove o
+    participante da formação de novas duplas sem excluir seu histórico,
+    conforme a regra de negócio RN05.
+    \item \textbf{Exclusão:} o coordenador pode remover o cadastro de um
+    participante que não possua duplas vinculadas. Caso existam registros
+    históricos, os dados pessoais serão anonimizados mediante solicitação.
+\end{itemize}
+% =============================================================================
+\section{Planejamento do Projeto}
+
+O planejamento a seguir apresenta os principais marcos do desenvolvimento do
+Sistema Pernas Solidárias, organizados desde a entrega do documento de
+especificação (RFC) até a conclusão do projeto, prevista para o final de
+novembro de 2026. Os marcos foram definidos de forma a respeitar os prazos
+institucionais estabelecidos e garantir uma progressão consistente entre as
+etapas de especificação, validação e desenvolvimento.
+
+\vspace{0.4cm}
+
+\begin{center}
+\begin{tabular}{p{0.08\textwidth} p{0.62\textwidth} p{0.20\textwidth}}
+\toprule
+\textbf{Marco} & \textbf{Descrição} & \textbf{Prazo} \\
+\midrule
+M1 & Conclusão da primeira versão completa do RFC, contemplando visão do produto, engenharia de requisitos, fluxos do sistema, mockups, arquitetura, modelo de dados, segurança e planejamento. & 30/05/2026 \\
+\midrule
+M2 & Validação do RFC junto ao usuário final (coordenador da ONG Pernas Solidárias), coleta de feedback e registro de ajustes necessários. & 06/06/2026 \\
+\midrule
+M3 & Incorporação dos ajustes levantados na validação com o usuário final e submissão do RFC para avaliação dos professores orientadores. & 13/06/2026 \\
+\midrule
+M4 & Coleta do parecer dos professores avaliadores, consolidação das observações recebidas e realização dos ajustes finais no documento. & 20/06/2026 \\
+\midrule
+M5 & Entrega e validação final do RFC com aprovação de todos os professores, encerrando a fase de especificação do projeto. & 30/06/2026 \\
+\midrule
+M6 & Assinatura formal do projeto e início oficial da fase de desenvolvimento, com configuração dos ambientes de desenvolvimento, repositório de código e estrutura base da aplicação. & 14/07/2026 \\
+\midrule
+M7 & Desenvolvimento do front-end: implementação de todas as telas da aplicação (login, eventos, cadeirantes, condutores, formação de duplas e gráficos) com React, TypeScript e Tailwind CSS. & 28/08/2026 \\
+\midrule
+M8 & Desenvolvimento do back-end: implementação da API REST em Node.js com Express, incluindo os módulos de autenticação, gestão de participantes e eventos, e camada de persistência com PostgreSQL. & 30/09/2026 \\
+\midrule
+M9 & Implementação do módulo central de formação automática de duplas com lógica de priorização por histórico de participações, integração com o front-end e módulo de exportação de planilhas. & 31/10/2026 \\
+\midrule
+M10 & Testes de integração, correção de falhas, validação final com o usuário, ajustes de usabilidade e entrega da versão completa do projeto. & 30/11/2026 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% =============================================================================
+
+% =============================================================================
+\section{Referências}
+% =============================================================================
+
+\begin{thebibliography}{99}
+
+% ─── Modelo C4 ────────────────────────────────────────────────────────────────
+
+\bibitem{c4plantuml}
+STRUCTURIZR.
+\textbf{C4-PlantUML: C4 Model for PlantUML}.
+Disponível em:
+\url{https://github.com/plantuml-stdlib/C4-PlantUML}.
+Acesso em: maio 2026.
+
+% ─── Segurança ────────────────────────────────────────────────────────────────
+
+\bibitem{owasp}
+OWASP FOUNDATION.
+\textbf{OWASP Top Ten 2021: The Ten Most Critical Web Application Security Risks}.
+Disponível em: \url{https://owasp.org/www-project-top-ten}.
+Acesso em: maio 2026.
+
+% ─── Legislação ───────────────────────────────────────────────────────────────
+
+\bibitem{lgpd}
+BRASIL.
+\textbf{Lei n\textordmasculine{} 13.709, de 14 de agosto de 2018}.
+Lei Geral de Proteção de Dados Pessoais (LGPD). Brasília, DF: Presidência
+da República, 2018. Disponível em:
+\url{https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm}.
+Acesso em: maio 2026.
+
+% ─── Ferramentas analisadas no Benchmark ─────────────────────────────────────
+
+\bibitem{googlesheets}
+GOOGLE LLC.
+\textbf{Google Sheets}.
+Disponível em: \url{https://sheets.google.com}. Acesso em: maio 2026.
+
+\bibitem{excel}
+MICROSOFT Corporation.
+\textbf{Microsoft Excel}.
+Disponível em: \url{https://www.microsoft.com/excel}. Acesso em: maio 2026.
+
+\bibitem{trello}
+ATLASSIAN.
+\textbf{Trello: gerenciamento visual de projetos}.
+Disponível em: \url{https://trello.com}. Acesso em: maio 2026.
+
+\bibitem{eventbrite}
+EVENTBRITE, Inc.
+\textbf{Eventbrite: plataforma de gestão de eventos}.
+Disponível em: \url{https://www.eventbrite.com}. Acesso em: maio 2026.
+
+% ─── Ferramenta de diagramação ───────────────────────────────────────────────
+
+\bibitem{plantuml}
+PLANTUML.
+\textbf{PlantUML: gerador de diagramas a partir de texto}.
+Disponível em: \url{https://plantuml.com}. Acesso em: maio 2026.
+
+\end{thebibliography}
+
+% =============================================================================
+\section{Apêndices}
+
+
+\subsection{Protótipo de Interface}
+
+O protótipo de alta fidelidade do sistema foi desenvolvido na ferramenta Figma, contemplando todas as telas descritas na seção 4 deste documento. O protótipo pode ser acessado pelo link a seguir:
+\begin{center}
+    \url{https://www.figma.com/design/V3LkhLTiGPCqHS3jXCoJgY/Pernas-Solid%C3%A1rias-TCC?t=hE2MsD9qr7q5Zf2i-1}
+\end{center}
+
+\subsection{Diagramas C4 — Código-Fonte}
+Os diagramas C4 apresentados na seção 5.1 foram gerados com a linguagem PlantUML utilizando a biblioteca C4-PlantUML. Os códigos-fonte estão disponíveis no repositório do projeto na pasta RFC/DIAGRAMAS\_C4 e podem ser reproduzidos em qualquer ambiente com suporte a PlantUML. Também pode ser acessado nessa pasta do Google Drive: 
+\begin{center}
+        \url{https://drive.google.com/drive/folders/1iwzwcnDlSAVrHFAzLZ-XjIGLSd7AdU0u?usp=drive_link}
+    \end{center}
+
+\subsection{Repositório do Projeto}
+O código-fonte do sistema será disponibilizado publicamente ao final do
+desenvolvimento no repositório a seguir:
+\begin{center}
+    \url{https://github.com/LuizFelipeSchroderMarcon/Pernas_Solidarias}
+\end{center}
+
+\subsection{Melhorias Futuras}
+
+Esta seção registra funcionalidades identificadas durante o desenvolvimento do projeto que não serão implementadas na versão atual do sistema, mas que representam evoluções naturais para versões futuras.
+
+\subsubsection{Formulário Público de Autocadastro}
+
+Atualmente, o cadastro de cadeirantes e condutores é realizado exclusivamente pelo coordenador da ONG por meio da interface autenticada do sistema. Uma melhoria futura identificada consiste na disponibilização de um \textbf{link público} contendo um formulário de autocadastro, acessível sem necessidade de autenticação, por meio do qual os próprios interessados em participar das corridas poderiam registrar seus dados diretamente.
+
+O formulário contemplaria os mesmos campos obrigatórios do cadastro interno (nome completo, CPF, telefone, data de nascimento, sexo e tamanho de camisa), além de uma opção para indicar o tipo de participação desejado (cadeirante ou condutor). O CPF atuaria como validador de unicidade, impedindo registros duplicados no sistema.
+
+\subsubsection{Tela de Validação de Novos Cadastros}
+
+Complementar ao formulário público, seria necessária a implementação de uma \textbf{tela de validação} acessível ao coordenador da ONG, na qual os cadastros enviados pelo formulário público ficariam em estado pendente até serem revisados. O coordenador poderia então aprovar ou rejeitar cada solicitação individualmente antes que o participante passasse a integrar as listas de formação de duplas. Essa etapa de validação é essencial para garantir que apenas pessoas efetivamente vinculadas à ONG sejam incluídas no sistema, preservando a integridade dos dados e o controle sobre os participantes ativos.
+
+Essas duas funcionalidades, formulário público e tela de validação, são interdependentes e devem ser implementadas em conjunto em uma versão futura do sistema.
+% =============================================================================
+
+% =============================================================================
+\newpage
+\section{Parecer do Comitê de Avaliação}
+ 
+(A ser preenchido pelos professores)
+ 
+\vspace{0.5cm}
+\noindent\textbf{Avaliador 1:} \rule{7cm}{0.4pt} \\
+\textbf{Status:} [\ ] Aprovado \hspace{1cm} [\ ] Ajustar
+ 
+\vspace{0.3cm}
+\noindent\textbf{Observações:}
+ 
+\vspace{1.8cm}
+\noindent\rule{\textwidth}{0.4pt}
+ 
+\vspace{0.5cm}
+\noindent\textbf{Avaliador 2:} \rule{7cm}{0.4pt} \\
+\textbf{Status:} [\ ] Aprovado \hspace{1cm} [\ ] Ajustar
+ 
+\vspace{0.3cm}
+\noindent\textbf{Observações:}
+ 
+\vspace{1.8cm}
+\noindent\rule{\textwidth}{0.4pt}
+ 
+\vspace{0.5cm}
+\noindent\textbf{Avaliador 3:} \rule{7cm}{0.4pt} \\
+\textbf{Status:} [\ ] Aprovado \hspace{1cm} [\ ] Ajustar
+ 
+\vspace{0.3cm}
+\noindent\textbf{Observações:}
+ 
+\vspace{1.8cm}
+\noindent\rule{\textwidth}{0.4pt}
+% =============================================================================
+
+\end{document}
