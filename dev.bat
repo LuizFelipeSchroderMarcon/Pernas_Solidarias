@@ -5,11 +5,13 @@ echo   Iniciando Pernas Solidarias (Backend + Frontend)
 echo ===================================================
 echo.
 
-REM Inicia os containers via Docker Compose
-docker compose up -d
+REM Inicia o Backend em uma nova janela
+start "Pernas Solidarias - Backend" cmd /k "cd /d ""%~dp0backend"" && npm run dev"
 
-echo Containers Docker iniciados com sucesso!
+REM Inicia o Frontend em uma nova janela
+start "Pernas Solidarias - Frontend" cmd /k "cd /d ""%~dp0frontend"" && npm run dev"
+
+echo Backend e Frontend iniciados em janelas separadas.
+echo Backend:  http://localhost:3000 (ou porta definida no .env)
 echo Frontend: http://localhost:5173
-echo Backend:  http://localhost:3000
-echo Banco:    localhost:5432 (pernas_solidarias)
 echo ===================================================
