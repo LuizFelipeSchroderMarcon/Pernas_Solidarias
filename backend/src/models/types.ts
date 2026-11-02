@@ -13,6 +13,7 @@ export interface User {
   senha?: string;
   tentativas_falhas?: number;
   bloqueado_ate?: Date | null;
+  remaining_seconds?: number;
   created_at: Date;
 }
 
