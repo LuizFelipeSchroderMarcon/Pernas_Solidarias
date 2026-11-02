@@ -231,7 +231,7 @@ export const PairFormationPage: React.FC = () => {
             Formação de Duplas
           </h2>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Forme as duplas para o eventos e exporte o relatório no formato necessário
+            Forme as duplas para os eventos e exporte o relatório no formato necessário
           </p>
         </div>
 

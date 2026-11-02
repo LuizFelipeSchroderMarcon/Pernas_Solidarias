@@ -28,9 +28,13 @@ api.interceptors.response.use(
     if (error.response?.data instanceof Blob) {
       try {
         const text = await error.response.data.text();
-        error.response.data = JSON.parse(text);
+        try {
+          error.response.data = JSON.parse(text);
+        } catch {
+          error.response.data = { message: text };
+        }
       } catch {
-        // Not a JSON blob, keep original
+        // Falha de leitura do blob
       }
     }
     if (error.response?.status === 401) {

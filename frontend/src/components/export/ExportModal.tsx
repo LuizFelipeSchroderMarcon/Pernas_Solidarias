@@ -38,7 +38,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({
         `O download do arquivo (${format.toUpperCase()}) foi iniciado com sucesso.`
       );
       onClose();
-    } catch (err: any) {
+    } catch (err: unknown) {
       const errMsg = mensagemDeErro(err, 'Não foi possível gerar o relatório do evento.');
       error('Falha na exportação', errMsg);
     } finally {

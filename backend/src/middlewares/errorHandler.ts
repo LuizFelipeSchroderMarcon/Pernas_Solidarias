@@ -19,7 +19,6 @@ export function errorHandler(
     res.status(err.statusCode).json({
       status: 'error',
       message: err.message,
-      error: err.message,
     });
     return;
   }
@@ -29,6 +28,5 @@ export function errorHandler(
   res.status(500).json({
     status: 'error',
     message: 'Erro interno do servidor.',
-    error: 'Erro interno do servidor.',
   });
 }
