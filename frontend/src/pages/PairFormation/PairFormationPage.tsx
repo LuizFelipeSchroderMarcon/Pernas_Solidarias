@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Card } from '../../components/common/Card';
 import { Button } from '../../components/common/Button';
@@ -58,16 +58,24 @@ export const PairFormationPage: React.FC = () => {
   // Export modal
   const [exportModalOpen, setExportModalOpen] = useState(false);
   const [isLoadingPairs, setIsLoadingPairs] = useState(false);
+  const latestRequestRef = useRef(0);
 
   const loadEventPairs = useCallback(async (eventId: number) => {
+    const requestId = ++latestRequestRef.current;
     try {
       setIsLoadingPairs(true);
       const data = await pairService.listByEvent(eventId);
-      setPairs(data);
+      if (requestId === latestRequestRef.current) {
+        setPairs(data);
+      }
     } catch {
-      error('Erro', 'Não foi possível carregar as duplas do evento.');
+      if (requestId === latestRequestRef.current) {
+        error('Erro', 'Não foi possível carregar as duplas do evento.');
+      }
     } finally {
-      setIsLoadingPairs(false);
+      if (requestId === latestRequestRef.current) {
+        setIsLoadingPairs(false);
+      }
     }
   }, [error]);
 
@@ -138,6 +146,8 @@ export const PairFormationPage: React.FC = () => {
     if (selectedEventId) {
       loadEventPairs(Number(selectedEventId));
     } else {
+      latestRequestRef.current += 1;
+      setIsLoadingPairs(false);
       setPairs([]);
     }
   }, [selectedEventId, loadEventPairs]);

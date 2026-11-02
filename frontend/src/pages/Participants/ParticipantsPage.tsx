@@ -29,19 +29,15 @@ import { mensagemDeErro } from '../../services/apiError';
 export const ParticipantsPage: React.FC = () => {
   const { success, error } = useToast();
   const [searchParams, setSearchParams] = useSearchParams();
-  const currentTab = searchParams.get('tab') === 'condutor' ? 'condutor' : 'cadeirante';
-  const [activeTab, setActiveTab] = useState<'cadeirante' | 'condutor'>(currentTab);
-
-  useEffect(() => {
-    const tab = searchParams.get('tab');
-    if (tab === 'condutor' || tab === 'cadeirante') {
-      setActiveTab(tab);
-    }
-  }, [searchParams]);
+  const activeTab: 'cadeirante' | 'condutor' =
+    searchParams.get('tab') === 'condutor' ? 'condutor' : 'cadeirante';
 
   const handleTabChange = (tab: 'cadeirante' | 'condutor') => {
-    setActiveTab(tab);
-    setSearchParams({ tab });
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      next.set('tab', tab);
+      return next;
+    });
   };
   const [cadeirantes, setCadeirantes] = useState<Cadeirante[]>([]);
   const [condutores, setCondutores] = useState<Condutor[]>([]);
