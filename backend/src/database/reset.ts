@@ -2,6 +2,10 @@ import { pool } from './connection';
 import { initDatabase } from './setup';
 
 export async function resetDatabase() {
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error('Operação cancelada: reset de banco não é permitido em ambiente de produção.');
+  }
+
   console.log('⚠️  Limpando todas as tabelas e estruturas existentes...');
   try {
     // Dropa todo o schema public e recria limpo (remove tabelas, triggers, sequências e índices)
@@ -17,8 +21,11 @@ export async function resetDatabase() {
   }
 }
 
-if (require.main === module || process.argv[1]?.includes('reset')) {
+if (require.main === module) {
   resetDatabase()
+    .finally(async () => {
+      await pool.end();
+    })
     .then(() => {
       process.exit(0);
     })

@@ -98,7 +98,7 @@ export class WheelchairUserService {
 
     const existingWithCpf = await this.wheelchairUserRepository.findByCpf(cleanCpf);
     if (existingWithCpf && existingWithCpf.cd_cadeirante !== id) {
-      throw new AppError('Este CPF já está utilizado por outro participante.', 409);
+      throw new AppError('Este CPF já está cadastrado para outro cadeirante.', 409);
     }
 
     const existingCondutor = await this.runnerRepository.findByCpf(cleanCpf);
