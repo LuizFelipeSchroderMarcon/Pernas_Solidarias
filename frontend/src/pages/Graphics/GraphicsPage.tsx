@@ -133,9 +133,12 @@ export const GraphicsPage: React.FC = () => {
                         backgroundColor: '#1e293b',
                         borderRadius: '12px',
                         color: '#fff',
-                        border: 'none',
+                        border: '1px solid #334155',
                         fontSize: '12px',
+                        boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.3)',
                       }}
+                      labelStyle={{ color: '#ffffff', fontWeight: 600, marginBottom: '4px' }}
+                      itemStyle={{ color: '#ffffff' }}
                     />
                     <Bar dataKey="total_corridas" radius={[0, 6, 6, 0]}>
                       {runners.map((_, index) => (
@@ -218,9 +221,12 @@ export const GraphicsPage: React.FC = () => {
                         backgroundColor: '#1e293b',
                         borderRadius: '12px',
                         color: '#fff',
-                        border: 'none',
+                        border: '1px solid #334155',
                         fontSize: '12px',
+                        boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.3)',
                       }}
+                      labelStyle={{ color: '#ffffff', fontWeight: 600, marginBottom: '4px' }}
+                      itemStyle={{ color: '#ffffff' }}
                     />
                     <Bar dataKey="total_corridas" radius={[0, 6, 6, 0]}>
                       {wheelchairUsers.map((_, index) => (
@@ -298,9 +304,12 @@ export const GraphicsPage: React.FC = () => {
                       backgroundColor: '#1e293b',
                       borderRadius: '12px',
                       color: '#fff',
-                      border: 'none',
+                      border: '1px solid #334155',
                       fontSize: '12px',
+                      boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.3)',
                     }}
+                    labelStyle={{ color: '#ffffff', fontWeight: 600, marginBottom: '4px' }}
+                    itemStyle={{ color: '#ffffff' }}
                   />
                   <Bar dataKey="total_duplas" radius={[6, 6, 0, 0]}>
                     {events.map((_, index) => (

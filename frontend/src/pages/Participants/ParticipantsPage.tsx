@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Card } from '../../components/common/Card';
 import { Button } from '../../components/common/Button';
 import { Input } from '../../components/common/Input';
@@ -27,8 +28,17 @@ import { mensagemDeErro } from '../../services/apiError';
 
 export const ParticipantsPage: React.FC = () => {
   const { success, error } = useToast();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTab: 'cadeirante' | 'condutor' =
+    searchParams.get('tab') === 'condutor' ? 'condutor' : 'cadeirante';
 
-  const [activeTab, setActiveTab] = useState<'cadeirante' | 'condutor'>('cadeirante');
+  const handleTabChange = (tab: 'cadeirante' | 'condutor') => {
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      next.set('tab', tab);
+      return next;
+    });
+  };
   const [cadeirantes, setCadeirantes] = useState<Cadeirante[]>([]);
   const [condutores, setCondutores] = useState<Condutor[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -192,7 +202,7 @@ export const ParticipantsPage: React.FC = () => {
       {/* Tabs */}
       <div className="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-px">
         <button
-          onClick={() => setActiveTab('cadeirante')}
+          onClick={() => handleTabChange('cadeirante')}
           className={`flex items-center gap-2 px-5 py-3 text-sm font-semibold border-b-2 transition-all cursor-pointer ${activeTab === 'cadeirante'
               ? 'border-blue-600 text-blue-600 dark:text-blue-400 dark:border-blue-400'
               : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'
@@ -203,7 +213,7 @@ export const ParticipantsPage: React.FC = () => {
         </button>
 
         <button
-          onClick={() => setActiveTab('condutor')}
+          onClick={() => handleTabChange('condutor')}
           className={`flex items-center gap-2 px-5 py-3 text-sm font-semibold border-b-2 transition-all cursor-pointer ${activeTab === 'condutor'
               ? 'border-blue-600 text-blue-600 dark:text-blue-400 dark:border-blue-400'
               : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'

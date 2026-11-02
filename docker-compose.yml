@@ -37,6 +37,8 @@ services:
       DB_NAME: pernas_solidarias
       JWT_SECRET: super_secret_jwt_key_pernas_solidarias_2026
       JWT_EXPIRES_IN: 7d
+      CHOKIDAR_USEPOLLING: "true"
+      WATCHPACK_POLLING: "true"
     volumes:
       - ./backend:/app
       - /app/node_modules
@@ -55,6 +57,8 @@ services:
       - "5173:5173"
     environment:
       - VITE_API_URL=http://localhost:3000/api
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
     volumes:
       - ./frontend:/app
       - /app/node_modules
