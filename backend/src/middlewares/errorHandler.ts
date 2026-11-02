@@ -23,6 +23,14 @@ export function errorHandler(
     return;
   }
 
+  if ((err as any).code === 'P0001' || (err as any).code === '23505') {
+    res.status(409).json({
+      status: 'error',
+      message: err.message,
+    });
+    return;
+  }
+
   console.error('Erro não tratado na aplicação:', err);
 
   res.status(500).json({
