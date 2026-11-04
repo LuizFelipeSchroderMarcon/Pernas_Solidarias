@@ -3,7 +3,17 @@ import { User } from '../models/types';
 
 export class UserRepository {
   async findByEmail(email: string): Promise<User | null> {
-    const result = await query('SELECT * FROM "USER" WHERE email = $1', [email]);
+    const result = await query(
+      `SELECT *,
+              CASE
+                WHEN bloqueado_ate IS NOT NULL AND bloqueado_ate > NOW()
+                THEN CEIL(EXTRACT(EPOCH FROM (bloqueado_ate - NOW())))::INT
+                ELSE 0
+              END AS remaining_seconds
+       FROM "USER"
+       WHERE email = $1`,
+      [email]
+    );
     return result.rows[0] || null;
   }
 
@@ -36,7 +46,12 @@ export class UserRepository {
              ELSE bloqueado_ate
            END
        WHERE cd_user = $1
-       RETURNING cd_user, email, tentativas_falhas, bloqueado_ate, created_at`,
+       RETURNING cd_user, email, tentativas_falhas, bloqueado_ate, created_at,
+                 CASE
+                   WHEN bloqueado_ate IS NOT NULL AND bloqueado_ate > NOW()
+                   THEN CEIL(EXTRACT(EPOCH FROM (bloqueado_ate - NOW())))::INT
+                   ELSE 0
+                 END AS remaining_seconds`,
       [userId]
     );
     return result.rows[0];

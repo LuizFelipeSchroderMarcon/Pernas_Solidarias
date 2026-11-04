@@ -43,16 +43,28 @@ export class AuthService {
     }
 
     // Check brute-force lockout (FA01 / RNF04)
-    if (user.bloqueado_ate) {
-      const lockUntil = new Date(user.bloqueado_ate);
-      const now = new Date();
-      if (now < lockUntil) {
-        const remainingMinutes = Math.ceil((lockUntil.getTime() - now.getTime()) / (1000 * 60));
-        throw new AppError(
-          `Acesso bloqueado temporariamente por excesso de tentativas. Tente novamente em ${remainingMinutes} minuto(s).`,
-          429
-        );
-      }
+    const activeRemainingSeconds =
+      typeof user.remaining_seconds === 'number'
+        ? user.remaining_seconds
+        : user.bloqueado_ate
+          ? Math.max(0, Math.ceil((new Date(user.bloqueado_ate).getTime() - Date.now()) / 1000))
+          : 0;
+
+    if (activeRemainingSeconds > 0) {
+      const minutes = Math.floor(activeRemainingSeconds / 60);
+      const seconds = activeRemainingSeconds % 60;
+      const lockUntilIso = user.bloqueado_ate
+        ? new Date(user.bloqueado_ate).toISOString()
+        : new Date(Date.now() + activeRemainingSeconds * 1000).toISOString();
+
+      throw new AppError(
+        `Acesso bloqueado temporariamente por excesso de tentativas. Tente novamente em ${minutes} minuto(s) e ${seconds} segundo(s).`,
+        429,
+        {
+          bloqueado_ate: lockUntilIso,
+          remaining_seconds: activeRemainingSeconds,
+        }
+      );
     }
 
     const passwordMatch = await bcrypt.compare(password, user.senha);
@@ -60,9 +72,23 @@ export class AuthService {
       const updatedUser = await this.userRepository.incrementFailedAttempts(user.cd_user);
       const attempts = updatedUser.tentativas_falhas || 1;
       if (attempts >= 5) {
+        const remainingSeconds =
+          typeof updatedUser.remaining_seconds === 'number' && updatedUser.remaining_seconds > 0
+            ? updatedUser.remaining_seconds
+            : 15 * 60;
+        const minutes = Math.floor(remainingSeconds / 60);
+        const seconds = remainingSeconds % 60;
+        const lockUntil = updatedUser.bloqueado_ate
+          ? new Date(updatedUser.bloqueado_ate)
+          : new Date(Date.now() + remainingSeconds * 1000);
+
         throw new AppError(
-          'Acesso bloqueado por 15 minutos após 5 tentativas consecutivas incorretas.',
-          429
+          `Acesso bloqueado temporariamente por excesso de tentativas. Tente novamente em ${minutes} minuto(s) e ${seconds} segundo(s).`,
+          429,
+          {
+            bloqueado_ate: lockUntil.toISOString(),
+            remaining_seconds: remainingSeconds,
+          }
         );
       }
       throw new AppError(
