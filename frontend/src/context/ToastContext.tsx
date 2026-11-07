@@ -66,17 +66,17 @@ const icons = {
 };
 
 const styles = {
-  success: 'bg-emerald-50 text-emerald-900 border-emerald-200 dark:bg-emerald-950/80 dark:text-emerald-200 dark:border-emerald-800',
-  error: 'bg-rose-50 text-rose-900 border-rose-200 dark:bg-rose-950/80 dark:text-rose-200 dark:border-rose-800',
-  warning: 'bg-amber-50 text-amber-900 border-amber-200 dark:bg-amber-950/80 dark:text-amber-200 dark:border-amber-800',
-  info: 'bg-sky-50 text-sky-900 border-sky-200 dark:bg-sky-950/80 dark:text-sky-200 dark:border-sky-800',
+  success: 'bg-white text-black border-[#166534] border-2',
+  error: 'bg-[#E92323] text-white border-black',
+  warning: 'bg-amber-100 text-black border-amber-500',
+  info: 'bg-white text-black border-[#B9B9B9]',
 };
 
 const iconColors = {
-  success: 'text-emerald-600 dark:text-emerald-400',
-  error: 'text-rose-600 dark:text-rose-400',
-  warning: 'text-amber-600 dark:text-amber-400',
-  info: 'text-sky-600 dark:text-sky-400',
+  success: 'text-[#166534]',
+  error: 'text-white',
+  warning: 'text-amber-700',
+  info: 'text-[#166534]',
 };
 
 const ToastContainer: React.FC<{ messages: ToastMessage[]; onRemove: (id: string) => void }> = ({

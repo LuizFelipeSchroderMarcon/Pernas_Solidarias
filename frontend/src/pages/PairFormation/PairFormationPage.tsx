@@ -227,22 +227,22 @@ export const PairFormationPage: React.FC = () => {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+          <h2 className="text-2xl font-extrabold text-black tracking-tight">
             Formação de Duplas
           </h2>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-xs sm:text-sm text-[#525252] mt-1">
             Forme as duplas para os eventos e exporte o relatório no formato necessário
           </p>
         </div>
 
         {pairs.length > 0 && selectedEvent && (
           <Button
-            variant="outline"
+            variant="success"
             size="md"
             onClick={() => setExportModalOpen(true)}
             leftIcon={<Download className="w-4 h-4" />}
           >
-            Exportar Relatório
+            Gerar Relatório
           </Button>
         )}
       </div>
@@ -272,26 +272,26 @@ export const PairFormationPage: React.FC = () => {
 
           {/* Quick counts */}
           <div className="flex flex-wrap items-center gap-4">
-            <div className="flex items-center gap-2 p-2.5 rounded-xl bg-blue-50 dark:bg-blue-950/50 border border-blue-100 dark:border-blue-900 text-xs">
-              <Users className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-              <span className="text-slate-600 dark:text-slate-300">Cadeirantes Ativos:</span>
-              <span className="font-bold text-blue-700 dark:text-blue-300">
+            <div className="flex items-center gap-2 p-2.5 rounded-xl bg-[#D9D9D9] border border-[#B9B9B9] text-xs">
+              <Users className="w-4 h-4 text-black" />
+              <span className="text-black">Cadeirantes Ativos:</span>
+              <span className="font-bold text-black">
                 {activeCadeirantes.length}
               </span>
             </div>
 
-            <div className="flex items-center gap-2 p-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-100 dark:border-indigo-900 text-xs">
-              <UserCheck className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
-              <span className="text-slate-600 dark:text-slate-300">Condutores Ativos:</span>
-              <span className="font-bold text-indigo-700 dark:text-indigo-300">
+            <div className="flex items-center gap-2 p-2.5 rounded-xl bg-[#D9D9D9] border border-[#B9B9B9] text-xs">
+              <UserCheck className="w-4 h-4 text-black" />
+              <span className="text-black">Condutores Ativos:</span>
+              <span className="font-bold text-black">
                 {activeCondutores.length}
               </span>
             </div>
 
-            <div className="flex items-center gap-2 p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-100 dark:border-emerald-900 text-xs">
-              <Layers className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-              <span className="text-slate-600 dark:text-slate-300">Capacidade Máxima:</span>
-              <span className="font-bold text-emerald-700 dark:text-emerald-300">
+            <div className="flex items-center gap-2 p-2.5 rounded-xl bg-[#15803D]/15 border border-[#166534] text-xs">
+              <Layers className="w-4 h-4 text-[#166534]" />
+              <span className="text-black">Capacidade Máxima:</span>
+              <span className="font-bold text-[#166534]">
                 {maxPossiblePairs} duplas
               </span>
             </div>
@@ -300,7 +300,7 @@ export const PairFormationPage: React.FC = () => {
 
         {/* Action button bar */}
         {selectedEvent && (
-          <div className="flex flex-wrap items-center justify-between gap-4 mt-6 pt-5 border-t border-slate-100 dark:border-slate-800">
+          <div className="flex flex-wrap items-center justify-between gap-4 mt-6 pt-5 border-t border-[#D9D9D9]">
             <div className="flex items-center gap-2">
               <Badge variant={pairs.length > 0 ? 'success' : 'warning'} size="md">
                 {pairs.length > 0
@@ -312,11 +312,10 @@ export const PairFormationPage: React.FC = () => {
             <div className="flex items-center gap-3">
               {pairs.length > 0 && (
                 <Button
-                  variant="outline"
+                  variant="danger"
                   size="sm"
                   onClick={() => setClearDialogOpen(true)}
-                  leftIcon={<RotateCcw className="w-4 h-4 text-rose-500" />}
-                  className="text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 border-rose-200"
+                  leftIcon={<RotateCcw className="w-4 h-4" />}
                 >
                   Limpar Duplas
                 </Button>
@@ -327,8 +326,7 @@ export const PairFormationPage: React.FC = () => {
                 size="sm"
                 onClick={handleGeneratePairs}
                 isLoading={isGenerating}
-                leftIcon={<Sparkles className="w-4 h-4 text-amber-300" />}
-                className="shadow-sm shadow-blue-600/30"
+                leftIcon={<Sparkles className="w-4 h-4 text-white" />}
               >
                 {pairs.length > 0 ? 'Regerar Duplas Automaticamente' : 'Gerar Duplas Automaticamente'}
               </Button>
@@ -339,8 +337,8 @@ export const PairFormationPage: React.FC = () => {
 
       {/* Disparity Warning */}
       {selectedEvent && activeCadeirantes.length !== activeCondutores.length && (
-        <div className="flex items-center gap-3 p-4 rounded-2xl bg-amber-50 border border-amber-200 dark:bg-amber-950/40 dark:border-amber-900 text-amber-800 dark:text-amber-200 text-xs sm:text-sm">
-          <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0" />
+        <div className="flex items-center gap-3 p-4 rounded-2xl bg-amber-100 border border-amber-400 text-black text-xs sm:text-sm">
+          <AlertTriangle className="w-5 h-5 text-amber-700 shrink-0" />
           <p className="leading-relaxed">
             <strong>Aviso de Participantes:</strong> Existem {activeCadeirantes.length}{' '}
             cadeirantes ativos e {activeCondutores.length} condutores ativos. O algoritmo formará{' '}
@@ -360,15 +358,15 @@ export const PairFormationPage: React.FC = () => {
           {pairs.map((pair, index) => (
             <Card
               key={pair.cd_dupla}
-              className="relative overflow-hidden border border-slate-200/80 dark:border-slate-800 shadow-xs hover:shadow-md transition-all duration-200 p-5 flex flex-col justify-between"
+              className="relative overflow-hidden border border-[#B9B9B9] shadow-xs hover:shadow-md transition-all duration-200 p-5 flex flex-col justify-between"
             >
               {/* Header: Dupla number + Edit action */}
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+              <div className="flex items-center justify-between pb-3 border-b border-[#D9D9D9]">
                 <div className="flex items-center gap-2">
-                  <span className="flex items-center justify-center w-6 h-6 rounded-full bg-blue-600 text-white font-extrabold text-xs">
+                  <span className="flex items-center justify-center w-6 h-6 rounded-full bg-[#15803D] border border-[#166534] text-white font-extrabold text-xs">
                     {index + 1}
                   </span>
-                  <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  <span className="text-xs font-bold uppercase tracking-wider text-black">
                     Dupla #{index + 1}
                   </span>
                 </div>
@@ -377,7 +375,7 @@ export const PairFormationPage: React.FC = () => {
                     setEditingPair(pair);
                     setEditModalOpen(true);
                   }}
-                  className="flex items-center gap-1 text-xs font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400 p-1.5 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-950/50 transition-colors"
+                  className="flex items-center gap-1 text-xs font-semibold text-black bg-white border border-black/50 px-2.5 py-1 rounded-lg hover:bg-[#16A34A] hover:text-white transition-colors cursor-pointer"
                   title="Trocar integrante"
                 >
                   <Edit2 className="w-3.5 h-3.5" />
@@ -388,31 +386,31 @@ export const PairFormationPage: React.FC = () => {
               {/* Pair composition details: Cadeirante | Condutor */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-4">
                 {/* Left: Cadeirante */}
-                <div className="p-3.5 rounded-xl bg-blue-50/50 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/50 flex flex-col justify-between">
+                <div className="p-3.5 rounded-xl bg-[#D9D9D9]/70 border border-[#B9B9B9] flex flex-col justify-between">
                   <div>
                     <div className="flex items-center justify-between gap-1 mb-1.5">
-                      <span className="text-[11px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-black">
                         Cadeirante
                       </span>
                       <Badge variant="neutral" size="sm">
                         {pair.tam_camisa_cadeirante}
                       </Badge>
                     </div>
-                    <h4 className="text-sm font-bold text-slate-900 dark:text-white leading-snug">
+                    <h4 className="text-sm font-bold text-black leading-snug">
                       {pair.nm_cadeirante}
                     </h4>
                   </div>
 
-                  <div className="mt-3 pt-2 border-t border-blue-100/60 dark:border-blue-900/40 flex flex-col gap-1.5 text-xs text-slate-600 dark:text-slate-300">
+                  <div className="mt-3 pt-2 border-t border-[#B9B9B9] flex flex-col gap-1.5 text-xs text-black">
                     <a
                       href={`tel:${pair.telefone_cadeirante}`}
-                      className="inline-flex items-center gap-1 text-slate-600 hover:text-blue-600 dark:text-slate-300 hover:underline"
+                      className="inline-flex items-center gap-1 text-black hover:text-[#166534] hover:underline"
                     >
-                      <Phone className="w-3 h-3 text-slate-400" />
+                      <Phone className="w-3 h-3 text-[#525252]" />
                       <span>{formatPhone(pair.telefone_cadeirante)}</span>
                     </a>
                     {pair.possui_cadeira_propria && (
-                      <span className="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-semibold text-[11px]">
+                      <span className="inline-flex items-center gap-1 text-[#166534] font-bold text-[11px]">
                         <Armchair className="w-3.5 h-3.5" /> Cadeira Própria
                       </span>
                     )}
@@ -420,36 +418,36 @@ export const PairFormationPage: React.FC = () => {
                 </div>
 
                 {/* Right: Condutor */}
-                <div className="p-3.5 rounded-xl bg-indigo-50/50 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/50 flex flex-col justify-between">
+                <div className="p-3.5 rounded-xl bg-[#D9D9D9]/70 border border-[#B9B9B9] flex flex-col justify-between">
                   <div>
                     <div className="flex items-center justify-between gap-1 mb-1.5">
-                      <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-black">
                         Condutor
                       </span>
                       <Badge variant="neutral" size="sm">
                         {pair.tam_camisa_condutor}
                       </Badge>
                     </div>
-                    <h4 className="text-sm font-bold text-slate-900 dark:text-white leading-snug">
+                    <h4 className="text-sm font-bold text-black leading-snug">
                       {pair.nm_condutor}
                     </h4>
                   </div>
 
-                  <div className="mt-3 pt-2 border-t border-indigo-100/60 dark:border-indigo-900/40 flex flex-col gap-1.5 text-xs text-slate-600 dark:text-slate-300">
+                  <div className="mt-3 pt-2 border-t border-[#B9B9B9] flex flex-col gap-1.5 text-xs text-black">
                     <a
                       href={`tel:${pair.telefone_condutor}`}
-                      className="inline-flex items-center gap-1 text-slate-600 hover:text-indigo-600 dark:text-slate-300 hover:underline"
+                      className="inline-flex items-center gap-1 text-black hover:text-[#166534] hover:underline"
                     >
-                      <Phone className="w-3 h-3 text-slate-400" />
+                      <Phone className="w-3 h-3 text-[#525252]" />
                       <span>{formatPhone(pair.telefone_condutor)}</span>
                     </a>
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between text-[11px] text-slate-400 pt-2">
+              <div className="flex items-center justify-between text-[11px] text-[#525252] pt-2">
                 <span>1 Cadeirante + 1 Condutor</span>
-                <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium">
+                <span className="flex items-center gap-1 text-[#166534] font-bold">
                   <CheckCircle2 className="w-3 h-3" /> Válida
                 </span>
               </div>
@@ -468,7 +466,7 @@ export const PairFormationPage: React.FC = () => {
                 size="md"
                 onClick={handleGeneratePairs}
                 isLoading={isGenerating}
-                leftIcon={<Sparkles className="w-4 h-4 text-amber-300" />}
+                leftIcon={<Sparkles className="w-4 h-4 text-white" />}
               >
                 Gerar Duplas Automaticamente
               </Button>

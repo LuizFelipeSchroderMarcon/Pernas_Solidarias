@@ -90,7 +90,7 @@ export const EditPairModal: React.FC<EditPairModalProps> = ({
       maxWidth="md"
       footer={
         <>
-          <Button variant="ghost" size="sm" onClick={onClose} disabled={isSubmitting}>
+          <Button variant="danger" size="sm" onClick={onClose} disabled={isSubmitting}>
             Cancelar
           </Button>
           <Button variant="primary" size="sm" onClick={handleSubmit} isLoading={isSubmitting}>
@@ -100,7 +100,7 @@ export const EditPairModal: React.FC<EditPairModalProps> = ({
       }
     >
       <form onSubmit={handleSubmit} className="space-y-5">
-        <div className="p-3.5 rounded-xl bg-blue-50/70 border border-blue-100 text-blue-900 text-xs dark:bg-blue-950/40 dark:border-blue-900 dark:text-blue-200 leading-relaxed">
+        <div className="p-3.5 rounded-xl bg-[#15803D]/15 border border-[#166534] text-black text-xs leading-relaxed font-medium">
           💡 A alteração manual preserva a integridade de 1 cadeirante + 1 condutor por dupla no
           mesmo evento.
         </div>

@@ -180,10 +180,10 @@ export const ParticipantsPage: React.FC = () => {
       {/* Header with Title and Action Button */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-            Gestão de Participantes
+          <h2 className="text-2xl font-extrabold text-black tracking-tight">
+            {activeTab === 'cadeirante' ? 'Cadeirantes' : 'Condutores'}
           </h2>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-xs sm:text-sm text-[#525252] mt-1">
             Cadastre, edite e gerencie o status de cadeirantes e condutores
           </p>
         </div>
@@ -193,20 +193,20 @@ export const ParticipantsPage: React.FC = () => {
           size="md"
           onClick={handleOpenCreate}
           leftIcon={<Plus className="w-4 h-4" />}
-          className="shadow-sm shadow-blue-500/20"
         >
-          {activeTab === 'cadeirante' ? 'Novo Cadeirante' : 'Novo Condutor'}
+          {activeTab === 'cadeirante' ? 'Novo cadeirante' : 'Novo condutor'}
         </Button>
       </div>
 
       {/* Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-px">
+      <div className="flex items-center gap-2 border-b border-[#B9B9B9] pb-px">
         <button
           onClick={() => handleTabChange('cadeirante')}
-          className={`flex items-center gap-2 px-5 py-3 text-sm font-semibold border-b-2 transition-all cursor-pointer ${activeTab === 'cadeirante'
-              ? 'border-blue-600 text-blue-600 dark:text-blue-400 dark:border-blue-400'
-              : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'
-            }`}
+          className={`flex items-center gap-2 px-5 py-3 text-sm font-bold border-b-2 transition-all cursor-pointer ${
+            activeTab === 'cadeirante'
+              ? 'border-[#166534] text-[#166534] bg-[#15803D]/15 rounded-t-xl'
+              : 'border-transparent text-[#525252] hover:text-black'
+          }`}
         >
           <Users className="w-4 h-4" />
           <span>Cadeirantes ({cadeirantes.length})</span>
@@ -214,25 +214,27 @@ export const ParticipantsPage: React.FC = () => {
 
         <button
           onClick={() => handleTabChange('condutor')}
-          className={`flex items-center gap-2 px-5 py-3 text-sm font-semibold border-b-2 transition-all cursor-pointer ${activeTab === 'condutor'
-              ? 'border-blue-600 text-blue-600 dark:text-blue-400 dark:border-blue-400'
-              : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'
-            }`}
+          className={`flex items-center gap-2 px-5 py-3 text-sm font-bold border-b-2 transition-all cursor-pointer ${
+            activeTab === 'condutor'
+              ? 'border-[#166534] text-[#166534] bg-[#15803D]/15 rounded-t-xl'
+              : 'border-transparent text-[#525252] hover:text-black'
+          }`}
         >
           <UserCheck className="w-4 h-4" />
           <span>Condutores ({condutores.length})</span>
         </button>
       </div>
 
-      {/* Filter and Search Bar */}
+      {/* Filter and Search Bar matching Figma "Barra de pesquisa" (#D9D9D9 75%) */}
       <Card className="p-4">
         <div className="flex flex-col sm:flex-row items-center gap-4">
           <div className="flex-1 w-full">
             <Input
-              placeholder="Buscar por nome ou CPF..."
+              placeholder="Buscar por nome ou por CPF..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              leftIcon={<Search className="w-4 h-4" />}
+              leftIcon={<Search className="w-4 h-4 text-[#525252]" />}
+              className="bg-[#D9D9D9]/75 border-[#B9B9B9] placeholder-[#525252] text-black"
             />
           </div>
 
@@ -257,8 +259,8 @@ export const ParticipantsPage: React.FC = () => {
         ) : activeTab === 'cadeirante' ? (
           filteredCadeirantes.length > 0 ? (
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm text-slate-700 dark:text-slate-300">
-                <thead className="bg-slate-50 dark:bg-slate-800/60 text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-semibold border-b border-slate-100 dark:border-slate-800">
+              <table className="w-full text-left text-sm text-black">
+                <thead className="bg-[#D9D9D9]/70 text-xs uppercase tracking-wider text-black font-bold border-b border-[#B9B9B9]">
                   <tr>
                     <th className="px-6 py-4">Nome</th>
                     <th className="px-6 py-4">CPF</th>
@@ -269,24 +271,24 @@ export const ParticipantsPage: React.FC = () => {
                     <th className="px-6 py-4 text-right">Ações</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                <tbody className="divide-y divide-[#D9D9D9]">
                   {filteredCadeirantes.map((cad) => (
                     <tr
                       key={cad.cd_cadeirante}
-                      className="hover:bg-slate-50/50 dark:hover:bg-slate-850/50 transition-colors"
+                      className="hover:bg-[#EBEAEA]/50 transition-colors"
                     >
-                      <td className="px-6 py-4 font-semibold text-slate-900 dark:text-white">
+                      <td className="px-6 py-4 font-bold text-black">
                         {cad.nm_cadeirante}
                       </td>
-                      <td className="px-6 py-4 text-slate-600 dark:text-slate-400 font-mono text-xs">
+                      <td className="px-6 py-4 text-[#7C7C7C] font-mono text-xs">
                         {formatCPF(cad.cpf) || '-'}
                       </td>
                       <td className="px-6 py-4">
                         <a
                           href={`tel:${cad.telefone}`}
-                          className="inline-flex items-center gap-1.5 text-blue-600 hover:text-blue-700 dark:text-blue-400 hover:underline"
+                          className="inline-flex items-center gap-1.5 text-black hover:text-[#166534] font-medium hover:underline"
                         >
-                          <Phone className="w-3.5 h-3.5" />
+                          <Phone className="w-3.5 h-3.5 text-[#166534]" />
                           <span>{formatPhone(cad.telefone)}</span>
                         </a>
                       </td>
@@ -317,14 +319,14 @@ export const ParticipantsPage: React.FC = () => {
                         <div className="flex items-center justify-end gap-1">
                           <button
                             onClick={() => handleOpenEdit(cad)}
-                            className="p-1.5 text-slate-400 hover:text-blue-600 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-950/50 transition-colors"
+                            className="p-1.5 text-[#525252] hover:text-[#166534] rounded-lg hover:bg-[#16A34A]/20 transition-colors cursor-pointer"
                             title="Editar"
                           >
                             <Edit2 className="w-4 h-4" />
                           </button>
                           <button
                             onClick={() => handleOpenDelete(cad.cd_cadeirante)}
-                            className="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-950/50 transition-colors"
+                            className="p-1.5 text-[#525252] hover:text-[#F51414] rounded-lg hover:bg-[#F51414]/15 transition-colors cursor-pointer"
                             title="Excluir"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -359,8 +361,8 @@ export const ParticipantsPage: React.FC = () => {
           )
         ) : filteredCondutores.length > 0 ? (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm text-slate-700 dark:text-slate-300">
-              <thead className="bg-slate-50 dark:bg-slate-800/60 text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-semibold border-b border-slate-100 dark:border-slate-800">
+            <table className="w-full text-left text-sm text-black">
+              <thead className="bg-[#D9D9D9]/70 text-xs uppercase tracking-wider text-black font-bold border-b border-[#B9B9B9]">
                 <tr>
                   <th className="px-6 py-4">Nome</th>
                   <th className="px-6 py-4">CPF</th>
@@ -370,24 +372,24 @@ export const ParticipantsPage: React.FC = () => {
                   <th className="px-6 py-4 text-right">Ações</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+              <tbody className="divide-y divide-[#D9D9D9]">
                 {filteredCondutores.map((cond) => (
                   <tr
                     key={cond.cd_condutor}
-                    className="hover:bg-slate-50/50 dark:hover:bg-slate-850/50 transition-colors"
+                    className="hover:bg-[#EBEAEA]/50 transition-colors"
                   >
-                    <td className="px-6 py-4 font-semibold text-slate-900 dark:text-white">
+                    <td className="px-6 py-4 font-bold text-black">
                       {cond.nm_condutor}
                     </td>
-                    <td className="px-6 py-4 text-slate-600 dark:text-slate-400 font-mono text-xs">
+                    <td className="px-6 py-4 text-[#7C7C7C] font-mono text-xs">
                       {formatCPF(cond.cpf) || '-'}
                     </td>
                     <td className="px-6 py-4">
                       <a
                         href={`tel:${cond.telefone}`}
-                        className="inline-flex items-center gap-1.5 text-blue-600 hover:text-blue-700 dark:text-blue-400 hover:underline"
+                        className="inline-flex items-center gap-1.5 text-black hover:text-[#166534] font-medium hover:underline"
                       >
-                        <Phone className="w-3.5 h-3.5" />
+                        <Phone className="w-3.5 h-3.5 text-[#166534]" />
                         <span>{formatPhone(cond.telefone)}</span>
                       </a>
                     </td>
@@ -407,14 +409,14 @@ export const ParticipantsPage: React.FC = () => {
                       <div className="flex items-center justify-end gap-1">
                         <button
                           onClick={() => handleOpenEdit(cond)}
-                          className="p-1.5 text-slate-400 hover:text-blue-600 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-950/50 transition-colors"
+                          className="p-1.5 text-[#525252] hover:text-[#166534] rounded-lg hover:bg-[#16A34A]/20 transition-colors cursor-pointer"
                           title="Editar"
                         >
                           <Edit2 className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => handleOpenDelete(cond.cd_condutor)}
-                          className="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-950/50 transition-colors"
+                          className="p-1.5 text-[#525252] hover:text-[#F51414] rounded-lg hover:bg-[#F51414]/15 transition-colors cursor-pointer"
                           title="Excluir"
                         >
                           <Trash2 className="w-4 h-4" />

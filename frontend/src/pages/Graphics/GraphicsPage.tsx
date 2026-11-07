@@ -55,28 +55,37 @@ export const GraphicsPage: React.FC = () => {
   const wheelchairUsers = data?.top_wheelchair_users || [];
   const events = data?.top_events || [];
 
-  const runnerColors = ['#4f46e5', '#6366f1', '#818cf8', '#a5b4fc', '#c7d2fe', '#e0e7ff', '#eef2ff'];
-  const wheelchairColors = ['#0284c7', '#0ea5e9', '#38bdf8', '#7dd3fc', '#bae6fd', '#e0f2fe', '#f0f9ff'];
-  const eventColors = ['#059669', '#10b981', '#34d399', '#6ee7b7', '#a7f3d0', '#d1fae5', '#ecfdf5'];
+  const runnerColors = ['#166534', '#15803D', '#16A34A', '#22C55E', '#4ADE80', '#86EFAC', '#BBF7D0'];
+  const wheelchairColors = ['#166534', '#15803D', '#16A34A', '#22C55E', '#4ADE80', '#86EFAC', '#BBF7D0'];
+  const eventColors = ['#166534', '#15803D', '#16A34A', '#22C55E', '#4ADE80', '#86EFAC', '#BBF7D0'];
 
   return (
     <div className="space-y-8">
+      <div>
+        <h2 className="text-2xl font-extrabold text-black tracking-tight">
+          Gráficos
+        </h2>
+        <p className="text-xs sm:text-sm text-[#525252] mt-1">
+          Estatísticas de participações em corridas e eventos com mais inscrições
+        </p>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="flex flex-col">
-          <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+        <Card className="flex flex-col border-[#B9B9B9]">
+          <div className="flex items-center justify-between pb-4 border-b border-[#D9D9D9]">
             <div className="flex items-center gap-2">
-              <UserCheck className="w-5 h-5 text-indigo-600" />
+              <UserCheck className="w-5 h-5 text-[#166534]" />
               <div>
-                <h3 className="text-base font-bold text-slate-800 dark:text-slate-100">
-                  Corredores que Mais Participaram
+                <h3 className="text-base font-bold text-black">
+                  Corredores que mais participaram
                 </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
+                <p className="text-xs text-[#7C7C7C]">
                   Condutores com maior número de duplas em corridas
                 </p>
               </div>
             </div>
-            <Badge variant="neutral" size="sm">
-              <Trophy className="w-3 h-3 mr-1 text-amber-500" /> Top {runners.length}
+            <Badge variant="primary" size="sm">
+              <Trophy className="w-3 h-3 mr-1 text-[#166534]" /> Top {runners.length}
             </Badge>
           </div>
 
@@ -97,7 +106,7 @@ export const GraphicsPage: React.FC = () => {
                     layout="vertical"
                     margin={{ top: 5, right: 30, left: 10, bottom: 5 }}
                   >
-                    <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#e2e8f0" />
+                    <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#D9D9D9" />
                     <XAxis type="number" allowDecimals={false} tickLine={false} axisLine={false} />
                     <YAxis
                       dataKey="nome"
@@ -105,20 +114,20 @@ export const GraphicsPage: React.FC = () => {
                       width={120}
                       tickLine={false}
                       axisLine={false}
-                      tick={{ fontSize: 12, fill: '#64748b' }}
+                      tick={{ fontSize: 12, fill: '#000000' }}
                     />
                     <Tooltip
                       formatter={(val: any) => [`${val} corrida(s)`, 'Participações']}
                       contentStyle={{
-                        backgroundColor: '#1e293b',
+                        backgroundColor: '#FFFFFF',
                         borderRadius: '12px',
-                        color: '#fff',
-                        border: '1px solid #334155',
+                        color: '#000000',
+                        border: '1px solid #B9B9B9',
                         fontSize: '12px',
-                        boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.3)',
+                        boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.15)',
                       }}
-                      labelStyle={{ color: '#ffffff', fontWeight: 600, marginBottom: '4px' }}
-                      itemStyle={{ color: '#ffffff' }}
+                      labelStyle={{ color: '#000000', fontWeight: 700, marginBottom: '4px' }}
+                      itemStyle={{ color: '#000000' }}
                     />
                     <Bar dataKey="total_corridas" radius={[0, 6, 6, 0]}>
                       {runners.map((_, index) => (
@@ -129,16 +138,16 @@ export const GraphicsPage: React.FC = () => {
                 </ResponsiveContainer>
               </div>
 
-              <div className="divide-y divide-slate-100 dark:divide-slate-800 pt-2 text-xs">
+              <div className="divide-y divide-[#D9D9D9] pt-2 text-xs">
                 {runners.slice(0, 3).map((r, i) => (
                   <div key={r.id} className="py-2 flex items-center justify-between">
-                    <span className="font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-2">
-                      <span className="w-5 h-5 rounded-full bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 flex items-center justify-center font-bold text-[11px]">
+                    <span className="font-semibold text-black flex items-center gap-2">
+                      <span className="w-5 h-5 rounded-full bg-[#15803D] text-white flex items-center justify-center font-bold text-[11px]">
                         {i + 1}º
                       </span>
                       {r.nome}
                     </span>
-                    <span className="font-bold text-indigo-600 dark:text-indigo-400">
+                    <span className="font-bold text-[#166534]">
                       {r.total_corridas} participação(ões)
                     </span>
                   </div>
@@ -148,21 +157,21 @@ export const GraphicsPage: React.FC = () => {
           )}
         </Card>
 
-        <Card className="flex flex-col">
-          <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+        <Card className="flex flex-col border-[#B9B9B9]">
+          <div className="flex items-center justify-between pb-4 border-b border-[#D9D9D9]">
             <div className="flex items-center gap-2">
-              <Users className="w-5 h-5 text-blue-600" />
+              <Users className="w-5 h-5 text-[#166534]" />
               <div>
-                <h3 className="text-base font-bold text-slate-800 dark:text-slate-100">
-                  Cadeirantes que Mais Participaram
+                <h3 className="text-base font-bold text-black">
+                  Cadeirantes que mais participaram
                 </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
+                <p className="text-xs text-[#7C7C7C]">
                   Cadeirantes com maior número de duplas em corridas
                 </p>
               </div>
             </div>
-            <Badge variant="neutral" size="sm">
-              <Award className="w-3 h-3 mr-1 text-blue-500" /> Top {wheelchairUsers.length}
+            <Badge variant="primary" size="sm">
+              <Award className="w-3 h-3 mr-1 text-[#166534]" /> Top {wheelchairUsers.length}
             </Badge>
           </div>
 
@@ -183,7 +192,7 @@ export const GraphicsPage: React.FC = () => {
                     layout="vertical"
                     margin={{ top: 5, right: 30, left: 10, bottom: 5 }}
                   >
-                    <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#e2e8f0" />
+                    <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#D9D9D9" />
                     <XAxis type="number" allowDecimals={false} tickLine={false} axisLine={false} />
                     <YAxis
                       dataKey="nome"
@@ -191,20 +200,20 @@ export const GraphicsPage: React.FC = () => {
                       width={120}
                       tickLine={false}
                       axisLine={false}
-                      tick={{ fontSize: 12, fill: '#64748b' }}
+                      tick={{ fontSize: 12, fill: '#000000' }}
                     />
                     <Tooltip
                       formatter={(val: any) => [`${val} corrida(s)`, 'Participações']}
                       contentStyle={{
-                        backgroundColor: '#1e293b',
+                        backgroundColor: '#FFFFFF',
                         borderRadius: '12px',
-                        color: '#fff',
-                        border: '1px solid #334155',
+                        color: '#000000',
+                        border: '1px solid #B9B9B9',
                         fontSize: '12px',
-                        boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.3)',
+                        boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.15)',
                       }}
-                      labelStyle={{ color: '#ffffff', fontWeight: 600, marginBottom: '4px' }}
-                      itemStyle={{ color: '#ffffff' }}
+                      labelStyle={{ color: '#000000', fontWeight: 700, marginBottom: '4px' }}
+                      itemStyle={{ color: '#000000' }}
                     />
                     <Bar dataKey="total_corridas" radius={[0, 6, 6, 0]}>
                       {wheelchairUsers.map((_, index) => (
@@ -215,16 +224,16 @@ export const GraphicsPage: React.FC = () => {
                 </ResponsiveContainer>
               </div>
 
-              <div className="divide-y divide-slate-100 dark:divide-slate-800 pt-2 text-xs">
+              <div className="divide-y divide-[#D9D9D9] pt-2 text-xs">
                 {wheelchairUsers.slice(0, 3).map((c, i) => (
                   <div key={c.id} className="py-2 flex items-center justify-between">
-                    <span className="font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-2">
-                      <span className="w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 flex items-center justify-center font-bold text-[11px]">
+                    <span className="font-semibold text-black flex items-center gap-2">
+                      <span className="w-5 h-5 rounded-full bg-[#15803D] text-white flex items-center justify-center font-bold text-[11px]">
                         {i + 1}º
                       </span>
                       {c.nome}
                     </span>
-                    <span className="font-bold text-blue-600 dark:text-blue-400">
+                    <span className="font-bold text-[#166534]">
                       {c.total_corridas} participação(ões)
                     </span>
                   </div>
@@ -235,21 +244,21 @@ export const GraphicsPage: React.FC = () => {
         </Card>
       </div>
 
-      <Card>
-        <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+      <Card className="border-[#B9B9B9]">
+        <div className="flex items-center justify-between pb-4 border-b border-[#D9D9D9]">
           <div className="flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-emerald-600" />
+            <Calendar className="w-5 h-5 text-[#166534]" />
             <div>
-              <h3 className="text-base font-bold text-slate-800 dark:text-slate-100">
-                Eventos com Mais Inscrições
+              <h3 className="text-base font-bold text-black">
+                Eventos com mais inscrições
               </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-[#7C7C7C]">
                 Corridas que reuniram o maior volume de duplas formadas
               </p>
             </div>
           </div>
-          <Badge variant="neutral" size="sm">
-            <TrendingUp className="w-3 h-3 mr-1 text-emerald-500" /> Top {events.length} Corridas
+          <Badge variant="primary" size="sm">
+            <TrendingUp className="w-3 h-3 mr-1 text-[#166534]" /> Top {events.length} Corridas
           </Badge>
         </div>
 
@@ -266,26 +275,26 @@ export const GraphicsPage: React.FC = () => {
             <div className="h-[280px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={events} margin={{ top: 10, right: 20, left: -10, bottom: 20 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#D9D9D9" />
                   <XAxis
                     dataKey="nome"
                     tickLine={false}
                     axisLine={false}
-                    tick={{ fontSize: 11, fill: '#64748b' }}
+                    tick={{ fontSize: 11, fill: '#000000' }}
                   />
                   <YAxis allowDecimals={false} tickLine={false} axisLine={false} />
                   <Tooltip
                     formatter={(val: any) => [`${val} duplas`, 'Total de Duplas']}
                     contentStyle={{
-                      backgroundColor: '#1e293b',
+                      backgroundColor: '#FFFFFF',
                       borderRadius: '12px',
-                      color: '#fff',
-                      border: '1px solid #334155',
+                      color: '#000000',
+                      border: '1px solid #B9B9B9',
                       fontSize: '12px',
-                      boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.3)',
+                      boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.15)',
                     }}
-                    labelStyle={{ color: '#ffffff', fontWeight: 600, marginBottom: '4px' }}
-                    itemStyle={{ color: '#ffffff' }}
+                    labelStyle={{ color: '#000000', fontWeight: 700, marginBottom: '4px' }}
+                    itemStyle={{ color: '#000000' }}
                   />
                   <Bar dataKey="total_duplas" radius={[6, 6, 0, 0]}>
                     {events.map((_, index) => (
@@ -300,22 +309,22 @@ export const GraphicsPage: React.FC = () => {
               {events.slice(0, 3).map((evt, idx) => (
                 <div
                   key={evt.id}
-                  className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex flex-col justify-between"
+                  className="p-4 rounded-2xl bg-[#EBEAEA]/70 border border-[#B9B9B9] flex flex-col justify-between"
                 >
                   <div>
-                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#166534]">
                       {idx + 1}º Lugar em Inscrições
                     </span>
-                    <h4 className="font-bold text-sm text-slate-800 dark:text-slate-100 mt-1 line-clamp-1">
+                    <h4 className="font-bold text-sm text-black mt-1 line-clamp-1">
                       {evt.nome}
                     </h4>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                    <p className="text-xs text-[#7C7C7C] mt-0.5">
                       Data: {formatDate(evt.data)}
                     </p>
                   </div>
-                  <div className="mt-3 pt-3 border-t border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between text-xs">
-                    <span className="text-slate-500">Total emparelhado:</span>
-                    <span className="font-extrabold text-emerald-600 dark:text-emerald-400">
+                  <div className="mt-3 pt-3 border-t border-[#B9B9B9] flex items-center justify-between text-xs">
+                    <span className="text-[#525252]">Total emparelhado:</span>
+                    <span className="font-extrabold text-[#166534]">
                       {evt.total_duplas} duplas ({evt.total_duplas * 2} atletas)
                     </span>
                   </div>

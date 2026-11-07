@@ -57,13 +57,13 @@ export const HistoryPairsModal: React.FC<HistoryPairsModalProps> = ({
       maxWidth="lg"
       footer={
         <div className="flex items-center justify-between w-full">
-          <span className="text-xs text-slate-500 font-medium">
-            Total de duplas: <strong className="text-slate-800 dark:text-white">{pairs.length}</strong>
+          <span className="text-xs text-[#525252] font-medium">
+            Total de duplas: <strong className="text-black">{pairs.length}</strong>
           </span>
           <div className="flex gap-2">
             {eventId && (
               <Button
-                variant="primary"
+                variant="success"
                 size="sm"
                 onClick={() => onExport(eventId, eventName || `Evento #${eventId}`)}
                 leftIcon={<Download className="w-4 h-4" />}
@@ -71,7 +71,7 @@ export const HistoryPairsModal: React.FC<HistoryPairsModalProps> = ({
                 Gerar Relatório
               </Button>
             )}
-            <Button variant="ghost" size="sm" onClick={onClose}>
+            <Button variant="danger" size="sm" onClick={onClose}>
               Fechar
             </Button>
           </div>
@@ -87,48 +87,48 @@ export const HistoryPairsModal: React.FC<HistoryPairsModalProps> = ({
           description="Este evento não possui registro de duplas formadas."
         />
       ) : (
-        <div className="divide-y divide-slate-100 dark:divide-slate-800 max-h-[60vh] overflow-y-auto">
+        <div className="divide-y divide-black/20 bg-[#D9D9D9] border border-black rounded-xl max-h-[60vh] overflow-y-auto">
           {pairs.map((pair, index) => (
             <div
               key={pair.cd_dupla}
-              className="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/50 dark:hover:bg-slate-800/40 px-2 rounded-xl"
+              className="py-3.5 px-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-white/40 transition-colors"
             >
               <div className="flex items-center gap-3">
-                <span className="w-7 h-7 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 font-bold text-xs flex items-center justify-center shrink-0">
+                <span className="w-7 h-7 rounded-full bg-[#15803D] border border-[#166534] text-white font-bold text-xs flex items-center justify-center shrink-0">
                   {index + 1}
                 </span>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-bold text-slate-800 dark:text-slate-100">
+                    <span className="text-sm font-bold text-black">
                       ♿ {pair.nm_cadeirante}
                     </span>
-                    <Badge variant="neutral" size="sm">
+                    <Badge variant="neutral" size="sm" className="bg-white">
                       Tam. {pair.tam_camisa_cadeirante}
                     </Badge>
                     {pair.possui_cadeira_propria && (
-                      <span className="text-emerald-600 text-[11px] font-medium flex items-center gap-0.5">
+                      <span className="text-[#166534] text-[11px] font-bold flex items-center gap-0.5">
                         <Armchair className="w-3 h-3" /> Cadeira própria
                       </span>
                     )}
                   </div>
-                  <div className="text-xs text-slate-500 mt-0.5">
+                  <div className="text-xs text-[#525252] mt-0.5">
                     Telefone: {formatPhone(pair.telefone_cadeirante)}
                   </div>
                 </div>
               </div>
 
               <div className="flex items-center gap-2 pl-10 sm:pl-0">
-                <span className="text-xs text-slate-400 font-bold">com</span>
+                <span className="text-xs text-[#525252] font-bold">com</span>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-bold text-slate-800 dark:text-slate-100">
+                    <span className="text-sm font-bold text-black">
                       🏃 {pair.nm_condutor}
                     </span>
-                    <Badge variant="neutral" size="sm">
+                    <Badge variant="neutral" size="sm" className="bg-white">
                       Tam. {pair.tam_camisa_condutor}
                     </Badge>
                   </div>
-                  <div className="text-xs text-slate-500 mt-0.5 flex items-center gap-1">
+                  <div className="text-xs text-[#525252] mt-0.5 flex items-center gap-1">
                     <Phone className="w-3 h-3" /> {formatPhone(pair.telefone_condutor)}
                   </div>
                 </div>
