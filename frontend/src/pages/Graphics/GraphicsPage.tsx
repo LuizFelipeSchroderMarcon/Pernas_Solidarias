@@ -7,6 +7,7 @@ import { analyticsService } from '../../services/analyticsService';
 import type { AnalyticsRankings } from '../../types';
 import { formatDate } from '../../utils/formatters';
 import { useToast } from '../../hooks/useToast';
+import { useTheme } from '../../hooks/useTheme';
 import {
   Award,
   UserCheck,
@@ -28,6 +29,7 @@ import {
 
 export const GraphicsPage: React.FC = () => {
   const { error } = useToast();
+  const { isDark } = useTheme();
   const [data, setData] = useState<AnalyticsRankings | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -58,6 +60,8 @@ export const GraphicsPage: React.FC = () => {
   const runnerColors = ['#4f46e5', '#6366f1', '#818cf8', '#a5b4fc', '#c7d2fe', '#e0e7ff', '#eef2ff'];
   const wheelchairColors = ['#0284c7', '#0ea5e9', '#38bdf8', '#7dd3fc', '#bae6fd', '#e0f2fe', '#f0f9ff'];
   const eventColors = ['#059669', '#10b981', '#34d399', '#6ee7b7', '#a7f3d0', '#d1fae5', '#ecfdf5'];
+  const gridStroke = isDark ? '#1e293b' : '#e2e8f0';
+  const tickColor = isDark ? '#94a3b8' : '#64748b';
 
   return (
     <div className="space-y-8">
@@ -97,15 +101,15 @@ export const GraphicsPage: React.FC = () => {
                     layout="vertical"
                     margin={{ top: 5, right: 30, left: 10, bottom: 5 }}
                   >
-                    <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#e2e8f0" />
-                    <XAxis type="number" allowDecimals={false} tickLine={false} axisLine={false} />
+                    <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke={gridStroke} />
+                    <XAxis type="number" allowDecimals={false} tickLine={false} axisLine={false} tick={{ fill: tickColor, fontSize: 12 }} />
                     <YAxis
                       dataKey="nome"
                       type="category"
                       width={120}
                       tickLine={false}
                       axisLine={false}
-                      tick={{ fontSize: 12, fill: '#64748b' }}
+                      tick={{ fontSize: 12, fill: tickColor }}
                     />
                     <Tooltip
                       formatter={(val: any) => [`${val} corrida(s)`, 'Participações']}
@@ -183,15 +187,15 @@ export const GraphicsPage: React.FC = () => {
                     layout="vertical"
                     margin={{ top: 5, right: 30, left: 10, bottom: 5 }}
                   >
-                    <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#e2e8f0" />
-                    <XAxis type="number" allowDecimals={false} tickLine={false} axisLine={false} />
+                    <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke={gridStroke} />
+                    <XAxis type="number" allowDecimals={false} tickLine={false} axisLine={false} tick={{ fill: tickColor, fontSize: 12 }} />
                     <YAxis
                       dataKey="nome"
                       type="category"
                       width={120}
                       tickLine={false}
                       axisLine={false}
-                      tick={{ fontSize: 12, fill: '#64748b' }}
+                      tick={{ fontSize: 12, fill: tickColor }}
                     />
                     <Tooltip
                       formatter={(val: any) => [`${val} corrida(s)`, 'Participações']}
@@ -266,14 +270,14 @@ export const GraphicsPage: React.FC = () => {
             <div className="h-[280px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={events} margin={{ top: 10, right: 20, left: -10, bottom: 20 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={gridStroke} />
                   <XAxis
                     dataKey="nome"
                     tickLine={false}
                     axisLine={false}
-                    tick={{ fontSize: 11, fill: '#64748b' }}
+                    tick={{ fontSize: 11, fill: tickColor }}
                   />
-                  <YAxis allowDecimals={false} tickLine={false} axisLine={false} />
+                  <YAxis allowDecimals={false} tickLine={false} axisLine={false} tick={{ fill: tickColor, fontSize: 12 }} />
                   <Tooltip
                     formatter={(val: any) => [`${val} duplas`, 'Total de Duplas']}
                     contentStyle={{

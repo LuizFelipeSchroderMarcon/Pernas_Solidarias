@@ -246,7 +246,7 @@ export const ParticipantModal: React.FC<ParticipantModalProps> = ({
 
         {type === 'cadeirante' && (
           <div className="pt-2">
-            <label className="flex items-center gap-3 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-850 cursor-pointer transition-colors">
+            <label className="flex items-center gap-3 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/60 cursor-pointer transition-colors">
               <input
                 type="checkbox"
                 className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500 border-slate-300"

@@ -273,7 +273,7 @@ export const ParticipantsPage: React.FC = () => {
                   {filteredCadeirantes.map((cad) => (
                     <tr
                       key={cad.cd_cadeirante}
-                      className="hover:bg-slate-50/50 dark:hover:bg-slate-850/50 transition-colors"
+                      className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-colors"
                     >
                       <td className="px-6 py-4 font-semibold text-slate-900 dark:text-white">
                         {cad.nm_cadeirante}

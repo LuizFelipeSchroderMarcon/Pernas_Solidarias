@@ -302,7 +302,7 @@ export const HistoryPage: React.FC = () => {
                   {history.map((item) => (
                     <tr
                       key={item.cd_dupla}
-                      className="hover:bg-slate-50/50 dark:hover:bg-slate-850/50 transition-colors"
+                      className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-colors"
                     >
                       {/* Event info */}
                       <td className="px-6 py-4">

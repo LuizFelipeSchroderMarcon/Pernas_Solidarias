@@ -33,7 +33,7 @@ export const Button: React.FC<ButtonProps> = ({
     secondary:
       'bg-slate-100 hover:bg-slate-200 text-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-100 focus:ring-slate-400 active:scale-[0.98]',
     outline:
-      'border border-slate-300 hover:bg-slate-50 text-slate-700 dark:border-slate-700 dark:hover:bg-slate-850 dark:text-slate-200 focus:ring-slate-400 active:scale-[0.98]',
+      'border border-slate-300 hover:bg-slate-50 text-slate-700 dark:border-slate-700 dark:hover:bg-slate-800 dark:text-slate-200 focus:ring-slate-400 active:scale-[0.98]',
     danger:
       'bg-rose-600 hover:bg-rose-700 text-white shadow-sm shadow-rose-500/20 focus:ring-rose-500 active:scale-[0.98]',
     warning:
