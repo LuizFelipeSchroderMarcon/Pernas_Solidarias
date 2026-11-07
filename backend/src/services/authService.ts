@@ -37,7 +37,11 @@ export class AuthService {
       throw new AppError('E-mail e senha são obrigatórios.');
     }
 
-    const user = await this.userRepository.findByEmail(email);
+    // O cadastro grava o e-mail normalizado, entao o login precisa normalizar tambem:
+    // sem isso, uma maiuscula ou um espaco colado impedem de encontrar o usuario.
+    const emailNormalizado = email.trim().toLowerCase();
+
+    const user = await this.userRepository.findByEmail(emailNormalizado);
     if (!user || !user.senha) {
       throw new AppError('Credenciais inválidas.', 401);
     }
