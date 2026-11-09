@@ -5,11 +5,15 @@ import { exportService } from '../../services/exportService';
 import { useToast } from '../../hooks/useToast';
 import { FileSpreadsheet, FileText, Shield, ShieldAlert, Download } from 'lucide-react';
 
+import type { HistoryFilters } from '../../types';
+
 export interface ExportModalProps {
   isOpen: boolean;
   onClose: () => void;
   eventId: number | null;
   eventName?: string;
+  isHistoryExport?: boolean;
+  historyFilters?: HistoryFilters;
 }
 
 export const ExportModal: React.FC<ExportModalProps> = ({
@@ -17,6 +21,8 @@ export const ExportModal: React.FC<ExportModalProps> = ({
   onClose,
   eventId,
   eventName,
+  isHistoryExport = false,
+  historyFilters,
 }) => {
   const { success, error } = useToast();
   const [includeCpf, setIncludeCpf] = useState<boolean>(false);
@@ -24,21 +30,25 @@ export const ExportModal: React.FC<ExportModalProps> = ({
   const [isExporting, setIsExporting] = useState<boolean>(false);
 
   const handleExport = async () => {
-    if (!eventId) {
+    if (!eventId && !isHistoryExport) {
       error('Erro na exportação', 'Nenhum evento selecionado.');
       return;
     }
 
     try {
       setIsExporting(true);
-      await exportService.exportEventReport(eventId, includeCpf, format);
+      if (isHistoryExport && !eventId) {
+        await exportService.exportHistoryReport(includeCpf, format, historyFilters);
+      } else if (eventId) {
+        await exportService.exportEventReport(eventId, includeCpf, format);
+      }
       success(
         'Relatório exportado!',
         `O download do arquivo (${format.toUpperCase()}) foi iniciado com sucesso.`
       );
       onClose();
     } catch (err: any) {
-      const errMsg = err.response?.data?.error || 'Não foi possível gerar o relatório do evento.';
+      const errMsg = err.response?.data?.error || 'Não foi possível gerar o relatório.';
       error('Falha na exportação', errMsg);
     } finally {
       setIsExporting(false);

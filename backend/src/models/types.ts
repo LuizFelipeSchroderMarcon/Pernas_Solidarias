@@ -45,6 +45,7 @@ export interface Evento {
   cd_evento: number;
   nm_evento: string;
   dt_evento: string | Date;
+  local?: string;
   created_at: Date;
   total_duplas?: number;
 }
@@ -106,6 +107,7 @@ export interface HistoryFilters {
   startDate?: string;
   endDate?: string;
   search?: string;
+  minParticipations?: number;
 }
 
 export interface ExportOptions {

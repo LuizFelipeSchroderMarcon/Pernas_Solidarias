@@ -12,7 +12,7 @@ export class PairController {
       const eventIdParam = req.params.eventId || req.params.cd_evento;
       const eventId = parseInt(eventIdParam as string, 10);
       if (isNaN(eventId)) {
-        res.status(400).json({ error: 'ID do evento inválido.' });
+        res.status(400).json({ status: 'error', message: 'ID do evento inválido.', error: 'ID do evento inválido.' });
         return;
       }
 
@@ -34,7 +34,7 @@ export class PairController {
       const eventIdParam = req.params.eventId || req.params.cd_evento;
       const eventId = parseInt(eventIdParam as string, 10);
       if (isNaN(eventId)) {
-        res.status(400).json({ error: 'ID do evento inválido.' });
+        res.status(400).json({ status: 'error', message: 'ID do evento inválido.', error: 'ID do evento inválido.' });
         return;
       }
 
@@ -56,8 +56,11 @@ export class PairController {
       const runnerId = req.body.runnerId || req.body.cd_condutor;
 
       if (isNaN(pairId) || !wheelchairUserId || !runnerId) {
+        const msg = 'Parâmetros inválidos. Informe o cadeirante e o condutor da dupla.';
         res.status(400).json({
-          error: 'Parâmetros inválidos. Informe o cadeirante e o condutor da dupla.',
+          status: 'error',
+          message: msg,
+          error: msg,
         });
         return;
       }
@@ -85,7 +88,7 @@ export class PairController {
       const eventIdParam = req.params.eventId || req.params.cd_evento;
       const eventId = parseInt(eventIdParam as string, 10);
       if (isNaN(eventId)) {
-        res.status(400).json({ error: 'ID do evento inválido.' });
+        res.status(400).json({ status: 'error', message: 'ID do evento inválido.', error: 'ID do evento inválido.' });
         return;
       }
 
@@ -101,17 +104,30 @@ export class PairController {
    */
   async history(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { cd_evento, eventId, data_inicio, startDate, data_fim, endDate, search } = req.query;
+      const {
+        cd_evento,
+        eventId,
+        data_inicio,
+        startDate,
+        data_fim,
+        endDate,
+        search,
+        participacoes,
+        minParticipations,
+      } = req.query;
 
       const eventIdParam = eventId || cd_evento;
       const startDateParam = startDate || data_inicio;
       const endDateParam = endDate || data_fim;
+      const minPartParam = minParticipations || participacoes;
+      const parsedMinPart = minPartParam ? parseInt(minPartParam as string, 10) : undefined;
 
       const filters = {
         eventId: eventIdParam ? parseInt(eventIdParam as string, 10) : undefined,
         startDate: startDateParam as string | undefined,
         endDate: endDateParam as string | undefined,
         search: search as string | undefined,
+        minParticipations: parsedMinPart && !Number.isNaN(parsedMinPart) ? parsedMinPart : undefined,
       };
 
       const data = await pairFormationService.getHistory(filters);

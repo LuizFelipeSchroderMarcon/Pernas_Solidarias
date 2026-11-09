@@ -40,6 +40,8 @@ export const HistoryPage: React.FC = () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [search, setSearch] = useState('');
+  const [minParticipations, setMinParticipations] = useState<string>('');
+  const [isHistoryExport, setIsHistoryExport] = useState(false);
 
   // Event Pairs Modal (Mockup 16)
   const [pairsModalOpen, setPairsModalOpen] = useState(false);
@@ -56,17 +58,23 @@ export const HistoryPage: React.FC = () => {
     name: string;
   } | null>(null);
 
+  const currentFilters = useMemo(
+    () => ({
+      cd_evento: selectedEventId ? Number(selectedEventId) : undefined,
+      data_inicio: startDate || undefined,
+      data_fim: endDate || undefined,
+      search: search.trim() || undefined,
+      participacoes: minParticipations ? Number(minParticipations) : undefined,
+    }),
+    [selectedEventId, startDate, endDate, search, minParticipations]
+  );
+
   const loadData = async () => {
     try {
       setIsLoading(true);
       const [eventsList, historyList] = await Promise.all([
         eventService.getEvents(),
-        pairService.getHistory({
-          cd_evento: selectedEventId ? Number(selectedEventId) : undefined,
-          data_inicio: startDate || undefined,
-          data_fim: endDate || undefined,
-          search: search.trim() || undefined,
-        }),
+        pairService.getHistory(currentFilters),
       ]);
 
       setEvents(eventsList);
@@ -92,10 +100,18 @@ export const HistoryPage: React.FC = () => {
     setStartDate('');
     setEndDate('');
     setSearch('');
+    setMinParticipations('');
   };
 
   const handleOpenExport = (eventId: number, eventName?: string) => {
+    setIsHistoryExport(false);
     setSelectedExportEvent({ id: eventId, name: eventName || `Evento #${eventId}` });
+    setExportModalOpen(true);
+  };
+
+  const handleOpenConsolidatedExport = () => {
+    setIsHistoryExport(true);
+    setSelectedExportEvent(null);
     setExportModalOpen(true);
   };
 
@@ -133,28 +149,38 @@ export const HistoryPage: React.FC = () => {
           </p>
         </div>
 
-        {/* Toggle View Mode */}
-        <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl self-start sm:self-auto">
-          <button
-            onClick={() => setViewMode('events')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-              viewMode === 'events'
-                ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm'
-                : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-            }`}
+        {/* Toggle View Mode + Consolidated Export */}
+        <div className="flex flex-wrap items-center gap-3 self-start sm:self-auto">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleOpenConsolidatedExport}
+            leftIcon={<Download className="w-4 h-4" />}
           >
-            Visão por Eventos
-          </button>
-          <button
-            onClick={() => setViewMode('pairs')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-              viewMode === 'pairs'
-                ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm'
-                : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-            }`}
-          >
-            Lista de Duplas
-          </button>
+            Exportar Histórico
+          </Button>
+          <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
+            <button
+              onClick={() => setViewMode('events')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                viewMode === 'events'
+                  ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm'
+                  : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+              }`}
+            >
+              Visão por Eventos
+            </button>
+            <button
+              onClick={() => setViewMode('pairs')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                viewMode === 'pairs'
+                  ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm'
+                  : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+              }`}
+            >
+              Lista de Duplas
+            </button>
+          </div>
         </div>
       </div>
 
@@ -166,7 +192,7 @@ export const HistoryPage: React.FC = () => {
             <span>Filtros de Pesquisa</span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
             <Select
               label="Evento"
               value={selectedEventId}
@@ -200,6 +226,15 @@ export const HistoryPage: React.FC = () => {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               leftIcon={<Search className="w-4 h-4" />}
+            />
+
+            <Input
+              label="Mín. Participações"
+              type="number"
+              min={1}
+              placeholder="Ex: 2"
+              value={minParticipations}
+              onChange={(e) => setMinParticipations(e.target.value)}
             />
           </div>
 
@@ -401,6 +436,8 @@ export const HistoryPage: React.FC = () => {
         onClose={() => setExportModalOpen(false)}
         eventId={selectedExportEvent?.id || null}
         eventName={selectedExportEvent?.name}
+        isHistoryExport={isHistoryExport}
+        historyFilters={currentFilters}
       />
     </div>
   );

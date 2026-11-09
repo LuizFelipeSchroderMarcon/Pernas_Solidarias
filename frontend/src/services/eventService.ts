@@ -4,6 +4,7 @@ import type { Evento, ApiSuccessResponse, ApiMessageResponse } from '../types';
 export interface EventFormData {
   nm_evento: string;
   dt_evento: string;
+  local?: string;
 }
 
 export const eventService = {

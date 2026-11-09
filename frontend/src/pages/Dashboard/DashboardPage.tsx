@@ -77,12 +77,12 @@ export const DashboardPage: React.FC = () => {
   const activeCondutores = condutores.filter((c) => c.ativo).length;
 
   // Next upcoming event
-  const upcomingEvents = [...events].sort((a, b) => {
-    const dateA = new Date(a.dt_evento).getTime();
-    const dateB = new Date(b.dt_evento).getTime();
-    return dateA - dateB;
-  });
-  const nextEvent = upcomingEvents[0];
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const upcomingEvents = events
+    .filter((evt) => new Date(evt.dt_evento).getTime() >= today.getTime())
+    .sort((a, b) => new Date(a.dt_evento).getTime() - new Date(b.dt_evento).getTime());
+  const nextEvent = upcomingEvents[0] || null;
 
   // Shirt size distribution for active participants
   const shirtDistribution = ['P', 'M', 'G', 'GG', 'XG'].map((size) => {

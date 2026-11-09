@@ -81,6 +81,13 @@ export const EditPairModal: React.FC<EditPairModalProps> = ({
     }
   };
 
+  const eligibleCadeirantes = cadeirantes.filter(
+    (c) => c.ativo || c.cd_cadeirante === pair?.cd_cadeirante
+  );
+  const eligibleCondutores = condutores.filter(
+    (c) => c.ativo || c.cd_condutor === pair?.cd_condutor
+  );
+
   return (
     <Modal
       isOpen={isOpen}
@@ -113,7 +120,7 @@ export const EditPairModal: React.FC<EditPairModalProps> = ({
           required
           options={[
             { value: '', label: 'Selecione um cadeirante...' },
-            ...cadeirantes.map((c) => ({
+            ...eligibleCadeirantes.map((c) => ({
               value: c.cd_cadeirante,
               label: `${c.nm_cadeirante} (${c.ativo ? 'Ativo' : 'Inativo'}${c.possui_cadeira_propria ? ' • Cadeira Própria' : ''
                 } • Camiseta ${c.tam_camisa})`,
@@ -129,7 +136,7 @@ export const EditPairModal: React.FC<EditPairModalProps> = ({
           required
           options={[
             { value: '', label: 'Selecione um condutor...' },
-            ...condutores.map((c) => ({
+            ...eligibleCondutores.map((c) => ({
               value: c.cd_condutor,
               label: `${c.nm_condutor} (${c.ativo ? 'Ativo' : 'Inativo'} • Camiseta ${c.tam_camisa})`,
             })),

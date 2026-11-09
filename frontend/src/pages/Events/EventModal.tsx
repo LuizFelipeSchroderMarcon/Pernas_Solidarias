@@ -25,6 +25,7 @@ export const EventModal: React.FC<EventModalProps> = ({
 
   const [nome, setNome] = useState('');
   const [dataEvento, setDataEvento] = useState('');
+  const [local, setLocal] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -34,9 +35,11 @@ export const EventModal: React.FC<EventModalProps> = ({
     if (event) {
       setNome(event.nm_evento);
       setDataEvento(toInputDateFormat(event.dt_evento));
+      setLocal(event.local || '');
     } else {
       setNome('');
       setDataEvento('');
+      setLocal('');
     }
     setErrors({});
   }, [event, isOpen]);
@@ -58,6 +61,7 @@ export const EventModal: React.FC<EventModalProps> = ({
       const payload = {
         nm_evento: nome.trim(),
         dt_evento: dataEvento,
+        local: local.trim() || undefined,
       };
 
       if (isEditing) {
@@ -83,7 +87,7 @@ export const EventModal: React.FC<EventModalProps> = ({
       isOpen={isOpen}
       onClose={onClose}
       title={isEditing ? 'Editar Evento' : 'Novo Evento de Corrida'}
-      subtitle="Informe o nome e a data da corrida"
+      subtitle="Informe o nome, a data e o local da corrida"
       maxWidth="md"
       footer={
         <>
@@ -114,6 +118,14 @@ export const EventModal: React.FC<EventModalProps> = ({
           onChange={(e) => setDataEvento(e.target.value)}
           error={errors.dataEvento}
           required
+        />
+
+        <Input
+          label="Local do Evento"
+          placeholder="Ex: Centreventos Cau Hansen — Joinville/SC"
+          value={local}
+          onChange={(e) => setLocal(e.target.value)}
+          error={errors.local}
         />
       </form>
     </Modal>

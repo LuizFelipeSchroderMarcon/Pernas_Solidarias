@@ -20,7 +20,7 @@ export class EventService {
     return event;
   }
 
-  async create(data: { nm_evento: string; dt_evento: string }) {
+  async create(data: { nm_evento: string; dt_evento: string; local?: string }) {
     if (!data.nm_evento || !data.dt_evento) {
       throw new AppError('Nome do evento e data são obrigatórios.');
     }
@@ -28,7 +28,7 @@ export class EventService {
     return this.eventRepository.create(data);
   }
 
-  async update(id: number, data: { nm_evento: string; dt_evento: string }) {
+  async update(id: number, data: { nm_evento: string; dt_evento: string; local?: string }) {
     await this.getById(id);
 
     if (!data.nm_evento || !data.dt_evento) {

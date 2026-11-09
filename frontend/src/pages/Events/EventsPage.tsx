@@ -173,6 +173,11 @@ export const EventsPage: React.FC = () => {
                 <p className="text-xs font-semibold text-blue-600 dark:text-blue-400 mt-1">
                   📅 {formatDate(evt.dt_evento)}
                 </p>
+                {evt.local && (
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                    📍 {evt.local}
+                  </p>
+                )}
 
                 <div className="mt-4 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex items-center justify-between">
                   <span className="text-xs text-slate-500 dark:text-slate-400">

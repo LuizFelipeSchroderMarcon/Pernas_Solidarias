@@ -11,4 +11,8 @@ exportRoutes.use(authMiddleware);
 exportRoutes.get('/event/:eventId', exportController.exportEvent);
 exportRoutes.get('/evento/:cd_evento', exportController.exportEvent);
 
+// Export consolidated history (/export/history or /exportar/historico) (RF10)
+exportRoutes.get('/history', exportController.exportHistory);
+exportRoutes.get('/historico', exportController.exportHistory);
+
 export { exportRoutes, exportRoutes as exportacaoRoutes };

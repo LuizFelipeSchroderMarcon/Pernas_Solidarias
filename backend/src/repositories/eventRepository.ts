@@ -8,6 +8,7 @@ export class EventRepository {
         e.cd_evento,
         e.nm_evento,
         e.dt_evento,
+        e.local,
         e.created_at,
         COUNT(d.cd_dupla)::int AS total_duplas
       FROM EVENTO e
@@ -24,10 +25,10 @@ export class EventRepository {
 
     if (search) {
       params.push(`%${search}%`);
-      sql += ` AND e.nm_evento ILIKE $${params.length}`;
+      sql += ` AND (e.nm_evento ILIKE $${params.length} OR COALESCE(e.local, '') ILIKE $${params.length})`;
     }
 
-    sql += ' GROUP BY e.cd_evento, e.nm_evento, e.dt_evento, e.created_at';
+    sql += ' GROUP BY e.cd_evento, e.nm_evento, e.dt_evento, e.local, e.created_at';
 
     if (status === 'passados') {
       sql += ' ORDER BY e.dt_evento DESC';
@@ -45,38 +46,40 @@ export class EventRepository {
         e.cd_evento,
         e.nm_evento,
         e.dt_evento,
+        e.local,
         e.created_at,
         COUNT(d.cd_dupla)::int AS total_duplas
       FROM EVENTO e
       LEFT JOIN DUPLA d ON d.cd_evento = e.cd_evento
       WHERE e.cd_evento = $1
-      GROUP BY e.cd_evento, e.nm_evento, e.dt_evento, e.created_at
+      GROUP BY e.cd_evento, e.nm_evento, e.dt_evento, e.local, e.created_at
     `;
     const result = await query(sql, [id]);
     return result.rows[0] || null;
   }
 
-  async create(data: { nm_evento: string; dt_evento: string }): Promise<Evento> {
+  async create(data: { nm_evento: string; dt_evento: string; local?: string }): Promise<Evento> {
     const result = await query(
-      `INSERT INTO EVENTO (nm_evento, dt_evento)
-       VALUES ($1, $2)
+      `INSERT INTO EVENTO (nm_evento, dt_evento, local)
+       VALUES ($1, $2, $3)
        RETURNING *`,
-      [data.nm_evento, data.dt_evento]
+      [data.nm_evento, data.dt_evento, data.local || null]
     );
     return result.rows[0];
   }
 
   async update(
     id: number,
-    data: { nm_evento: string; dt_evento: string }
+    data: { nm_evento: string; dt_evento: string; local?: string }
   ): Promise<Evento | null> {
     const result = await query(
       `UPDATE EVENTO
        SET nm_evento = $1,
-           dt_evento = $2
-       WHERE cd_evento = $3
+           dt_evento = $2,
+           local = $3
+       WHERE cd_evento = $4
        RETURNING *`,
-      [data.nm_evento, data.dt_evento, id]
+      [data.nm_evento, data.dt_evento, data.local || null, id]
     );
     return result.rows[0] || null;
   }

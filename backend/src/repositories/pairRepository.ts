@@ -22,7 +22,7 @@ export class PairRepository {
         COUNT(d.cd_dupla)::int AS total_participacoes
       FROM CADEIRANTE c
       LEFT JOIN DUPLA d ON d.cd_cadeirante = c.cd_cadeirante AND d.cd_evento <> $1
-      LEFT JOIN EVENTO e ON e.cd_evento = d.cd_evento
+      LEFT JOIN EVENTO e ON e.cd_evento = d.cd_evento AND e.dt_evento <= CURRENT_DATE
       WHERE c.ativo = TRUE
       GROUP BY c.cd_cadeirante, c.nm_cadeirante, c.cpf, c.telefone, c.tam_camisa, c.possui_cadeira_propria, c.ativo, c.created_at
       ORDER BY MAX(e.dt_evento) ASC NULLS FIRST, c.created_at ASC, c.cd_cadeirante ASC
@@ -50,7 +50,7 @@ export class PairRepository {
         COUNT(d.cd_dupla)::int AS total_participacoes
       FROM CONDUTOR c
       LEFT JOIN DUPLA d ON d.cd_condutor = c.cd_condutor AND d.cd_evento <> $1
-      LEFT JOIN EVENTO e ON e.cd_evento = d.cd_evento
+      LEFT JOIN EVENTO e ON e.cd_evento = d.cd_evento AND e.dt_evento <= CURRENT_DATE
       WHERE c.ativo = TRUE
       GROUP BY c.cd_condutor, c.nm_condutor, c.cpf, c.telefone, c.tam_camisa, c.ativo, c.created_at
       ORDER BY MAX(e.dt_evento) ASC NULLS FIRST, c.created_at ASC, c.cd_condutor ASC
@@ -255,6 +255,15 @@ export class PairRepository {
         e.nm_evento ILIKE $${params.length} OR 
         cad.nm_cadeirante ILIKE $${params.length} OR 
         con.nm_condutor ILIKE $${params.length}
+      )`;
+    }
+
+    if (filters.minParticipations && filters.minParticipations > 0) {
+      params.push(filters.minParticipations);
+      sql += ` AND (
+        (SELECT COUNT(*) FROM DUPLA d2 WHERE d2.cd_cadeirante = d.cd_cadeirante) >= $${params.length}
+        OR
+        (SELECT COUNT(*) FROM DUPLA d3 WHERE d3.cd_condutor = d.cd_condutor) >= $${params.length}
       )`;
     }
 

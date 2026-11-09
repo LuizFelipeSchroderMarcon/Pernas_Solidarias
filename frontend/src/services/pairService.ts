@@ -35,6 +35,7 @@ export const pairService = {
     if (filters?.data_inicio) params.data_inicio = filters.data_inicio;
     if (filters?.data_fim) params.data_fim = filters.data_fim;
     if (filters?.search) params.search = filters.search;
+    if (filters?.participacoes) params.participacoes = filters.participacoes;
 
     const response = await api.get<ApiSuccessResponse<DuplaDetalhada[]>>('/duplas/historico', { params });
     return response.data.data;

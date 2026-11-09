@@ -2,6 +2,7 @@ import ExcelJS from 'exceljs';
 import { PairRepository } from '../repositories/pairRepository';
 import { EventRepository } from '../repositories/eventRepository';
 import { AppError } from '../middlewares/errorHandler';
+import { HistoryFilters } from '../models/types';
 
 export class ExportService {
   private pairRepository: PairRepository;
@@ -210,6 +211,176 @@ export class ExportService {
     const sanitizedEventName = event.nm_evento.replace(/[^a-zA-Z0-9_-]/g, '_');
     const cpfSuffix = includeCpf ? '_com_cpf' : '_sem_cpf';
     const filename = `duplas_${sanitizedEventName}${cpfSuffix}.csv`;
+
+    return { csv: BOM + lines.join('\r\n'), filename };
+  }
+
+  /**
+   * Generates a consolidated Excel (.xlsx) report of pair history (RF10, RF11, RN06).
+   */
+  async generateExcelHistory(
+    filters: HistoryFilters = {},
+    includeCpf: boolean = false
+  ): Promise<{ buffer: ExcelJS.Buffer; filename: string }> {
+    const pairs = await this.pairRepository.findHistory(filters);
+    if (pairs.length === 0) {
+      throw new AppError('Nenhum registro histórico encontrado para exportação.', 400);
+    }
+
+    const workbook = new ExcelJS.Workbook();
+    workbook.creator = 'Pernas Solidárias';
+    workbook.created = new Date();
+
+    const worksheet = workbook.addWorksheet('Histórico de Duplas', {
+      views: [{ showGridLines: true }],
+    });
+
+    worksheet.mergeCells('A1:I1');
+    const titleCell = worksheet.getCell('A1');
+    titleCell.value = 'PERNAS SOLIDÁRIAS — HISTÓRICO CONSOLIDADO DE PARTICIPAÇÕES';
+    titleCell.font = { name: 'Arial', size: 14, bold: true, color: { argb: 'FFFFFFFF' } };
+    titleCell.fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'FF1E3A8A' },
+    };
+    titleCell.alignment = { horizontal: 'center', vertical: 'middle' };
+    worksheet.getRow(1).height = 32;
+
+    worksheet.mergeCells('A2:I2');
+    const subtitleCell = worksheet.getCell('A2');
+    subtitleCell.value = `Total de registros: ${pairs.length} | Relatório gerado em: ${new Date().toLocaleDateString('pt-BR')} ${new Date().toLocaleTimeString('pt-BR')}`;
+    subtitleCell.font = { name: 'Arial', size: 10, italic: true, color: { argb: 'FF4B5563' } };
+    subtitleCell.alignment = { horizontal: 'center', vertical: 'middle' };
+    worksheet.getRow(2).height = 20;
+
+    worksheet.addRow([]);
+
+    const headers: string[] = ['Nº', 'Evento', 'Data do Evento', 'Cadeirante'];
+    if (includeCpf) headers.push('CPF Cadeirante');
+    headers.push('Telefone Cadeirante', 'Tam. Camisa', 'Cadeira Própria', 'Condutor');
+    if (includeCpf) headers.push('CPF Condutor');
+    headers.push('Telefone Condutor', 'Tam. Camisa');
+
+    const headerRow = worksheet.addRow(headers);
+    headerRow.height = 26;
+
+    headerRow.eachCell((cell) => {
+      cell.font = { name: 'Arial', size: 11, bold: true, color: { argb: 'FFFFFFFF' } };
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FF2563EB' },
+      };
+      cell.alignment = { horizontal: 'center', vertical: 'middle' };
+    });
+
+    pairs.forEach((pair, index) => {
+      const eventDate = pair.dt_evento
+        ? new Date(pair.dt_evento).toLocaleDateString('pt-BR')
+        : '-';
+      const rowData: (string | number)[] = [
+        index + 1,
+        pair.nm_evento || `Evento #${pair.cd_evento}`,
+        eventDate,
+        pair.nm_cadeirante,
+      ];
+
+      if (includeCpf) {
+        rowData.push(this.formatCpf(pair.cpf_cadeirante));
+      }
+
+      rowData.push(
+        pair.telefone_cadeirante || '-',
+        pair.tam_camisa_cadeirante,
+        pair.possui_cadeira_propria ? 'Sim' : 'Não',
+        pair.nm_condutor
+      );
+
+      if (includeCpf) {
+        rowData.push(this.formatCpf(pair.cpf_condutor));
+      }
+
+      rowData.push(pair.telefone_condutor || '-', pair.tam_camisa_condutor);
+
+      const row = worksheet.addRow(rowData);
+      row.height = 22;
+    });
+
+    worksheet.columns.forEach((column) => {
+      let maxLength = 0;
+      column.eachCell?.({ includeEmpty: true }, (cell) => {
+        const length = cell.value ? cell.value.toString().length : 0;
+        if (length > maxLength) {
+          maxLength = length;
+        }
+      });
+      column.width = Math.max(maxLength + 4, 12);
+    });
+
+    const buffer = await workbook.xlsx.writeBuffer();
+    const cpfSuffix = includeCpf ? '_com_cpf' : '_sem_cpf';
+    const filename = `historico_duplas${cpfSuffix}.xlsx`;
+
+    return { buffer, filename };
+  }
+
+  /**
+   * Generates a consolidated CSV report of pair history (RF10, RF11, RN06).
+   */
+  async generateCsvHistory(
+    filters: HistoryFilters = {},
+    includeCpf: boolean = false
+  ): Promise<{ csv: string; filename: string }> {
+    const pairs = await this.pairRepository.findHistory(filters);
+    if (pairs.length === 0) {
+      throw new AppError('Nenhum registro histórico encontrado para exportação.', 400);
+    }
+
+    const headers: string[] = ['Nº', 'Evento', 'Data do Evento', 'Nome Cadeirante'];
+    if (includeCpf) headers.push('CPF Cadeirante');
+    headers.push('Telefone Cadeirante', 'Tam. Camisa Cadeirante', 'Cadeira Própria', 'Nome Condutor');
+    if (includeCpf) headers.push('CPF Condutor');
+    headers.push('Telefone Condutor', 'Tam. Camisa Condutor');
+
+    const lines: string[] = [];
+    const BOM = '\uFEFF';
+
+    lines.push(headers.map((h) => `"${h}"`).join(';'));
+
+    pairs.forEach((pair, index) => {
+      const eventDate = pair.dt_evento
+        ? new Date(pair.dt_evento).toLocaleDateString('pt-BR')
+        : '';
+      const row: string[] = [
+        (index + 1).toString(),
+        pair.nm_evento || `Evento #${pair.cd_evento}`,
+        eventDate,
+        pair.nm_cadeirante,
+      ];
+
+      if (includeCpf) {
+        row.push(this.formatCpf(pair.cpf_cadeirante));
+      }
+
+      row.push(
+        pair.telefone_cadeirante || '',
+        pair.tam_camisa_cadeirante,
+        pair.possui_cadeira_propria ? 'Sim' : 'Não',
+        pair.nm_condutor
+      );
+
+      if (includeCpf) {
+        row.push(this.formatCpf(pair.cpf_condutor));
+      }
+
+      row.push(pair.telefone_condutor || '', pair.tam_camisa_condutor);
+
+      lines.push(row.map((item) => `"${item.replace(/"/g, '""')}"`).join(';'));
+    });
+
+    const cpfSuffix = includeCpf ? '_com_cpf' : '_sem_cpf';
+    const filename = `historico_duplas${cpfSuffix}.csv`;
 
     return { csv: BOM + lines.join('\r\n'), filename };
   }
