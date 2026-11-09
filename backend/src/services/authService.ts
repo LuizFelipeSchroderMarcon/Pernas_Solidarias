@@ -37,7 +37,8 @@ export class AuthService {
       throw new AppError('E-mail e senha são obrigatórios.');
     }
 
-    const user = await this.userRepository.findByEmail(email);
+    const emailNormalizado = email.trim().toLowerCase();
+    const user = await this.userRepository.findByEmail(emailNormalizado);
     if (!user || !user.senha) {
       throw new AppError('Credenciais inválidas.', 401);
     }
@@ -45,13 +46,14 @@ export class AuthService {
     // Check brute-force lockout (FA01 / RNF04)
     if (user.bloqueado_ate) {
       const lockUntil = new Date(user.bloqueado_ate);
-      const now = new Date();
-      if (now < lockUntil) {
-        const remainingMinutes = Math.ceil((lockUntil.getTime() - now.getTime()) / (1000 * 60));
+      if (new Date() < lockUntil) {
+        const remainingMinutes = Math.ceil((lockUntil.getTime() - Date.now()) / (1000 * 60));
         throw new AppError(
           `Acesso bloqueado temporariamente por excesso de tentativas. Tente novamente em ${remainingMinutes} minuto(s).`,
           429
         );
+      } else {
+        await this.userRepository.resetFailedAttempts(user.cd_user);
       }
     }
 
@@ -74,7 +76,10 @@ export class AuthService {
     // Reset failed attempts on success
     await this.userRepository.resetFailedAttempts(user.cd_user);
 
-    const secret = process.env.JWT_SECRET || 'super_secret_jwt_key_pernas_solidarias_2026';
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+      throw new Error('FATAL: JWT_SECRET não configurado nas variáveis de ambiente.');
+    }
     const expiresIn = process.env.JWT_EXPIRES_IN || '7d';
 
     const token = jwt.sign(

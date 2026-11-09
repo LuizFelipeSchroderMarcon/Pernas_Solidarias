@@ -34,7 +34,10 @@ export function authMiddleware(
   }
 
   const token = parts[1];
-  const secret = process.env.JWT_SECRET || 'super_secret_jwt_key_pernas_solidarias_2026';
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error('FATAL: JWT_SECRET não configurado nas variáveis de ambiente.');
+  }
 
   try {
     if (!token) {
