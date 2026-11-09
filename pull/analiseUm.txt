@@ -1,0 +1,305 @@
+0 / 5 viewed
+0 of 5 files viewed
+Filter files…
+File tree
+backend/src
+middlewares
+errorHandler.ts
+models
+types.ts
+repositories
+userRepository.ts
+services
+authService.ts
+frontend/src/pages/Auth
+LoginPage.tsx
+‎backend/src/middlewares/errorHandler.ts‎
++4
+-1
+Lines changed: 4 additions & 1 deletion
+Original file line number	Diff line number	Diff line change
+
+export class AppError extends Error {
+  public readonly statusCode: number;
+  public readonly details?: Record<string, unknown>;
+
+  constructor(message: string, statusCode = 400) {
+  constructor(message: string, statusCode = 400, details?: Record<string, unknown>) {
+    super(message);
+    this.statusCode = statusCode;
+    this.details = details;
+  }
+}
+
+    res.status(err.statusCode).json({
+      status: 'error',
+      message: err.message,
+      ...(err.details || {}),
+    });
+    return;
+  }
+‎backend/src/models/types.ts‎
++1
+Lines changed: 1 addition & 0 deletions
+Original file line number	Diff line number	Diff line change
+  senha?: string;
+  tentativas_falhas?: number;
+  bloqueado_ate?: Date | null;
+  remaining_seconds?: number;
+  created_at: Date;
+}
+
+‎backend/src/repositories/userRepository.ts‎
++17
+-2
+Lines changed: 17 additions & 2 deletions
+Original file line number	Diff line number	Diff line change
+
+export class UserRepository {
+  async findByEmail(email: string): Promise<User | null> {
+    const result = await query('SELECT * FROM "USER" WHERE email = $1', [email]);
+    const result = await query(
+      `SELECT *,
+              CASE
+                WHEN bloqueado_ate IS NOT NULL AND bloqueado_ate > NOW()
+                THEN CEIL(EXTRACT(EPOCH FROM (bloqueado_ate - NOW())))::INT
+                ELSE 0
+              END AS remaining_seconds
+       FROM "USER"
+       WHERE email = $1`,
+      [email]
+    );
+    return result.rows[0] || null;
+  }
+
+             ELSE bloqueado_ate
+           END
+       WHERE cd_user = $1
+       RETURNING cd_user, email, tentativas_falhas, bloqueado_ate, created_at`,
+       RETURNING cd_user, email, tentativas_falhas, bloqueado_ate, created_at,
+                 CASE
+                   WHEN bloqueado_ate IS NOT NULL AND bloqueado_ate > NOW()
+                   THEN CEIL(EXTRACT(EPOCH FROM (bloqueado_ate - NOW())))::INT
+                   ELSE 0
+                 END AS remaining_seconds`,
+      [userId]
+    );
+    return result.rows[0];
+‎backend/src/services/authService.ts‎
++38
+-12
+Lines changed: 38 additions & 12 deletions
+Original file line number	Diff line number	Diff line change
+    }
+
+    // Check brute-force lockout (FA01 / RNF04)
+    if (user.bloqueado_ate) {
+      const lockUntil = new Date(user.bloqueado_ate);
+      const now = new Date();
+      if (now < lockUntil) {
+        const remainingMinutes = Math.ceil((lockUntil.getTime() - now.getTime()) / (1000 * 60));
+        throw new AppError(
+          `Acesso bloqueado temporariamente por excesso de tentativas. Tente novamente em ${remainingMinutes} minuto(s).`,
+          429
+        );
+      }
+    const activeRemainingSeconds =
+      typeof user.remaining_seconds === 'number'
+        ? user.remaining_seconds
+        : user.bloqueado_ate
+          ? Math.max(0, Math.ceil((new Date(user.bloqueado_ate).getTime() - Date.now()) / 1000))
+          : 0;
+    if (activeRemainingSeconds > 0) {
+      const minutes = Math.floor(activeRemainingSeconds / 60);
+      const seconds = activeRemainingSeconds % 60;
+      const lockUntilIso = user.bloqueado_ate
+        ? new Date(user.bloqueado_ate).toISOString()
+        : new Date(Date.now() + activeRemainingSeconds * 1000).toISOString();
+      throw new AppError(
+        `Acesso bloqueado temporariamente por excesso de tentativas. Tente novamente em ${minutes} minuto(s) e ${seconds} segundo(s).`,
+        429,
+        {
+          bloqueado_ate: lockUntilIso,
+          remaining_seconds: activeRemainingSeconds,
+        }
+      );
+    }
+
+    const passwordMatch = await bcrypt.compare(password, user.senha);
+    if (!passwordMatch) {
+      const updatedUser = await this.userRepository.incrementFailedAttempts(user.cd_user);
+      const attempts = updatedUser.tentativas_falhas || 1;
+      if (attempts >= 5) {
+        const remainingSeconds =
+          typeof updatedUser.remaining_seconds === 'number' && updatedUser.remaining_seconds > 0
+            ? updatedUser.remaining_seconds
+            : 15 * 60;
+        const minutes = Math.floor(remainingSeconds / 60);
+        const seconds = remainingSeconds % 60;
+        const lockUntil = updatedUser.bloqueado_ate
+          ? new Date(updatedUser.bloqueado_ate)
+          : new Date(Date.now() + remainingSeconds * 1000);
+        throw new AppError(
+          'Acesso bloqueado por 15 minutos após 5 tentativas consecutivas incorretas.',
+          429
+          `Acesso bloqueado temporariamente por excesso de tentativas. Tente novamente em ${minutes} minuto(s) e ${seconds} segundo(s).`,
+          429,
+          {
+            bloqueado_ate: lockUntil.toISOString(),
+            remaining_seconds: remainingSeconds,
+          }
+        );
+      }
+      throw new AppError(
+‎frontend/src/pages/Auth/LoginPage.tsx‎
++87
+-6
+Lines changed: 87 additions & 6 deletions
+Original file line number	Diff line number	Diff line change
+import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import axios from 'axios';
+import { useAuth } from '../../hooks/useAuth';
+import { useToast } from '../../hooks/useToast';
+import { Button } from '../../components/common/Button';
+import { Input } from '../../components/common/Input';
+import { HeartHandshake, Mail, Lock, LogIn } from 'lucide-react';
+import { mensagemDeErro } from '../../services/apiError';
+
+const LOGIN_BLOCK_UNTIL_KEY = '@PernasSolidarias:loginBlockedUntil';
+function formatBlockMessage(remainingSeconds: number): string {
+  const totalSeconds = Math.max(0, Math.ceil(remainingSeconds));
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `Acesso bloqueado temporariamente por excesso de tentativas. Tente novamente em ${minutes} minuto(s) e ${seconds} segundo(s).`;
+}
+export const LoginPage: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { login } = useAuth();
+  const { success, error } = useToast();
+  const { success } = useToast();
+
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [blockedUntil, setBlockedUntil] = useState<number | null>(() => {
+    const saved = localStorage.getItem(LOGIN_BLOCK_UNTIL_KEY);
+    if (!saved) return null;
+    const timestamp = Number(saved);
+    if (Number.isNaN(timestamp) || timestamp <= Date.now()) {
+      localStorage.removeItem(LOGIN_BLOCK_UNTIL_KEY);
+      return null;
+    }
+    return timestamp;
+  });
+  const [remainingSeconds, setRemainingSeconds] = useState<number>(() => {
+    const saved = localStorage.getItem(LOGIN_BLOCK_UNTIL_KEY);
+    if (!saved) return 0;
+    const timestamp = Number(saved);
+    if (Number.isNaN(timestamp) || timestamp <= Date.now()) {
+      return 0;
+    }
+    return Math.ceil((timestamp - Date.now()) / 1000);
+  });
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const isBlocked = blockedUntil !== null && remainingSeconds > 0;
+  const from = (location.state as any)?.from?.pathname || '/';
+
+  useEffect(() => {
+    if (!blockedUntil) {
+      setRemainingSeconds(0);
+      return;
+    }
+    const updateCountdown = () => {
+      const diffSeconds = Math.ceil((blockedUntil - Date.now()) / 1000);
+      if (diffSeconds <= 0) {
+        setBlockedUntil(null);
+        setRemainingSeconds(0);
+        setErrorMessage('');
+        localStorage.removeItem(LOGIN_BLOCK_UNTIL_KEY);
+      } else {
+        setRemainingSeconds(diffSeconds);
+      }
+    };
+    updateCountdown();
+    const interval = window.setInterval(updateCountdown, 1000);
+    return () => window.clearInterval(interval);
+  }, [blockedUntil]);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isBlocked) return;
+    setErrorMessage('');
+
+    if (!email.trim() || !senha.trim()) {
+    try {
+      setIsLoading(true);
+      await login(email, senha);
+      localStorage.removeItem(LOGIN_BLOCK_UNTIL_KEY);
+      success('Bem-vindo!', 'Login realizado com sucesso.');
+      navigate(from, { replace: true });
+    } catch (err: any) {
+      const msg = mensagemDeErro(err, 'Erro ao realizar login. Verifique suas credenciais.');
+      setErrorMessage(msg);
+      error('Falha na autenticação', msg);
+      if (axios.isAxiosError(err) && err.response?.status === 429) {
+        const data = err.response.data as any;
+        let secondsLeft = 15 * 60;
+        if (typeof data?.remaining_seconds === 'number' && data.remaining_seconds > 0) {
+          secondsLeft = Math.ceil(data.remaining_seconds);
+        } else if (data?.bloqueado_ate) {
+          const parsed = new Date(data.bloqueado_ate).getTime();
+          if (!Number.isNaN(parsed) && parsed > Date.now()) {
+            secondsLeft = Math.ceil((parsed - Date.now()) / 1000);
+          }
+        }
+        const unlockTime = Date.now() + secondsLeft * 1000;
+        setBlockedUntil(unlockTime);
+        setRemainingSeconds(secondsLeft);
+        localStorage.setItem(LOGIN_BLOCK_UNTIL_KEY, String(unlockTime));
+      } else {
+        setErrorMessage(msg);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const displayedError = isBlocked ? formatBlockMessage(remainingSeconds) : errorMessage;
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 flex items-center justify-center p-4">
+      {/* Decorative background blur shapes */}
+            Acesse para gerenciar eventos, participantes e duplas
+          </p>
+
+          {errorMessage && (
+          {displayedError && (
+            <div className="mb-5 p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium dark:bg-rose-950/50 dark:border-rose-800 dark:text-rose-300">
+              {errorMessage}
+              {displayedError}
+            </div>
+          )}
+
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              autoFocus
+              disabled={isLoading || isBlocked}
+              leftIcon={<Mail className="w-4 h-4" />}
+            />
+
+              value={senha}
+              onChange={(e) => setSenha(e.target.value)}
+              required
+              disabled={isLoading || isBlocked}
+              leftIcon={<Lock className="w-4 h-4" />}
+            />
+
+              size="lg"
+              className="w-full mt-2 font-semibold shadow-lg shadow-blue-600/25"
+              isLoading={isLoading}
+              disabled={isBlocked}
+              rightIcon={<LogIn className="w-4 h-4" />}
+            >
+              Acessar Painel
