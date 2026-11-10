@@ -7,7 +7,6 @@ export interface TokenPayload {
   userId: number;
   email: string;
   bootId?: string;
-  jti?: string;
   iat?: number;
   exp?: number;
 }
@@ -37,25 +36,29 @@ export function authMiddleware(
   }
 
   const token = parts[1];
+  if (!token) {
+    throw new AppError('Token de autenticação não fornecido.', 401);
+  }
+
   const secret = process.env.JWT_SECRET || 'super_secret_jwt_key_pernas_solidarias_2026';
 
+  let decoded: string | jwt.JwtPayload;
   try {
-    if (!token) {
-      throw new AppError('Token inválido.', 401);
-    }
-    const decoded = jwt.verify(token, secret) as TokenPayload;
-
-    // Se o token não tiver bootId ou pertencer a uma instância anterior do servidor (ex: após reiniciar containers)
-    if (!decoded.bootId || decoded.bootId !== SERVER_BOOT_ID) {
-      throw new AppError('Sessão expirada ou servidor reiniciado. Por favor, faça login novamente.', 401);
-    }
-
-    req.user = decoded;
-    next();
-  } catch (error) {
-    if (error instanceof AppError) {
-      throw error;
-    }
+    decoded = jwt.verify(token, secret);
+  } catch {
     throw new AppError('Token inválido ou expirado.', 401);
   }
+
+  if (!decoded || typeof decoded !== 'object' || !('userId' in decoded)) {
+    throw new AppError('Token inválido ou expirado.', 401);
+  }
+
+  const payload = decoded as TokenPayload;
+
+  if (!payload.bootId || payload.bootId !== SERVER_BOOT_ID) {
+    throw new AppError('Sessão expirada ou inválida. Por favor, faça login novamente.', 401);
+  }
+
+  req.user = payload;
+  next();
 }

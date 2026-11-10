@@ -23,8 +23,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const { logout, user } = useAuth();
 
   const handleLogout = () => {
+    onClose();
     logout();
-    navigate('/login', { replace: true });
+    navigate('/login', { replace: true, state: null });
   };
 
   const navItems = [
@@ -114,6 +115,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
               <span className="text-[10px] text-emerald-400 font-medium">Sessão Ativa</span>
             </div>
             <button
+              type="button"
               onClick={handleLogout}
               title="Sair do sistema"
               className="p-2 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-950/30 transition-colors"
