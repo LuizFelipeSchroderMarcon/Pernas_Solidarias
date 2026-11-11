@@ -84,7 +84,7 @@ export const EventModal: React.FC<EventModalProps> = ({
       onClose={onClose}
       title={isEditing ? 'Editar Evento' : 'Novo Evento de Corrida'}
       subtitle="Informe o nome e a data da corrida"
-      maxWidth="md"
+      maxWidth="lg"
       footer={
         <>
           <Button variant="ghost" size="sm" onClick={onClose} disabled={isSubmitting}>

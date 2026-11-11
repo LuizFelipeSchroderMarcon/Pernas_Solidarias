@@ -2,9 +2,37 @@ import { api } from './api';
 import type { DuplaDetalhada, PairFormationResult, HistoryFilters, ApiSuccessResponse, ApiMessageResponse } from '../types';
 
 export const pairService = {
-  // Generate automatic pairs for an event
-  async generatePairs(eventId: number): Promise<PairFormationResult> {
-    const response = await api.post<ApiSuccessResponse<PairFormationResult>>(`/pairs/event/${eventId}/generate`);
+  // Generate automatic pairs for an event (preview mode by default to allow review before saving)
+  async generatePairs(eventId: number, preview = true): Promise<PairFormationResult> {
+    const url = preview
+      ? `/pairs/event/${eventId}/generate?preview=true`
+      : `/pairs/event/${eventId}/generate`;
+    const response = await api.post<ApiSuccessResponse<PairFormationResult>>(url);
+    return response.data.data;
+  },
+
+  // Save pairs for an event
+  async savePairs(
+    eventId: number,
+    duplas: { cd_cadeirante: number; cd_condutor: number }[]
+  ): Promise<DuplaDetalhada[]> {
+    const response = await api.post<ApiSuccessResponse<DuplaDetalhada[]>>(`/pairs/event/${eventId}/save`, {
+      duplas,
+    });
+    return response.data.data;
+  },
+
+  // Delete a specific pair
+  async deletePair(pairId: number): Promise<void> {
+    await api.delete<ApiMessageResponse>(`/pairs/${pairId}`);
+  },
+
+  // Create a single pair for an event
+  async createPair(eventId: number, cd_cadeirante: number, cd_condutor: number): Promise<DuplaDetalhada> {
+    const response = await api.post<ApiSuccessResponse<DuplaDetalhada>>(`/pairs/event/${eventId}`, {
+      cd_cadeirante,
+      cd_condutor,
+    });
     return response.data.data;
   },
 
@@ -23,7 +51,7 @@ export const pairService = {
     return [];
   },
 
-  // Manually edit a pair
+  // Manually edit a pair in database
   async editPair(pairId: number, cd_cadeirante: number, cd_condutor: number): Promise<DuplaDetalhada> {
     const response = await api.put<ApiSuccessResponse<DuplaDetalhada>>(`/pairs/${pairId}`, {
       cd_cadeirante,
