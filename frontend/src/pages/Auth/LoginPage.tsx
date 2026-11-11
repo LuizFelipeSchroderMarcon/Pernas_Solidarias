@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { useToast } from '../../hooks/useToast';
 import { Button } from '../../components/common/Button';
@@ -10,7 +10,7 @@ import { mensagemDeErro } from '../../services/apiError';
 export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login } = useAuth();
+  const { login, isAuthenticated, isLoading: authLoading } = useAuth();
   const { success, error } = useToast();
 
   const [email, setEmail] = useState('');
@@ -18,7 +18,9 @@ export const LoginPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  const from = (location.state as any)?.from?.pathname || '/';
+  if (!authLoading && isAuthenticated) {
+    return <Navigate to="/" replace />;
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,10 +33,15 @@ export const LoginPage: React.FC = () => {
 
     try {
       setIsLoading(true);
-      await login(email, senha);
+      await login(email.trim(), senha);
       success('Bem-vindo!', 'Login realizado com sucesso.');
-      navigate(from, { replace: true });
-    } catch (err: any) {
+
+      const from = (location.state as { from?: { pathname?: string } })?.from?.pathname;
+      const destination = from && typeof from === 'string' && from.startsWith('/') && !from.startsWith('//')
+        ? from
+        : '/';
+      navigate(destination, { replace: true });
+    } catch (err: unknown) {
       const msg = mensagemDeErro(err, 'Erro ao realizar login. Verifique suas credenciais.');
       setErrorMessage(msg);
       error('Falha na autenticação', msg);

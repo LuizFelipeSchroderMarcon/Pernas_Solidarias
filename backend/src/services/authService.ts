@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { UserRepository } from '../repositories/userRepository';
 import { AppError } from '../middlewares/errorHandler';
+import { SERVER_BOOT_ID } from '../config/serverInstance';
 
 export class AuthService {
   private userRepository: UserRepository;
@@ -37,7 +38,8 @@ export class AuthService {
       throw new AppError('E-mail e senha são obrigatórios.');
     }
 
-    const user = await this.userRepository.findByEmail(email);
+    const emailNormalizado = email.trim().toLowerCase();
+    const user = await this.userRepository.findByEmail(emailNormalizado);
     if (!user || !user.senha) {
       throw new AppError('Credenciais inválidas.', 401);
     }
@@ -75,12 +77,20 @@ export class AuthService {
     await this.userRepository.resetFailedAttempts(user.cd_user);
 
     const secret = process.env.JWT_SECRET || 'super_secret_jwt_key_pernas_solidarias_2026';
-    const expiresIn = process.env.JWT_EXPIRES_IN || '7d';
+    const expiresIn = (process.env.JWT_EXPIRES_IN || '7d') as jwt.SignOptions['expiresIn'];
+
+    const signOptions: jwt.SignOptions = {
+      expiresIn,
+    };
 
     const token = jwt.sign(
-      { userId: user.cd_user, email: user.email },
+      {
+        userId: user.cd_user,
+        email: user.email,
+        bootId: SERVER_BOOT_ID,
+      },
       secret,
-      { expiresIn } as jwt.SignOptions
+      signOptions
     );
 
     return {
