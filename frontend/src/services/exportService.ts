@@ -11,10 +11,10 @@ export const exportService = {
     format: 'xlsx' | 'csv' = 'xlsx',
     eventName?: string
   ): Promise<void> {
-    const response = await api.get(`/exportar/evento/${eventId}`, {
+    const response = await api.get(`/export/event/${eventId}`, {
       params: {
-        comCpf: includeCpf,
-        formato: format,
+        includeCpf,
+        format,
       },
       responseType: 'blob',
     });
