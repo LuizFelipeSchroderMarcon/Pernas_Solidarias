@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { UserRepository } from '../repositories/userRepository';
 import { AppError } from '../middlewares/errorHandler';
+import { SERVER_BOOT_ID } from '../config/serverInstance';
 
 const DUMMY_BCRYPT_HASH = '$2b$10$CwTycUXWue0Thq9StjUM0uJ8u5D3Z5n4F5f5e5g5h5i5j5k5l5m5n';
 
@@ -94,10 +95,17 @@ export class AuthService {
 
     const secret = process.env.JWT_SECRET || 'super_secret_jwt_key_pernas_solidarias_2026';
     const expiresIn = (process.env.JWT_EXPIRES_IN || '7d') as jwt.SignOptions['expiresIn'];
-    const signOptions: jwt.SignOptions = { expiresIn };
+
+    const signOptions: jwt.SignOptions = {
+      expiresIn,
+    };
 
     const token = jwt.sign(
-      { userId: user.cd_user, email: user.email },
+      {
+        userId: user.cd_user,
+        email: user.email,
+        bootId: SERVER_BOOT_ID,
+      },
       secret,
       signOptions
     );

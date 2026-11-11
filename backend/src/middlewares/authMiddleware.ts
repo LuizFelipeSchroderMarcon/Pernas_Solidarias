@@ -1,10 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { AppError } from './errorHandler';
+import { SERVER_BOOT_ID } from '../config/serverInstance';
 
 export interface TokenPayload {
   userId: number;
   email: string;
+  bootId?: string;
   iat?: number;
   exp?: number;
 }
@@ -34,16 +36,29 @@ export function authMiddleware(
   }
 
   const token = parts[1];
+  if (!token) {
+    throw new AppError('Token de autenticação não fornecido.', 401);
+  }
+
   const secret = process.env.JWT_SECRET || 'super_secret_jwt_key_pernas_solidarias_2026';
 
+  let decoded: string | jwt.JwtPayload;
   try {
-    if (!token) {
-      throw new AppError('Token inválido.', 401);
-    }
-    const decoded = jwt.verify(token, secret) as TokenPayload;
-    req.user = decoded;
-    next();
-  } catch (error) {
+    decoded = jwt.verify(token, secret);
+  } catch {
     throw new AppError('Token inválido ou expirado.', 401);
   }
+
+  if (!decoded || typeof decoded !== 'object' || !('userId' in decoded)) {
+    throw new AppError('Token inválido ou expirado.', 401);
+  }
+
+  const payload = decoded as TokenPayload;
+
+  if (!payload.bootId || payload.bootId !== SERVER_BOOT_ID) {
+    throw new AppError('Sessão expirada ou inválida. Por favor, faça login novamente.', 401);
+  }
+
+  req.user = payload;
+  next();
 }

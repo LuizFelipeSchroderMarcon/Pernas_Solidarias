@@ -143,7 +143,11 @@ export const LoginPage: React.FC = () => {
   const isBlocked = blockedUntil !== null && remainingSeconds > 0;
   const rawFrom = (location.state as LocationState | null)?.from?.pathname;
   const destination =
-    rawFrom && typeof rawFrom === 'string' && rawFrom.startsWith('/') && !rawFrom.startsWith('//')
+    rawFrom &&
+    typeof rawFrom === 'string' &&
+    rawFrom.startsWith('/') &&
+    !rawFrom.startsWith('//') &&
+    rawFrom !== '/login'
       ? rawFrom
       : '/';
 
@@ -182,7 +186,7 @@ export const LoginPage: React.FC = () => {
   }, [blockedUntil, email]);
 
   if (!authLoading && isAuthenticated) {
-    return <Navigate to="/" replace />;
+    return <Navigate to={destination} replace />;
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
