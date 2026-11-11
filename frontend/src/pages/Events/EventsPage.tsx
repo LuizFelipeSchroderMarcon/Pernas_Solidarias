@@ -7,6 +7,7 @@ import { Badge } from '../../components/common/Badge';
 import { Spinner } from '../../components/common/Spinner';
 import { EmptyState } from '../../components/common/EmptyState';
 import { ConfirmDialog } from '../../components/feedback/ConfirmDialog';
+import { PageHeader } from '../../components/common/PageHeader';
 import { ExportModal } from '../../components/export/ExportModal';
 import { EventModal } from './EventModal';
 import { eventService } from '../../services/eventService';
@@ -93,30 +94,25 @@ export const EventsPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-            Gestão de Eventos
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Cadastre as corridas e gerencie a formação de duplas
-          </p>
-        </div>
-
-        <Button
-          variant="primary"
-          size="md"
-          onClick={() => {
-            setEditingEvent(null);
-            setIsModalOpen(true);
-          }}
-          leftIcon={<Plus className="w-4 h-4" />}
-          className="shadow-sm shadow-blue-500/20"
-        >
-          Novo Evento
-        </Button>
-      </div>
+      {/* Page Header */}
+      <PageHeader
+        title="Gestão de Eventos"
+        description="Cadastre as corridas e gerencie a formação de duplas."
+        actions={
+          <Button
+            variant="primary"
+            size="md"
+            onClick={() => {
+              setEditingEvent(null);
+              setIsModalOpen(true);
+            }}
+            leftIcon={<Plus className="w-4 h-4" />}
+            className="shadow-sm shadow-blue-500/20"
+          >
+            Novo Evento
+          </Button>
+        }
+      />
 
       {/* Search Filter */}
       <Card className="p-4">

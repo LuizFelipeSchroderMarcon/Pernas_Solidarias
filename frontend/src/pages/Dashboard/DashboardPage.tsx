@@ -11,6 +11,7 @@ import { eventService } from '../../services/eventService';
 import { pairService } from '../../services/pairService';
 import type { Cadeirante, Condutor, Evento } from '../../types';
 import { formatDate, toInputDateFormat } from '../../utils/formatters';
+import { PageHeader } from '../../components/common/PageHeader';
 import {
   Users,
   UserCheck,
@@ -19,7 +20,6 @@ import {
   PlusCircle,
   Download,
   ArrowRight,
-  Sparkles,
   Award,
 } from 'lucide-react';
 
@@ -97,46 +97,31 @@ export const DashboardPage: React.FC = () => {
 
   return (
     <div className="space-y-8">
-      {/* Welcome Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 p-6 sm:p-8 text-white shadow-xl shadow-blue-600/15">
-        <div className="relative z-10 max-w-2xl">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-xs font-semibold text-white mb-3">
-            <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-            Sistema de Gestão de Corridas
-          </span>
-          <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-            Painel do Coordenador
-          </h2>
-          <p className="text-sm text-blue-100 mt-2 leading-relaxed">
-            Bem-vindo ao Pernas Solidárias! Automatize a formação de duplas priorizando o histórico de
-            participações e exporte relatórios oficiais para as corridas.
-          </p>
-          <div className="flex flex-wrap gap-3 mt-5">
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => navigate('/duplas')}
-              leftIcon={<Layers className="w-4 h-4 text-blue-600" />}
-              className="bg-white text-blue-900 hover:bg-blue-50 font-semibold"
-            >
-              Formar Duplas
-            </Button>
+      {/* Page Header */}
+      <PageHeader
+        title="Painel do Coordenador"
+        description="Bem-vindo ao Pernas Solidárias! Automatize a formação de duplas priorizando o histórico de participações e exporte relatórios oficiais para as corridas."
+        actions={
+          <div className="flex flex-wrap items-center gap-2.5">
             <Button
               variant="outline"
               size="sm"
               onClick={() => navigate('/participantes')}
-              className="text-white border-white/40 hover:bg-white/10"
               leftIcon={<PlusCircle className="w-4 h-4" />}
             >
               Cadastrar Participante
             </Button>
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => navigate('/duplas')}
+              leftIcon={<Layers className="w-4 h-4" />}
+            >
+              Formar Duplas
+            </Button>
           </div>
-        </div>
-
-        {/* Decorative circle shapes */}
-        <div className="absolute -right-10 -bottom-10 w-72 h-72 bg-white/10 rounded-full blur-2xl pointer-events-none" />
-        <div className="absolute right-32 -top-10 w-48 h-48 bg-indigo-400/20 rounded-full blur-xl pointer-events-none" />
-      </div>
+        }
+      />
 
       {/* Metric Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
