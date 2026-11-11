@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
   Users,
@@ -18,12 +18,19 @@ export interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
+  const navigate = useNavigate();
   const { logout, user } = useAuth();
 
   const handleNavClick = () => {
     if (typeof window !== 'undefined' && window.innerWidth < 1024) {
       onClose();
     }
+  };
+
+  const handleLogout = () => {
+    onClose();
+    logout();
+    navigate('/login', { replace: true, state: null });
   };
 
   const navItems = [
@@ -125,7 +132,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
               </div>
             </div>
             <button
-              onClick={logout}
+              type="button"
+              onClick={handleLogout}
               title="Sair do sistema"
               className="p-2 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-950/30 transition-colors shrink-0"
               aria-label="Sair"

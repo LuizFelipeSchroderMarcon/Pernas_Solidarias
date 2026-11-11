@@ -4,19 +4,28 @@ import type { DuplaDetalhada, PairFormationResult, HistoryFilters, ApiSuccessRes
 export const pairService = {
   // Generate automatic pairs for an event
   async generatePairs(eventId: number): Promise<PairFormationResult> {
-    const response = await api.post<ApiSuccessResponse<PairFormationResult>>(`/duplas/evento/${eventId}/gerar`);
+    const response = await api.post<ApiSuccessResponse<PairFormationResult>>(`/pairs/event/${eventId}/generate`);
     return response.data.data;
   },
 
   // List pairs formed for a specific event
   async listByEvent(eventId: number): Promise<DuplaDetalhada[]> {
-    const response = await api.get<ApiSuccessResponse<DuplaDetalhada[]>>(`/duplas/evento/${eventId}`);
-    return response.data.data;
+    const response = await api.get<
+      ApiSuccessResponse<DuplaDetalhada[] | { evento?: unknown; duplas?: DuplaDetalhada[] }>
+    >(`/pairs/event/${eventId}`);
+    const data = response.data.data;
+    if (Array.isArray(data)) {
+      return data;
+    }
+    if (data && typeof data === 'object' && Array.isArray(data.duplas)) {
+      return data.duplas;
+    }
+    return [];
   },
 
   // Manually edit a pair
   async editPair(pairId: number, cd_cadeirante: number, cd_condutor: number): Promise<DuplaDetalhada> {
-    const response = await api.put<ApiSuccessResponse<DuplaDetalhada>>(`/duplas/${pairId}`, {
+    const response = await api.put<ApiSuccessResponse<DuplaDetalhada>>(`/pairs/${pairId}`, {
       cd_cadeirante,
       cd_condutor,
     });
@@ -25,7 +34,7 @@ export const pairService = {
 
   // Clear pairs of an event
   async clearPairs(eventId: number): Promise<void> {
-    await api.delete<ApiMessageResponse>(`/duplas/evento/${eventId}`);
+    await api.delete<ApiMessageResponse>(`/pairs/event/${eventId}`);
   },
 
   // Retrieve pair history with filters
@@ -36,7 +45,7 @@ export const pairService = {
     if (filters?.data_fim) params.data_fim = filters.data_fim;
     if (filters?.search) params.search = filters.search;
 
-    const response = await api.get<ApiSuccessResponse<DuplaDetalhada[]>>('/duplas/historico', { params });
+    const response = await api.get<ApiSuccessResponse<DuplaDetalhada[]>>('/pairs/history', { params });
     return response.data.data;
   },
 };

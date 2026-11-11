@@ -105,12 +105,16 @@ export class PairRepository {
         cad.cpf AS cpf_cadeirante,
         cad.telefone AS telefone_cadeirante,
         cad.tam_camisa AS tam_camisa_cadeirante,
+        cad.data_nascimento AS data_nascimento_cadeirante,
+        cad.sexo AS sexo_cadeirante,
         cad.possui_cadeira_propria,
         con.cd_condutor,
         con.nm_condutor,
         con.cpf AS cpf_condutor,
         con.telefone AS telefone_condutor,
         con.tam_camisa AS tam_camisa_condutor,
+        con.data_nascimento AS data_nascimento_condutor,
+        con.sexo AS sexo_condutor,
         d.created_at
       FROM DUPLA d
       INNER JOIN EVENTO e ON e.cd_evento = d.cd_evento
@@ -138,12 +142,16 @@ export class PairRepository {
         cad.cpf AS cpf_cadeirante,
         cad.telefone AS telefone_cadeirante,
         cad.tam_camisa AS tam_camisa_cadeirante,
+        cad.data_nascimento AS data_nascimento_cadeirante,
+        cad.sexo AS sexo_cadeirante,
         cad.possui_cadeira_propria,
         con.cd_condutor,
         con.nm_condutor,
         con.cpf AS cpf_condutor,
         con.telefone AS telefone_condutor,
         con.tam_camisa AS tam_camisa_condutor,
+        con.data_nascimento AS data_nascimento_condutor,
+        con.sexo AS sexo_condutor,
         d.created_at
       FROM DUPLA d
       INNER JOIN EVENTO e ON e.cd_evento = d.cd_evento
@@ -219,18 +227,22 @@ export class PairRepository {
         cad.cpf AS cpf_cadeirante,
         cad.telefone AS telefone_cadeirante,
         cad.tam_camisa AS tam_camisa_cadeirante,
+        cad.data_nascimento AS data_nascimento_cadeirante,
+        cad.sexo AS sexo_cadeirante,
         cad.possui_cadeira_propria,
         con.cd_condutor,
         con.nm_condutor,
         con.cpf AS cpf_condutor,
         con.telefone AS telefone_condutor,
         con.tam_camisa AS tam_camisa_condutor,
+        con.data_nascimento AS data_nascimento_condutor,
+        con.sexo AS sexo_condutor,
         d.created_at
       FROM DUPLA d
       INNER JOIN EVENTO e ON e.cd_evento = d.cd_evento
       INNER JOIN CADEIRANTE cad ON cad.cd_cadeirante = d.cd_cadeirante
       INNER JOIN CONDUTOR con ON con.cd_condutor = d.cd_condutor
-      WHERE 1=1
+      WHERE e.dt_evento < CURRENT_DATE
     `;
     const params: any[] = [];
 
