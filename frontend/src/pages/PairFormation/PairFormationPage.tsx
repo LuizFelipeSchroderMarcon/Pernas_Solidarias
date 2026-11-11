@@ -66,7 +66,7 @@ export const PairFormationPage: React.FC = () => {
       setIsLoadingPairs(true);
       const data = await pairService.listByEvent(eventId);
       if (requestId === latestRequestRef.current) {
-        setPairs(data);
+        setPairs(Array.isArray(data) ? data : []);
       }
     } catch {
       if (requestId === latestRequestRef.current) {
