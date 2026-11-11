@@ -16,6 +16,10 @@ export interface User {
   created_at: Date;
 }
 
+export interface UserWithLockStatus extends User {
+  remaining_seconds?: number;
+}
+
 export interface Cadeirante {
   cd_cadeirante: number;
   nm_cadeirante: string;

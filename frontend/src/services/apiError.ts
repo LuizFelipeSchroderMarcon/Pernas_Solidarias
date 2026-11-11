@@ -1,5 +1,15 @@
-export function mensagemDeErro(err: unknown, padrao: string): string {
-    const dados = (err as any)?.response?.data;
+import axios from 'axios';
 
-    return dados?.message || dados?.error || padrao;
+export function mensagemDeErro(err: unknown, padrao: string): string {
+  if (axios.isAxiosError(err)) {
+    const dados = err.response?.data;
+    if (dados && typeof dados === 'object') {
+      return (dados as any).message || (dados as any).error || padrao;
+    }
+    if (typeof dados === 'string' && dados.trim()) {
+      return dados;
+    }
+    return err.message || padrao;
+  }
+  return err instanceof Error ? err.message : padrao;
 }
