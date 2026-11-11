@@ -6,10 +6,10 @@ export const exportService = {
    * Downloads pairs of an event in Excel (.xlsx) or CSV (.csv) format, with or without CPF.
    */
   async exportEventReport(eventId: number, includeCpf: boolean, format: 'xlsx' | 'csv' = 'xlsx'): Promise<void> {
-    const response = await api.get(`/exportar/evento/${eventId}`, {
+    const response = await api.get(`/export/event/${eventId}`, {
       params: {
-        comCpf: includeCpf,
-        formato: format,
+        includeCpf,
+        format,
       },
       responseType: 'blob',
     });

@@ -2,12 +2,31 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { UserRepository } from '../repositories/userRepository';
 import { AppError } from '../middlewares/errorHandler';
+import { SERVER_BOOT_ID } from '../config/serverInstance';
+
+const DUMMY_BCRYPT_HASH = '$2b$10$CwTycUXWue0Thq9StjUM0uJ8u5D3Z5n4F5f5e5g5h5i5j5k5l5m5n';
 
 export class AuthService {
   private userRepository: UserRepository;
 
   constructor() {
     this.userRepository = new UserRepository();
+  }
+
+  private throwLockoutError(remainingSeconds: number): never {
+    const safeSeconds = Math.max(1, Math.ceil(remainingSeconds));
+    const minutes = Math.floor(safeSeconds / 60);
+    const seconds = safeSeconds % 60;
+    const lockUntilIso = new Date(Date.now() + safeSeconds * 1000).toISOString();
+
+    throw new AppError(
+      `Acesso bloqueado temporariamente por excesso de tentativas. Tente novamente em ${minutes} minuto(s) e ${seconds} segundo(s).`,
+      429,
+      {
+        bloqueado_ate: lockUntilIso,
+        remaining_seconds: safeSeconds,
+      }
+    );
   }
 
   async register(email: string, password: string) {
@@ -37,50 +56,58 @@ export class AuthService {
       throw new AppError('E-mail e senha são obrigatórios.');
     }
 
-    const user = await this.userRepository.findByEmail(email);
+    const emailNormalizado = email.trim().toLowerCase();
+    const user = await this.userRepository.findByEmail(emailNormalizado);
     if (!user || !user.senha) {
+      await bcrypt.compare(password, DUMMY_BCRYPT_HASH);
       throw new AppError('Credenciais inválidas.', 401);
     }
 
     // Check brute-force lockout (FA01 / RNF04)
-    if (user.bloqueado_ate) {
-      const lockUntil = new Date(user.bloqueado_ate);
-      const now = new Date();
-      if (now < lockUntil) {
-        const remainingMinutes = Math.ceil((lockUntil.getTime() - now.getTime()) / (1000 * 60));
-        throw new AppError(
-          `Acesso bloqueado temporariamente por excesso de tentativas. Tente novamente em ${remainingMinutes} minuto(s).`,
-          429
-        );
-      }
+    const activeRemainingSeconds =
+      typeof user.remaining_seconds === 'number'
+        ? user.remaining_seconds
+        : user.bloqueado_ate
+          ? Math.max(0, Math.ceil((new Date(user.bloqueado_ate).getTime() - Date.now()) / 1000))
+          : 0;
+
+    if (activeRemainingSeconds > 0) {
+      this.throwLockoutError(activeRemainingSeconds);
     }
 
     const passwordMatch = await bcrypt.compare(password, user.senha);
     if (!passwordMatch) {
       const updatedUser = await this.userRepository.incrementFailedAttempts(user.cd_user);
       const attempts = updatedUser.tentativas_falhas || 1;
-      if (attempts >= 5) {
-        throw new AppError(
-          'Acesso bloqueado por 15 minutos após 5 tentativas consecutivas incorretas.',
-          429
-        );
+      const updatedRemaining =
+        typeof updatedUser.remaining_seconds === 'number' ? updatedUser.remaining_seconds : 0;
+
+      if (attempts >= 5 || updatedRemaining > 0) {
+        const remainingSeconds = updatedRemaining > 0 ? updatedRemaining : 15 * 60;
+        this.throwLockoutError(remainingSeconds);
       }
-      throw new AppError(
-        `Credenciais inválidas. Tentativa ${attempts} de 5 antes do bloqueio temporário.`,
-        401
-      );
+
+      throw new AppError('Credenciais inválidas.', 401);
     }
 
     // Reset failed attempts on success
     await this.userRepository.resetFailedAttempts(user.cd_user);
 
     const secret = process.env.JWT_SECRET || 'super_secret_jwt_key_pernas_solidarias_2026';
-    const expiresIn = process.env.JWT_EXPIRES_IN || '7d';
+    const expiresIn = (process.env.JWT_EXPIRES_IN || '7d') as jwt.SignOptions['expiresIn'];
+
+    const signOptions: jwt.SignOptions = {
+      expiresIn,
+    };
 
     const token = jwt.sign(
-      { userId: user.cd_user, email: user.email },
+      {
+        userId: user.cd_user,
+        email: user.email,
+        bootId: SERVER_BOOT_ID,
+      },
       secret,
-      { expiresIn } as jwt.SignOptions
+      signOptions
     );
 
     return {

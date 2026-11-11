@@ -39,7 +39,9 @@ export class PairController {
       }
 
       const result = await pairFormationService.listByEvent(eventId);
-      res.status(200).json({ data: result });
+      res.status(200).json({
+        data: result.duplas,
+      });
     } catch (error) {
       next(error);
     }
