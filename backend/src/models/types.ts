@@ -13,8 +13,11 @@ export interface User {
   senha?: string;
   tentativas_falhas?: number;
   bloqueado_ate?: Date | null;
-  remaining_seconds?: number;
   created_at: Date;
+}
+
+export interface UserWithLockStatus extends User {
+  remaining_seconds?: number;
 }
 
 export interface Cadeirante {

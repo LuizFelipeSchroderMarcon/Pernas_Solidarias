@@ -18,10 +18,20 @@ export function errorHandler(
   next: NextFunction
 ): void {
   if (err instanceof AppError) {
+    if (err.statusCode === 429) {
+      const remainingSeconds =
+        typeof err.details?.remaining_seconds === 'number' && err.details.remaining_seconds > 0
+          ? Math.ceil(err.details.remaining_seconds)
+          : undefined;
+      if (remainingSeconds) {
+        res.setHeader('Retry-After', String(remainingSeconds));
+      }
+    }
+
     res.status(err.statusCode).json({
+      ...(err.details || {}),
       status: 'error',
       message: err.message,
-      ...(err.details || {}),
     });
     return;
   }

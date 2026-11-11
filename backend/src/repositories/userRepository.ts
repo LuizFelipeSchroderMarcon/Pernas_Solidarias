@@ -1,17 +1,21 @@
 import { query } from '../database/connection';
-import { User } from '../models/types';
+import { User, UserWithLockStatus } from '../models/types';
+
+const REMAINING_SECONDS_SQL = `
+  CASE
+    WHEN bloqueado_ate IS NOT NULL AND bloqueado_ate > NOW()
+    THEN CEIL(EXTRACT(EPOCH FROM (bloqueado_ate - NOW())))::INT
+    ELSE 0
+  END AS remaining_seconds
+`;
 
 export class UserRepository {
-  async findByEmail(email: string): Promise<User | null> {
+  async findByEmail(email: string): Promise<UserWithLockStatus | null> {
     const result = await query(
       `SELECT *,
-              CASE
-                WHEN bloqueado_ate IS NOT NULL AND bloqueado_ate > NOW()
-                THEN CEIL(EXTRACT(EPOCH FROM (bloqueado_ate - NOW())))::INT
-                ELSE 0
-              END AS remaining_seconds
+              ${REMAINING_SECONDS_SQL}
        FROM "USER"
-       WHERE email = $1`,
+       WHERE LOWER(email) = LOWER(TRIM($1))`,
       [email]
     );
     return result.rows[0] || null;
@@ -33,25 +37,23 @@ export class UserRepository {
     return result.rows[0];
   }
 
-  async incrementFailedAttempts(userId: number): Promise<User> {
+  async incrementFailedAttempts(userId: number): Promise<UserWithLockStatus> {
     const result = await query(
       `UPDATE "USER"
        SET tentativas_falhas = CASE
+             WHEN bloqueado_ate IS NOT NULL AND bloqueado_ate > NOW() THEN tentativas_falhas
              WHEN bloqueado_ate IS NOT NULL AND bloqueado_ate <= NOW() THEN 1
              ELSE tentativas_falhas + 1
            END,
            bloqueado_ate = CASE
+             WHEN bloqueado_ate IS NOT NULL AND bloqueado_ate > NOW() THEN bloqueado_ate
              WHEN bloqueado_ate IS NOT NULL AND bloqueado_ate <= NOW() THEN NULL
              WHEN tentativas_falhas + 1 >= 5 THEN NOW() + INTERVAL '15 minutes'
              ELSE bloqueado_ate
            END
        WHERE cd_user = $1
        RETURNING cd_user, email, tentativas_falhas, bloqueado_ate, created_at,
-                 CASE
-                   WHEN bloqueado_ate IS NOT NULL AND bloqueado_ate > NOW()
-                   THEN CEIL(EXTRACT(EPOCH FROM (bloqueado_ate - NOW())))::INT
-                   ELSE 0
-                 END AS remaining_seconds`,
+                 ${REMAINING_SECONDS_SQL}`,
       [userId]
     );
     return result.rows[0];

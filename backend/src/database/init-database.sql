@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS "USER" (
     email VARCHAR(150) NOT NULL UNIQUE,
     senha VARCHAR(255) NOT NULL,
     tentativas_falhas INT NOT NULL DEFAULT 0,
-    bloqueado_ate TIMESTAMP NULL,
+    bloqueado_ate TIMESTAMPTZ NULL,
     created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
@@ -59,7 +59,23 @@ ALTER TABLE CADEIRANTE ADD COLUMN IF NOT EXISTS sexo VARCHAR(20);
 ALTER TABLE CONDUTOR ADD COLUMN IF NOT EXISTS data_nascimento DATE;
 ALTER TABLE CONDUTOR ADD COLUMN IF NOT EXISTS sexo VARCHAR(20);
 ALTER TABLE "USER" ADD COLUMN IF NOT EXISTS tentativas_falhas INT NOT NULL DEFAULT 0;
-ALTER TABLE "USER" ADD COLUMN IF NOT EXISTS bloqueado_ate TIMESTAMP NULL;
+ALTER TABLE "USER" ADD COLUMN IF NOT EXISTS bloqueado_ate TIMESTAMPTZ NULL;
+
+DO $$
+BEGIN
+    IF EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_schema = 'public'
+          AND table_name = 'USER'
+          AND column_name = 'bloqueado_ate'
+          AND data_type = 'timestamp without time zone'
+    ) THEN
+        ALTER TABLE "USER"
+        ALTER COLUMN bloqueado_ate TYPE TIMESTAMPTZ
+        USING bloqueado_ate AT TIME ZONE current_setting('TIMEZONE');
+    END IF;
+END $$;
 
 -- Triggers para validação de unicidade de CPF entre Cadeirantes e Condutores
 CREATE OR REPLACE FUNCTION check_cpf_cross_table_cadeirante()
