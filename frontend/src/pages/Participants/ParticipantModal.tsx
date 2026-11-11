@@ -8,6 +8,7 @@ import { formatCPF, formatPhone, cleanDigits, toInputDateFormat } from '../../ut
 import { useToast } from '../../hooks/useToast';
 import { participantService } from '../../services/participantService';
 import { mensagemDeErro } from '../../services/apiError';
+import { SHIRT_SIZE_OPTIONS } from '../../constants/shirtSizes';
 
 export interface ParticipantModalProps {
   isOpen: boolean;
@@ -235,13 +236,7 @@ export const ParticipantModal: React.FC<ParticipantModalProps> = ({
           onChange={(e) => setTamCamisa(e.target.value)}
           error={errors.tamCamisa}
           required
-          options={[
-            { value: 'P', label: 'P' },
-            { value: 'M', label: 'M' },
-            { value: 'G', label: 'G' },
-            { value: 'GG', label: 'GG' },
-            { value: 'XG', label: 'XG' },
-          ]}
+          options={SHIRT_SIZE_OPTIONS}
         />
 
         {type === 'cadeirante' && (

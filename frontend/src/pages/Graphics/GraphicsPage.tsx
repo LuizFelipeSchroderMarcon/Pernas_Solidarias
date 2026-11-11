@@ -70,7 +70,6 @@ export const GraphicsPage: React.FC = () => {
 
       {/* Grid: 2 Rankings (Condutores e Cadeirantes) */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Gráfico 1: Corredores que mais participaram */}
         <Card className="flex flex-col">
           <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
             <div className="flex items-center gap-2">
@@ -122,9 +121,12 @@ export const GraphicsPage: React.FC = () => {
                         backgroundColor: '#1e293b',
                         borderRadius: '12px',
                         color: '#fff',
-                        border: 'none',
+                        border: '1px solid #334155',
                         fontSize: '12px',
+                        boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.3)',
                       }}
+                      labelStyle={{ color: '#ffffff', fontWeight: 600, marginBottom: '4px' }}
+                      itemStyle={{ color: '#ffffff' }}
                     />
                     <Bar dataKey="total_corridas" radius={[0, 6, 6, 0]}>
                       {runners.map((_, index) => (
@@ -135,7 +137,6 @@ export const GraphicsPage: React.FC = () => {
                 </ResponsiveContainer>
               </div>
 
-              {/* Lista dos líderes */}
               <div className="divide-y divide-slate-100 dark:divide-slate-800 pt-2 text-xs">
                 {runners.slice(0, 3).map((r, i) => (
                   <div key={r.id} className="py-2 flex items-center justify-between">
@@ -155,7 +156,6 @@ export const GraphicsPage: React.FC = () => {
           )}
         </Card>
 
-        {/* Gráfico 2: Cadeirantes que mais participaram */}
         <Card className="flex flex-col">
           <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
             <div className="flex items-center gap-2">
@@ -207,9 +207,12 @@ export const GraphicsPage: React.FC = () => {
                         backgroundColor: '#1e293b',
                         borderRadius: '12px',
                         color: '#fff',
-                        border: 'none',
+                        border: '1px solid #334155',
                         fontSize: '12px',
+                        boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.3)',
                       }}
+                      labelStyle={{ color: '#ffffff', fontWeight: 600, marginBottom: '4px' }}
+                      itemStyle={{ color: '#ffffff' }}
                     />
                     <Bar dataKey="total_corridas" radius={[0, 6, 6, 0]}>
                       {wheelchairUsers.map((_, index) => (
@@ -220,7 +223,6 @@ export const GraphicsPage: React.FC = () => {
                 </ResponsiveContainer>
               </div>
 
-              {/* Lista dos líderes */}
               <div className="divide-y divide-slate-100 dark:divide-slate-800 pt-2 text-xs">
                 {wheelchairUsers.slice(0, 3).map((c, i) => (
                   <div key={c.id} className="py-2 flex items-center justify-between">
@@ -241,7 +243,6 @@ export const GraphicsPage: React.FC = () => {
         </Card>
       </div>
 
-      {/* Gráfico 3: Eventos com mais inscrições */}
       <Card>
         <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
           <div className="flex items-center gap-2">
@@ -287,9 +288,12 @@ export const GraphicsPage: React.FC = () => {
                       backgroundColor: '#1e293b',
                       borderRadius: '12px',
                       color: '#fff',
-                      border: 'none',
+                      border: '1px solid #334155',
                       fontSize: '12px',
+                      boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.3)',
                     }}
+                    labelStyle={{ color: '#ffffff', fontWeight: 600, marginBottom: '4px' }}
+                    itemStyle={{ color: '#ffffff' }}
                   />
                   <Bar dataKey="total_duplas" radius={[6, 6, 0, 0]}>
                     {events.map((_, index) => (
@@ -300,7 +304,6 @@ export const GraphicsPage: React.FC = () => {
               </ResponsiveContainer>
             </div>
 
-            {/* Grid de destaques dos eventos */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
               {events.slice(0, 3).map((evt, idx) => (
                 <div
