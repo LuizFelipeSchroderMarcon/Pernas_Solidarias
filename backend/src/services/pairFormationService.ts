@@ -18,6 +18,22 @@ export class PairFormationService {
     this.runnerRepository = new RunnerRepository();
   }
 
+  private isPastEvent(dtEvento: string | Date): boolean {
+    let eventDateStr: string;
+    if (typeof dtEvento === 'string') {
+      eventDateStr = dtEvento.slice(0, 10);
+    } else {
+      const year = dtEvento.getFullYear();
+      const month = String(dtEvento.getMonth() + 1).padStart(2, '0');
+      const day = String(dtEvento.getDate()).padStart(2, '0');
+      eventDateStr = `${year}-${month}-${day}`;
+    }
+
+    const now = new Date();
+    const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    return eventDateStr < todayStr;
+  }
+
   /**
    * Executes automatic pairing based on participation history (RF03, RF04, RN01-RN04, RN07, FA02).
    */
@@ -26,6 +42,10 @@ export class PairFormationService {
     const event = await this.eventRepository.findById(eventId);
     if (!event) {
       throw new AppError('Evento não encontrado.', 404);
+    }
+
+    if (this.isPastEvent(event.dt_evento)) {
+      throw new AppError('Não é possível formar duplas para eventos que já ocorreram.', 400);
     }
 
     // 2. Fetch active participants ordered by priority (RN03, RN07)
@@ -193,6 +213,9 @@ export class PairFormationService {
     }
 
     const eventId = existingPair.cd_evento;
+    if (this.isPastEvent(existingPair.dt_evento)) {
+      throw new AppError('Não é possível editar duplas de eventos que já ocorreram.', 400);
+    }
 
     // 2. Validate wheelchair user
     const wheelchairUser = await this.wheelchairUserRepository.findById(wheelchairUserId);
@@ -259,6 +282,9 @@ export class PairFormationService {
     const event = await this.eventRepository.findById(eventId);
     if (!event) {
       throw new AppError('Evento não encontrado.', 404);
+    }
+    if (this.isPastEvent(event.dt_evento)) {
+      throw new AppError('Não é possível remover duplas de eventos que já ocorreram.', 400);
     }
     await this.pairRepository.deleteByEventId(eventId);
   }

@@ -23,6 +23,7 @@ import {
   Layers,
   Download,
 } from 'lucide-react';
+import {toInputDateFormat } from '../../utils/formatters';
 import { mensagemDeErro } from '../../services/apiError';
 
 export const EventsPage: React.FC = () => {
@@ -62,6 +63,14 @@ export const EventsPage: React.FC = () => {
 
   useEffect(() => {
     loadEvents();
+  }, []);
+
+  const todayDateStr = useMemo(() => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }, []);
 
   const filteredEvents = useMemo(() => {
@@ -185,6 +194,12 @@ export const EventsPage: React.FC = () => {
                   variant="primary"
                   size="sm"
                   className="flex-1"
+                  disabled={toInputDateFormat(evt.dt_evento) < todayDateStr}
+                  title={
+                    toInputDateFormat(evt.dt_evento) < todayDateStr
+                      ? 'Não é possível formar duplas para eventos que já ocorreram'
+                      : 'Gerenciar Duplas'
+                  }
                   onClick={() => navigate(`/duplas?evento=${evt.cd_evento}`)}
                   leftIcon={<Layers className="w-4 h-4" />}
                 >

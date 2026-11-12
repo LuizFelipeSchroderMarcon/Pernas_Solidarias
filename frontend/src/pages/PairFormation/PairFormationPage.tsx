@@ -15,7 +15,7 @@ import { eventService } from '../../services/eventService';
 import { participantService } from '../../services/participantService';
 import { pairService } from '../../services/pairService';
 import type { Evento, Cadeirante, Condutor, DuplaDetalhada } from '../../types';
-import { formatDate, formatPhone } from '../../utils/formatters';
+import { formatDate, formatPhone, toInputDateFormat } from '../../utils/formatters';
 import { useToast } from '../../hooks/useToast';
 import {
   Layers,
@@ -102,23 +102,38 @@ export const PairFormationPage: React.FC = () => {
           participantService.getCondutores(),
         ]);
 
-        setEvents(evts);
+        const todayDateStr = (() => {
+          const now = new Date();
+          const year = now.getFullYear();
+          const month = String(now.getMonth() + 1).padStart(2, '0');
+          const day = String(now.getDate()).padStart(2, '0');
+          return `${year}-${month}-${day}`;
+        })();
+
+        const availableEvents = evts.filter(
+          (e) => toInputDateFormat(e.dt_evento) >= todayDateStr
+        );
+
+        setEvents(availableEvents);
         setCadeirantes(cads);
         setCondutores(conds);
 
         const paramEventId = searchParams.get('evento');
         const savedEventId = localStorage.getItem(LAST_SELECTED_EVENT_KEY);
 
-        if (paramEventId && evts.some((e) => e.cd_evento === Number(paramEventId))) {
+        if (paramEventId && availableEvents.some((e) => e.cd_evento === Number(paramEventId))) {
           const numId = Number(paramEventId);
           setSelectedEventId(numId);
           localStorage.setItem(LAST_SELECTED_EVENT_KEY, String(numId));
-        } else if (!paramEventId && savedEventId && evts.some((e) => e.cd_evento === Number(savedEventId))) {
+        } else if (!paramEventId && savedEventId && availableEvents.some((e) => e.cd_evento === Number(savedEventId))) {
           const numId = Number(savedEventId);
           setSelectedEventId(numId);
           setSearchParams({ evento: String(numId) }, { replace: true });
         } else {
           setSelectedEventId('');
+          if (paramEventId) {
+            setSearchParams({}, { replace: true });
+          }
           if (savedEventId) {
             localStorage.removeItem(LAST_SELECTED_EVENT_KEY);
           }
