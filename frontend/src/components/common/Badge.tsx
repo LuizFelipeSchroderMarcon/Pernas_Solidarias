@@ -16,12 +16,12 @@ export const Badge: React.FC<BadgeProps> = ({
   className = '',
 }) => {
   const variants: Record<BadgeVariant, string> = {
-    primary: 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-800',
-    success: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800',
-    warning: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800',
-    danger: 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-800',
-    info: 'bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-950/60 dark:text-indigo-300 dark:border-indigo-800',
-    neutral: 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700',
+    primary: 'bg-[#15803D]/15 text-[#166534] border-[#15803D]/40',
+    success: 'bg-[#22C55E]/20 text-[#166534] border-[#16A34A]/50',
+    warning: 'bg-amber-100 text-black border-amber-400',
+    danger: 'bg-[#F51414]/20 text-[#F51414] border-[#F51414]',
+    info: 'bg-[#D9D9D9] text-black border-[#A4A4A4]',
+    neutral: 'bg-[#D9D9D9]/80 text-black border-[#B7B7B7]',
   };
 
   const sizes = {

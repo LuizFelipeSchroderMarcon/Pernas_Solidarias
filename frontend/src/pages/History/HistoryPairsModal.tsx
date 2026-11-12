@@ -59,13 +59,13 @@ export const HistoryPairsModal: React.FC<HistoryPairsModalProps> = ({
       maxWidth="3xl"
       footer={
         <div className="flex items-center justify-between w-full">
-          <span className="text-xs text-slate-500 font-medium">
-            Total de duplas: <strong className="text-slate-800 dark:text-white">{pairsList.length}</strong>
+          <span className="text-xs text-[#525252] font-medium">
+            Total de duplas: <strong className="text-black">{pairsList.length}</strong>
           </span>
           <div className="flex gap-2">
             {eventId && pairsList.length > 0 && (
               <Button
-                variant="primary"
+                variant="success"
                 size="sm"
                 onClick={() => onExport(eventId, eventName || `Evento #${eventId}`)}
                 leftIcon={<Download className="w-4 h-4" />}
@@ -73,7 +73,7 @@ export const HistoryPairsModal: React.FC<HistoryPairsModalProps> = ({
                 Gerar Relatório
               </Button>
             )}
-            <Button variant="ghost" size="sm" onClick={onClose}>
+            <Button variant="danger" size="sm" onClick={onClose}>
               Fechar
             </Button>
           </div>
@@ -91,7 +91,7 @@ export const HistoryPairsModal: React.FC<HistoryPairsModalProps> = ({
       ) : (
         <div className="flex flex-col max-h-[60vh]">
           {/* Cabeçalho da tabela com as colunas */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-2.5 border-b border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider px-2 shrink-0">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-2.5 border-b border-[#D9D9D9] text-xs font-semibold text-[#525252] uppercase tracking-wider px-2 shrink-0">
             <div className="flex items-center gap-3">
               <span className="w-7 text-center shrink-0">#</span>
               <span>Cadeirante</span>
@@ -101,22 +101,22 @@ export const HistoryPairsModal: React.FC<HistoryPairsModalProps> = ({
             </div>
           </div>
 
-          <div className="divide-y divide-slate-100 dark:divide-slate-800 overflow-y-auto">
+          <div className="divide-y divide-[#D9D9D9] overflow-y-auto">
             {pairsList.map((pair, index) => (
               <div
                 key={pair.cd_dupla}
-                className="py-3.5 grid grid-cols-1 sm:grid-cols-2 gap-4 items-center hover:bg-slate-50/50 dark:hover:bg-slate-800/40 px-2 rounded-xl"
+                className="py-3.5 grid grid-cols-1 sm:grid-cols-2 gap-4 items-center hover:bg-[#EBEAEA]/50 px-2 rounded-xl transition-colors"
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <span className="w-7 h-7 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 font-bold text-xs flex items-center justify-center shrink-0">
+                  <span className="w-7 h-7 rounded-full bg-[#15803D]/20 text-[#166534] font-bold text-xs flex items-center justify-center shrink-0">
                     {index + 1}
                   </span>
                   <div className="min-w-0 flex items-center gap-2 flex-wrap">
-                    <span className="text-sm font-bold text-slate-800 dark:text-slate-100">
+                    <span className="text-sm font-bold text-black">
                       {pair.nm_cadeirante}
                     </span>
                     {pair.possui_cadeira_propria && (
-                      <span className="text-emerald-600 dark:text-emerald-400 text-[11px] font-medium flex items-center gap-0.5 whitespace-nowrap">
+                      <span className="text-[#166534] text-[11px] font-medium flex items-center gap-0.5 whitespace-nowrap">
                         <Armchair className="w-3 h-3" /> Cadeira própria
                       </span>
                     )}
@@ -124,7 +124,7 @@ export const HistoryPairsModal: React.FC<HistoryPairsModalProps> = ({
                 </div>
 
                 <div className="flex items-center gap-2 pl-10 sm:pl-0 min-w-0">
-                  <span className="text-sm font-bold text-slate-800 dark:text-slate-100">
+                  <span className="text-sm font-bold text-black">
                     {pair.nm_condutor}
                   </span>
                 </div>

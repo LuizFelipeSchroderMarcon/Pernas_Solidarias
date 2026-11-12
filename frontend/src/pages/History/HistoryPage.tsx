@@ -112,7 +112,7 @@ export const HistoryPage: React.FC = () => {
       {/* Filter Bar */}
       <Card className="p-5">
         <div className="space-y-4">
-          <div className="flex items-center gap-2 pb-2 border-b border-slate-100 dark:border-slate-800 text-xs font-bold uppercase tracking-wider text-slate-500">
+          <div className="flex items-center gap-2 pb-2 border-b border-[#D9D9D9] text-xs font-bold uppercase tracking-wider text-[#525252]">
             <Filter className="w-4 h-4" />
             <span>Filtros de Pesquisa</span>
           </div>
@@ -150,7 +150,8 @@ export const HistoryPage: React.FC = () => {
               placeholder="Digite o nome do evento"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              leftIcon={<Search className="w-4 h-4" />}
+              leftIcon={<Search className="w-4 h-4 text-[#525252]" />}
+              className="bg-[#D9D9D9]/75 border-[#B9B9B9] placeholder-[#525252]"
             />
           </div>
 
@@ -177,21 +178,21 @@ export const HistoryPage: React.FC = () => {
           title="Nenhum evento histórico encontrado"
           description="Tente ajustar os filtros aplicados para localizar os eventos passados."
           action={
-            (selectedEventId || startDate || endDate || search) && (
+            (selectedEventId || startDate || endDate || search) ? (
               <Button variant="outline" size="sm" onClick={handleClearFilters}>
                 Limpar Filtros
               </Button>
-            )
+            ) : undefined
           }
         />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredEvents.map((evt) => (
-            <Card key={evt.cd_evento} className="flex flex-col justify-between hover:shadow-md transition-shadow">
+            <Card key={evt.cd_evento} className="flex flex-col justify-between hover:shadow-md transition-shadow border-[#A4A4A4]">
               <div>
-                <div className="flex items-center justify-between gap-2 pb-3 border-b border-slate-100 dark:border-slate-800">
-                  <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 flex items-center gap-1.5">
-                    <Calendar className="w-3.5 h-3.5" />
+                <div className="flex items-center justify-between gap-2 pb-3 border-b border-[#D9D9D9]">
+                  <span className="text-xs font-semibold text-[#7C7C7C] flex items-center gap-1.5">
+                    <Calendar className="w-3.5 h-3.5 text-black" />
                     {formatDate(evt.dt_evento)}
                   </span>
                   <Badge variant="primary" size="sm">
@@ -199,15 +200,15 @@ export const HistoryPage: React.FC = () => {
                   </Badge>
                 </div>
 
-                <h3 className="font-extrabold text-base text-slate-800 dark:text-slate-100 mt-3 leading-snug">
+                <h3 className="font-extrabold text-base text-black mt-3 leading-snug">
                   {evt.nm_evento}
                 </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                <p className="text-xs text-[#7C7C7C] mt-1">
                   Registrado em {formatDate(evt.created_at)}
                 </p>
               </div>
 
-              <div className="grid grid-cols-2 gap-2 mt-6 pt-4 border-t border-slate-100 dark:border-slate-800">
+              <div className="grid grid-cols-2 gap-2 mt-6 pt-4 border-t border-[#D9D9D9]">
                 <Button
                   variant="outline"
                   size="sm"

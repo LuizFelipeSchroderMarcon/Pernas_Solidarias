@@ -87,11 +87,11 @@ export const EventModal: React.FC<EventModalProps> = ({
       maxWidth="lg"
       footer={
         <>
-          <Button variant="ghost" size="sm" onClick={onClose} disabled={isSubmitting}>
+          <Button variant="danger" size="sm" onClick={onClose} disabled={isSubmitting}>
             Cancelar
           </Button>
           <Button variant="primary" size="sm" onClick={handleSubmit} isLoading={isSubmitting}>
-            {isEditing ? 'Salvar Alterações' : 'Criar Evento'}
+            {isEditing ? 'Salvar Alterações' : 'Cadastrar'}
           </Button>
         </>
       }

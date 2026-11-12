@@ -47,7 +47,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
       className={`flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200/60 dark:border-slate-800/80 ${className}`}
     >
       <div className="flex items-center gap-3">
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-dark tracking-tight">
           {title}
         </h1>
 

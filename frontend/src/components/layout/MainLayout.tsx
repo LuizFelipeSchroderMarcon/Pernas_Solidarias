@@ -12,12 +12,12 @@ export const MainLayout: React.FC = () => {
   });
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col antialiased">
+    <div className="min-h-screen bg-[#EBEAEA] text-black flex flex-col antialiased">
       {/* Aba retrátil para reabrir o menu quando estiver recolhido */}
       {!isSidebarOpen && (
         <button
           onClick={() => setIsSidebarOpen(true)}
-          className="fixed left-0 top-6.5 z-50 flex items-center justify-center w-6 h-9 rounded-r-lg bg-slate-900 hover:bg-blue-600 border border-l-0 border-slate-800 hover:border-blue-500 text-slate-400 hover:text-white shadow-lg transition-all duration-200 cursor-pointer group"
+          className="fixed left-0 top-6.5 z-50 flex items-center justify-center w-6 h-9 rounded-r-lg bg-[#15803D] hover:bg-[#166534] border border-l-0 border-[#166534] text-white shadow-lg transition-all duration-200 cursor-pointer group"
           title="Expandir menu lateral"
           aria-label="Expandir menu lateral"
         >
@@ -41,4 +41,3 @@ export const MainLayout: React.FC = () => {
     </div>
   );
 };
-

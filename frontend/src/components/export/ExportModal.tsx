@@ -55,11 +55,11 @@ export const ExportModal: React.FC<ExportModalProps> = ({
       maxWidth="xl"
       footer={
         <>
-          <Button variant="ghost" size="sm" onClick={onClose} disabled={isExporting}>
+          <Button variant="danger" size="sm" onClick={onClose} disabled={isExporting}>
             Cancelar
           </Button>
           <Button
-            variant="primary"
+            variant="success"
             size="sm"
             onClick={handleExport}
             isLoading={isExporting}
@@ -73,7 +73,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({
       <div className="flex flex-col gap-6 py-2">
         {/* Formato de Exportação */}
         <div className="flex flex-col gap-2.5">
-          <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+          <label className="text-xs font-bold uppercase tracking-wider text-[#525252]">
             1. Formato do Arquivo
           </label>
           <div className="grid grid-cols-2 gap-3">
@@ -82,16 +82,16 @@ export const ExportModal: React.FC<ExportModalProps> = ({
               onClick={() => setFormat('xlsx')}
               className={`flex items-center gap-3 p-3.5 rounded-xl border transition-all text-left cursor-pointer ${
                 format === 'xlsx'
-                  ? 'border-blue-600 bg-blue-50/50 text-blue-900 ring-2 ring-blue-500/20 dark:bg-blue-950/40 dark:text-blue-100 dark:border-blue-500'
-                  : 'border-slate-200 hover:border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300'
+                  ? 'border-[#166534] bg-[#15803D]/15 text-black ring-2 ring-[#166534]/30'
+                  : 'border-[#B7B7B7] hover:border-[#7C7C7C] text-black'
               }`}
             >
-              <div className="p-2 rounded-lg bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400">
+              <div className="p-2 rounded-lg bg-[#15803D]/20 text-[#166534]">
                 <FileSpreadsheet className="w-5 h-5" />
               </div>
               <div>
                 <p className="text-sm font-semibold">Excel (.xlsx)</p>
-                <p className="text-xs text-slate-500 dark:text-slate-400">Padrão para planilhas</p>
+                <p className="text-xs text-[#7C7C7C]">Padrão para planilhas</p>
               </div>
             </button>
 
@@ -100,16 +100,16 @@ export const ExportModal: React.FC<ExportModalProps> = ({
               onClick={() => setFormat('csv')}
               className={`flex items-center gap-3 p-3.5 rounded-xl border transition-all text-left cursor-pointer ${
                 format === 'csv'
-                  ? 'border-blue-600 bg-blue-50/50 text-blue-900 ring-2 ring-blue-500/20 dark:bg-blue-950/40 dark:text-blue-100 dark:border-blue-500'
-                  : 'border-slate-200 hover:border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300'
+                  ? 'border-[#166534] bg-[#15803D]/15 text-black ring-2 ring-[#166534]/30'
+                  : 'border-[#B7B7B7] hover:border-[#7C7C7C] text-black'
               }`}
             >
-              <div className="p-2 rounded-lg bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-400">
+              <div className="p-2 rounded-lg bg-[#D9D9D9] text-black">
                 <FileText className="w-5 h-5" />
               </div>
               <div>
                 <p className="text-sm font-semibold">CSV (.csv)</p>
-                <p className="text-xs text-slate-500 dark:text-slate-400">Texto separado por vírgula</p>
+                <p className="text-xs text-[#7C7C7C]">Texto separado por vírgula</p>
               </div>
             </button>
           </div>
@@ -117,8 +117,8 @@ export const ExportModal: React.FC<ExportModalProps> = ({
 
         {/* Confirmação de inclusão de CPF */}
         <div className="flex flex-col gap-2.5">
-          <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-            2. Privacidade e Dados
+          <label className="text-xs font-bold uppercase tracking-wider text-[#525252]">
+            2. Privacidade e Dados (LGPD)
           </label>
           <div className="grid grid-cols-2 gap-3">
             <button
@@ -126,16 +126,16 @@ export const ExportModal: React.FC<ExportModalProps> = ({
               onClick={() => setIncludeCpf(false)}
               className={`flex items-start gap-3 p-3.5 rounded-xl border transition-all text-left cursor-pointer ${
                 !includeCpf
-                  ? 'border-blue-600 bg-blue-50/50 text-blue-900 ring-2 ring-blue-500/20 dark:bg-blue-950/40 dark:text-blue-100 dark:border-blue-500'
-                  : 'border-slate-200 hover:border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300'
+                  ? 'border-[#166534] bg-[#15803D]/15 text-black ring-2 ring-[#166534]/30'
+                  : 'border-[#B7B7B7] hover:border-[#7C7C7C] text-black'
               }`}
             >
-              <div className="p-2 rounded-lg bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400 shrink-0">
+              <div className="p-2 rounded-lg bg-[#15803D]/20 text-[#166534] shrink-0">
                 <Shield className="w-5 h-5" />
               </div>
               <div>
                 <p className="text-sm font-semibold">Sem CPF (Recomendado)</p>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">
+                <p className="text-xs text-[#7C7C7C] mt-0.5 leading-relaxed">
                   Oculta CPFs para maior privacidade
                 </p>
               </div>
@@ -146,16 +146,16 @@ export const ExportModal: React.FC<ExportModalProps> = ({
               onClick={() => setIncludeCpf(true)}
               className={`flex items-start gap-3 p-3.5 rounded-xl border transition-all text-left cursor-pointer ${
                 includeCpf
-                  ? 'border-amber-600 bg-amber-50/50 text-amber-900 ring-2 ring-amber-500/20 dark:bg-amber-950/40 dark:text-amber-100 dark:border-amber-500'
-                  : 'border-slate-200 hover:border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300'
+                  ? 'border-[#F51414] bg-[#F51414]/15 text-black ring-2 ring-[#F51414]/20'
+                  : 'border-[#B7B7B7] hover:border-[#7C7C7C] text-black'
               }`}
             >
-              <div className="p-2 rounded-lg bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400 shrink-0">
+              <div className="p-2 rounded-lg bg-[#F51414]/20 text-[#F51414] shrink-0">
                 <ShieldAlert className="w-5 h-5" />
               </div>
               <div>
                 <p className="text-sm font-semibold">Com CPF</p>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">
+                <p className="text-xs text-[#7C7C7C] mt-0.5 leading-relaxed">
                   Apenas se exigido pela organização
                 </p>
               </div>
