@@ -32,7 +32,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({
 
     try {
       setIsExporting(true);
-      await exportService.exportEventReport(eventId, includeCpf, format);
+      await exportService.exportEventReport(eventId, includeCpf, format, eventName);
       success(
         'Relatório exportado!',
         `O download do arquivo (${format.toUpperCase()}) foi iniciado com sucesso.`
@@ -52,7 +52,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({
       onClose={onClose}
       title="Exportar Relatório de Duplas"
       subtitle={eventName ? `Evento: ${eventName}` : 'Selecione as opções de exportação para a organização'}
-      maxWidth="md"
+      maxWidth="xl"
       footer={
         <>
           <Button variant="danger" size="sm" onClick={onClose} disabled={isExporting}>
@@ -115,7 +115,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({
           </div>
         </div>
 
-        {/* Confirmação de inclusão de CPF (LGPD) */}
+        {/* Confirmação de inclusão de CPF */}
         <div className="flex flex-col gap-2.5">
           <label className="text-xs font-bold uppercase tracking-wider text-[#525252]">
             2. Privacidade e Dados (LGPD)

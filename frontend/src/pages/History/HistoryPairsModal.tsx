@@ -2,12 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Modal } from '../../components/common/Modal';
 import { Button } from '../../components/common/Button';
 import { Spinner } from '../../components/common/Spinner';
-import { Badge } from '../../components/common/Badge';
 import { EmptyState } from '../../components/common/EmptyState';
 import { pairService } from '../../services/pairService';
 import type { DuplaDetalhada } from '../../types';
-import { formatPhone, formatDate } from '../../utils/formatters';
-import { Armchair, Phone, Download, Users } from 'lucide-react';
+import { formatDate } from '../../utils/formatters';
+import { Armchair, Download, Users } from 'lucide-react';
 
 export interface HistoryPairsModalProps {
   isOpen: boolean;
@@ -35,9 +34,10 @@ export const HistoryPairsModal: React.FC<HistoryPairsModalProps> = ({
         try {
           setIsLoading(true);
           const data = await pairService.listByEvent(eventId);
-          setPairs(data);
+          setPairs(Array.isArray(data) ? data : (data as any)?.duplas || []);
         } catch (error) {
           console.error('Erro ao buscar duplas do evento:', error);
+          setPairs([]);
         } finally {
           setIsLoading(false);
         }
@@ -48,20 +48,22 @@ export const HistoryPairsModal: React.FC<HistoryPairsModalProps> = ({
     }
   }, [isOpen, eventId]);
 
+  const pairsList = Array.isArray(pairs) ? pairs : [];
+
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
       title={eventName ? `Duplas de ${eventName}` : 'Duplas Formadas'}
       subtitle={eventDate ? `Corrida realizada em ${formatDate(eventDate)}` : 'Histórico imutável de duplas'}
-      maxWidth="lg"
+      maxWidth="3xl"
       footer={
         <div className="flex items-center justify-between w-full">
           <span className="text-xs text-[#525252] font-medium">
-            Total de duplas: <strong className="text-black">{pairs.length}</strong>
+            Total de duplas: <strong className="text-black">{pairsList.length}</strong>
           </span>
           <div className="flex gap-2">
-            {eventId && (
+            {eventId && pairsList.length > 0 && (
               <Button
                 variant="success"
                 size="sm"
@@ -80,61 +82,55 @@ export const HistoryPairsModal: React.FC<HistoryPairsModalProps> = ({
     >
       {isLoading ? (
         <Spinner text="Carregando duplas deste evento..." className="py-12" />
-      ) : pairs.length === 0 ? (
+      ) : pairsList.length === 0 ? (
         <EmptyState
           icon={<Users className="w-8 h-8" />}
           title="Nenhuma dupla encontrada"
           description="Este evento não possui registro de duplas formadas."
         />
       ) : (
-        <div className="divide-y divide-black/20 bg-[#D9D9D9] border border-black rounded-xl max-h-[60vh] overflow-y-auto">
-          {pairs.map((pair, index) => (
-            <div
-              key={pair.cd_dupla}
-              className="py-3.5 px-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-white/40 transition-colors"
-            >
-              <div className="flex items-center gap-3">
-                <span className="w-7 h-7 rounded-full bg-[#15803D] border border-[#166534] text-white font-bold text-xs flex items-center justify-center shrink-0">
-                  {index + 1}
-                </span>
-                <div>
-                  <div className="flex items-center gap-2">
+        <div className="flex flex-col max-h-[60vh]">
+          {/* Cabeçalho da tabela com as colunas */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-2.5 border-b border-[#D9D9D9] text-xs font-semibold text-[#525252] uppercase tracking-wider px-2 shrink-0">
+            <div className="flex items-center gap-3">
+              <span className="w-7 text-center shrink-0">#</span>
+              <span>Cadeirante</span>
+            </div>
+            <div className="pl-10 sm:pl-0">
+              <span>Condutor</span>
+            </div>
+          </div>
+
+          <div className="divide-y divide-[#D9D9D9] overflow-y-auto">
+            {pairsList.map((pair, index) => (
+              <div
+                key={pair.cd_dupla}
+                className="py-3.5 grid grid-cols-1 sm:grid-cols-2 gap-4 items-center hover:bg-[#EBEAEA]/50 px-2 rounded-xl transition-colors"
+              >
+                <div className="flex items-center gap-3 min-w-0">
+                  <span className="w-7 h-7 rounded-full bg-[#15803D]/20 text-[#166534] font-bold text-xs flex items-center justify-center shrink-0">
+                    {index + 1}
+                  </span>
+                  <div className="min-w-0 flex items-center gap-2 flex-wrap">
                     <span className="text-sm font-bold text-black">
-                      ♿ {pair.nm_cadeirante}
+                      {pair.nm_cadeirante}
                     </span>
-                    <Badge variant="neutral" size="sm" className="bg-white">
-                      Tam. {pair.tam_camisa_cadeirante}
-                    </Badge>
                     {pair.possui_cadeira_propria && (
-                      <span className="text-[#166534] text-[11px] font-bold flex items-center gap-0.5">
+                      <span className="text-[#166534] text-[11px] font-medium flex items-center gap-0.5 whitespace-nowrap">
                         <Armchair className="w-3 h-3" /> Cadeira própria
                       </span>
                     )}
                   </div>
-                  <div className="text-xs text-[#525252] mt-0.5">
-                    Telefone: {formatPhone(pair.telefone_cadeirante)}
-                  </div>
                 </div>
-              </div>
 
-              <div className="flex items-center gap-2 pl-10 sm:pl-0">
-                <span className="text-xs text-[#525252] font-bold">com</span>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-bold text-black">
-                      🏃 {pair.nm_condutor}
-                    </span>
-                    <Badge variant="neutral" size="sm" className="bg-white">
-                      Tam. {pair.tam_camisa_condutor}
-                    </Badge>
-                  </div>
-                  <div className="text-xs text-[#525252] mt-0.5 flex items-center gap-1">
-                    <Phone className="w-3 h-3" /> {formatPhone(pair.telefone_condutor)}
-                  </div>
+                <div className="flex items-center gap-2 pl-10 sm:pl-0 min-w-0">
+                  <span className="text-sm font-bold text-black">
+                    {pair.nm_condutor}
+                  </span>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       )}
     </Modal>

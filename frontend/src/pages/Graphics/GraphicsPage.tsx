@@ -3,6 +3,7 @@ import { Card } from '../../components/common/Card';
 import { Spinner } from '../../components/common/Spinner';
 import { Badge } from '../../components/common/Badge';
 import { EmptyState } from '../../components/common/EmptyState';
+import { PageHeader } from '../../components/common/PageHeader';
 import { analyticsService } from '../../services/analyticsService';
 import type { AnalyticsRankings } from '../../types';
 import { formatDate } from '../../utils/formatters';
@@ -37,7 +38,7 @@ export const GraphicsPage: React.FC = () => {
         setIsLoading(true);
         const result = await analyticsService.getRankings(7);
         setData(result);
-      } catch (err) {
+      } catch {
         error('Erro ao carregar gráficos', 'Não foi possível buscar as estatísticas.');
       } finally {
         setIsLoading(false);
@@ -61,15 +62,11 @@ export const GraphicsPage: React.FC = () => {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h2 className="text-2xl font-extrabold text-black tracking-tight">
-          Gráficos
-        </h2>
-        <p className="text-xs sm:text-sm text-[#525252] mt-1">
-          Estatísticas de participações em corridas e eventos com mais inscrições
-        </p>
-      </div>
-
+      {/* Page Header */}
+      <PageHeader
+        title="Gráficos e Indicadores"
+        description="Acompanhe o engajamento e a participação histórica de cadeirantes, condutores e eventos na ONG Pernas Solidárias."
+      />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card className="flex flex-col border-[#B9B9B9]">
           <div className="flex items-center justify-between pb-4 border-b border-[#D9D9D9]">

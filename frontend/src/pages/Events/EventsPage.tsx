@@ -7,6 +7,7 @@ import { Badge } from '../../components/common/Badge';
 import { Spinner } from '../../components/common/Spinner';
 import { EmptyState } from '../../components/common/EmptyState';
 import { ConfirmDialog } from '../../components/feedback/ConfirmDialog';
+import { PageHeader } from '../../components/common/PageHeader';
 import { ExportModal } from '../../components/export/ExportModal';
 import { EventModal } from './EventModal';
 import { eventService } from '../../services/eventService';
@@ -22,6 +23,7 @@ import {
   Layers,
   Download,
 } from 'lucide-react';
+import {toInputDateFormat } from '../../utils/formatters';
 import { mensagemDeErro } from '../../services/apiError';
 
 export const EventsPage: React.FC = () => {
@@ -63,6 +65,14 @@ export const EventsPage: React.FC = () => {
     loadEvents();
   }, []);
 
+  const todayDateStr = useMemo(() => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }, []);
+
   const filteredEvents = useMemo(() => {
     return events.filter((evt) =>
       evt.nm_evento.toLowerCase().includes(searchTerm.toLowerCase())
@@ -93,29 +103,24 @@ export const EventsPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-2xl font-extrabold text-black tracking-tight">
-            Eventos
-          </h2>
-          <p className="text-xs sm:text-sm text-[#525252] mt-1">
-            Cadastre as corridas e gerencie a formação de duplas
-          </p>
-        </div>
-
-        <Button
-          variant="primary"
-          size="md"
-          onClick={() => {
-            setEditingEvent(null);
-            setIsModalOpen(true);
-          }}
-          leftIcon={<Plus className="w-4 h-4" />}
-        >
-          Novo evento
-        </Button>
-      </div>
+      {/* Page Header */}
+      <PageHeader
+        title="Gestão de Eventos"
+        description="Cadastre as corridas e gerencie a formação de duplas."
+        actions={
+          <Button
+            variant="primary"
+            size="md"
+            onClick={() => {
+              setEditingEvent(null);
+              setIsModalOpen(true);
+            }}
+            leftIcon={<Plus className="w-4 h-4" />}
+          >
+            Novo Evento
+          </Button>
+        }
+      />
 
       {/* Search Filter matching Figma "Barra de pesquisa" (#D9D9D9 75%) */}
       <Card className="p-4">
@@ -189,6 +194,12 @@ export const EventsPage: React.FC = () => {
                   variant="secondary"
                   size="sm"
                   className="flex-1"
+                  disabled={toInputDateFormat(evt.dt_evento) < todayDateStr}
+                  title={
+                    toInputDateFormat(evt.dt_evento) < todayDateStr
+                      ? 'Não é possível formar duplas para eventos que já ocorreram'
+                      : 'Gerenciar Duplas'
+                  }
                   onClick={() => navigate(`/duplas?evento=${evt.cd_evento}`)}
                   leftIcon={<Layers className="w-4 h-4" />}
                 >

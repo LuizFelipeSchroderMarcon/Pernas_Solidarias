@@ -9,6 +9,7 @@ import { ToggleSwitch } from '../../components/common/ToggleSwitch';
 import { Spinner } from '../../components/common/Spinner';
 import { EmptyState } from '../../components/common/EmptyState';
 import { ConfirmDialog } from '../../components/feedback/ConfirmDialog';
+import { PageHeader } from '../../components/common/PageHeader';
 import { ParticipantModal } from './ParticipantModal';
 import { participantService } from '../../services/participantService';
 import type { Cadeirante, Condutor } from '../../types';
@@ -23,8 +24,12 @@ import {
   Trash2,
   Phone,
   Armchair,
+  RotateCcw,
 } from 'lucide-react';
 import { mensagemDeErro } from '../../services/apiError';
+
+type StatusFilter = 'todos' | 'ativos' | 'inativos';
+type CadeiraFilter = 'todos' | 'com_cadeira' | 'sem_cadeira';
 
 export const ParticipantsPage: React.FC = () => {
   const { success, error } = useToast();
@@ -45,7 +50,26 @@ export const ParticipantsPage: React.FC = () => {
 
   // Filters
   const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<'todos' | 'ativos' | 'inativos'>('todos');
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('todos');
+  const [cadeiraFilter, setCadeiraFilter] = useState<CadeiraFilter>('todos');
+
+  const hasCadeiranteFilters = Boolean(
+    searchTerm.trim() || statusFilter !== 'todos' || cadeiraFilter !== 'todos'
+  );
+  const hasCondutorFilters = Boolean(
+    searchTerm.trim() || statusFilter !== 'todos'
+  );
+
+  const handleClearCadeiranteFilters = () => {
+    setSearchTerm('');
+    setStatusFilter('todos');
+    setCadeiraFilter('todos');
+  };
+
+  const handleClearCondutorFilters = () => {
+    setSearchTerm('');
+    setStatusFilter('todos');
+  };
 
   // Modals state
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -87,10 +111,20 @@ export const ParticipantsPage: React.FC = () => {
           ? true
           : statusFilter === 'ativos'
           ? item.ativo
-          : !item.ativo;
-      return matchSearch && matchStatus;
+          : statusFilter === 'inativos'
+          ? !item.ativo
+          : true;
+      const matchCadeira =
+        cadeiraFilter === 'todos'
+          ? true
+          : cadeiraFilter === 'com_cadeira'
+          ? Boolean(item.possui_cadeira_propria)
+          : cadeiraFilter === 'sem_cadeira'
+          ? !item.possui_cadeira_propria
+          : true;
+      return matchSearch && matchStatus && matchCadeira;
     });
-  }, [cadeirantes, searchTerm, statusFilter]);
+  }, [cadeirantes, searchTerm, statusFilter, cadeiraFilter]);
 
   const filteredCondutores = useMemo(() => {
     return condutores.filter((item) => {
@@ -102,7 +136,9 @@ export const ParticipantsPage: React.FC = () => {
           ? true
           : statusFilter === 'ativos'
             ? item.ativo
-            : !item.ativo;
+            : statusFilter === 'inativos'
+            ? !item.ativo
+            : true;
       return matchSearch && matchStatus;
     });
   }, [condutores, searchTerm, statusFilter]);
@@ -177,26 +213,21 @@ export const ParticipantsPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header with Title and Action Button */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-2xl font-extrabold text-black tracking-tight">
-            {activeTab === 'cadeirante' ? 'Cadeirantes' : 'Condutores'}
-          </h2>
-          <p className="text-xs sm:text-sm text-[#525252] mt-1">
-            Cadastre, edite e gerencie o status de cadeirantes e condutores
-          </p>
-        </div>
-
-        <Button
-          variant="primary"
-          size="md"
-          onClick={handleOpenCreate}
-          leftIcon={<Plus className="w-4 h-4" />}
-        >
-          {activeTab === 'cadeirante' ? 'Novo cadeirante' : 'Novo condutor'}
-        </Button>
-      </div>
+      {/* Page Header */}
+      <PageHeader
+        title="Gestão de Participantes"
+        description="Cadastre, edite e gerencie o status de cadeirantes e condutores."
+        actions={
+          <Button
+            variant="primary"
+            size="md"
+            onClick={handleOpenCreate}
+            leftIcon={<Plus className="w-4 h-4" />}
+          >
+            {activeTab === 'cadeirante' ? 'Novo Cadeirante' : 'Novo Condutor'}
+          </Button>
+        }
+      />
 
       {/* Tabs */}
       <div className="flex items-center gap-2 border-b border-[#B9B9B9] pb-px">
@@ -227,7 +258,7 @@ export const ParticipantsPage: React.FC = () => {
 
       {/* Filter and Search Bar matching Figma "Barra de pesquisa" (#D9D9D9 75%) */}
       <Card className="p-4">
-        <div className="flex flex-col sm:flex-row items-center gap-4">
+        <div className="flex flex-col md:flex-row items-center gap-4">
           <div className="flex-1 w-full">
             <Input
               placeholder="Buscar por nome ou por CPF..."
@@ -238,10 +269,26 @@ export const ParticipantsPage: React.FC = () => {
             />
           </div>
 
-          <div className="w-full sm:w-48">
+          {activeTab === 'cadeirante' && (
+            <div className="w-full md:w-56">
+              <Select
+                aria-label="Filtrar por cadeira própria"
+                value={cadeiraFilter}
+                onChange={(e) => setCadeiraFilter(e.target.value as CadeiraFilter)}
+                options={[
+                  { value: 'todos', label: 'Cadeira: Todas' },
+                  { value: 'com_cadeira', label: 'Com Cadeira Própria' },
+                  { value: 'sem_cadeira', label: 'Sem Cadeira Própria' },
+                ]}
+              />
+            </div>
+          )}
+
+          <div className="w-full md:w-48">
             <Select
+              aria-label="Filtrar por status"
               value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value as any)}
+              onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
               options={[
                 { value: 'todos', label: 'Todos os Status' },
                 { value: 'ativos', label: 'Apenas Ativos' },
@@ -341,21 +388,32 @@ export const ParticipantsPage: React.FC = () => {
           ) : (
             <EmptyState
               icon={<Users className="w-8 h-8" />}
-              title="Nenhum cadeirante encontrado"
+              title={hasCadeiranteFilters ? 'Nenhum cadeirante encontrado' : 'Nenhum cadeirante cadastrado'}
               description={
-                searchTerm || statusFilter !== 'todos'
+                hasCadeiranteFilters
                   ? 'Nenhum resultado corresponde aos filtros aplicados.'
                   : 'Nenhum cadeirante cadastrado no sistema.'
               }
               action={
-                <Button
-                  variant="primary"
-                  size="sm"
-                  onClick={handleOpenCreate}
-                  leftIcon={<Plus className="w-4 h-4" />}
-                >
-                  Cadastrar Cadeirante
-                </Button>
+                hasCadeiranteFilters ? (
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={handleClearCadeiranteFilters}
+                    leftIcon={<RotateCcw className="w-4 h-4" />}
+                  >
+                    Limpar Filtros
+                  </Button>
+                ) : (
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    onClick={handleOpenCreate}
+                    leftIcon={<Plus className="w-4 h-4" />}
+                  >
+                    Cadastrar Cadeirante
+                  </Button>
+                )
               }
             />
           )
@@ -431,21 +489,32 @@ export const ParticipantsPage: React.FC = () => {
         ) : (
           <EmptyState
             icon={<UserCheck className="w-8 h-8" />}
-            title="Nenhum condutor encontrado"
+            title={hasCondutorFilters ? 'Nenhum condutor encontrado' : 'Nenhum condutor cadastrado'}
             description={
-              searchTerm || statusFilter !== 'todos'
+              hasCondutorFilters
                 ? 'Nenhum resultado corresponde aos filtros aplicados.'
                 : 'Nenhum condutor cadastrado no sistema.'
             }
             action={
-              <Button
-                variant="primary"
-                size="sm"
-                onClick={handleOpenCreate}
-                leftIcon={<Plus className="w-4 h-4" />}
-              >
-                Cadastrar Condutor
-              </Button>
+              hasCondutorFilters ? (
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={handleClearCondutorFilters}
+                  leftIcon={<RotateCcw className="w-4 h-4" />}
+                >
+                  Limpar Filtros
+                </Button>
+              ) : (
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={handleOpenCreate}
+                  leftIcon={<Plus className="w-4 h-4" />}
+                >
+                  Cadastrar Condutor
+                </Button>
+              )
             }
           />
         )}
