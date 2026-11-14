@@ -16,7 +16,7 @@ describe('PairFormationService', () => {
       await expect(service.generateAutomaticPairs(999)).rejects.toThrow('Evento não encontrado.');
     });
 
-    it('deve lançar erro se evento já ocorreu (RN05 / isPastEvent)', async () => {
+    it('deve lançar erro se evento já ocorreu', async () => {
       vi.spyOn((service as any).eventRepository, 'findById').mockResolvedValue({
         cd_evento: 1,
         nm_evento: 'Evento Passado',
@@ -28,7 +28,7 @@ describe('PairFormationService', () => {
       );
     });
 
-    it('deve lançar erro 400 se não houver cadeirantes nem condutores ativos (FA02)', async () => {
+    it('deve lançar erro 400 se não houver cadeirantes nem condutores ativos', async () => {
       vi.spyOn((service as any).eventRepository, 'findById').mockResolvedValue({
         cd_evento: 2,
         nm_evento: 'Corrida Futura',
@@ -42,7 +42,7 @@ describe('PairFormationService', () => {
       );
     });
 
-    it('deve lançar erro 400 se faltar apenas cadeirantes ativos (FA02)', async () => {
+    it('deve lançar erro 400 se faltar apenas cadeirantes ativos', async () => {
       vi.spyOn((service as any).eventRepository, 'findById').mockResolvedValue({
         cd_evento: 2,
         nm_evento: 'Corrida Futura',
@@ -58,7 +58,7 @@ describe('PairFormationService', () => {
       );
     });
 
-    it('deve lançar erro 400 se faltar apenas condutores ativos (FA02)', async () => {
+    it('deve lançar erro 400 se faltar apenas condutores ativos', async () => {
       vi.spyOn((service as any).eventRepository, 'findById').mockResolvedValue({
         cd_evento: 2,
         nm_evento: 'Corrida Futura',
@@ -74,7 +74,7 @@ describe('PairFormationService', () => {
       );
     });
 
-    it('deve formar min(cadeirantes, condutores) duplas respeitando a ordem de prioridade (RN01, RN03, RN04)', async () => {
+    it('deve formar min(cadeirantes, condutores) duplas respeitando a ordem de prioridade', async () => {
       const mockEvent = { cd_evento: 10, nm_evento: 'Corrida Inclusão', dt_evento: '2099-10-10' };
       vi.spyOn((service as any).eventRepository, 'findById').mockResolvedValue(mockEvent);
 
@@ -131,7 +131,7 @@ describe('PairFormationService', () => {
   });
 
   describe('createPair manual', () => {
-    it('deve rejeitar criação se cadeirante ou condutor estiver inativo (RN07)', async () => {
+    it('deve rejeitar criação se cadeirante ou condutor estiver inativo', async () => {
       vi.spyOn((service as any).eventRepository, 'findById').mockResolvedValue({ cd_evento: 1 });
       vi.spyOn((service as any).wheelchairUserRepository, 'findById').mockResolvedValue({
         cd_cadeirante: 1,
@@ -141,7 +141,7 @@ describe('PairFormationService', () => {
       await expect(service.createPair(1, 1, 2)).rejects.toThrow('O cadeirante selecionado está inativo no sistema.');
     });
 
-    it('deve rejeitar se o participante já estiver alocado em outra dupla no mesmo evento (RN02)', async () => {
+    it('deve rejeitar se o participante já estiver alocado em outra dupla no mesmo evento', async () => {
       vi.spyOn((service as any).eventRepository, 'findById').mockResolvedValue({ cd_evento: 1 });
       vi.spyOn((service as any).wheelchairUserRepository, 'findById').mockResolvedValue({
         cd_cadeirante: 1,
@@ -154,8 +154,7 @@ describe('PairFormationService', () => {
         ativo: true,
       });
 
-      vi.spyOn((service as any).pairRepository, 'isParticipantInEvent')
-        .mockResolvedValueOnce(true); // Cadeirante já alocado
+      vi.spyOn((service as any).pairRepository, 'isParticipantInEvent').mockResolvedValueOnce(true);
 
       await expect(service.createPair(1, 1, 2)).rejects.toThrow('já está alocado em outra dupla neste mesmo evento.');
     });

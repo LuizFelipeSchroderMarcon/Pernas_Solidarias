@@ -27,7 +27,7 @@ describe('AuthService', () => {
       );
     });
 
-    it('deve bloquear com 429 se usuário já estiver bloqueado (FA01 / RNF04)', async () => {
+    it('deve bloquear com 429 se usuário já estiver bloqueado', async () => {
       vi.spyOn((service as any).userRepository, 'findByEmail').mockResolvedValue({
         cd_user: 1,
         email: 'admin@ong.org',
@@ -43,7 +43,7 @@ describe('AuthService', () => {
       );
     });
 
-    it('deve incrementar falhas ao errar senha e bloquear na 5ª tentativa (FA01)', async () => {
+    it('deve incrementar falhas ao errar senha e bloquear na 5ª tentativa', async () => {
       vi.spyOn((service as any).userRepository, 'findByEmail').mockResolvedValue({
         cd_user: 1,
         email: 'admin@ong.org',
@@ -51,7 +51,6 @@ describe('AuthService', () => {
         remaining_seconds: 0,
       });
 
-      // 4ª tentativa falha -> retorna 401
       vi.spyOn((service as any).userRepository, 'incrementFailedAttempts').mockResolvedValue({
         cd_user: 1,
         tentativas_falhas: 4,
@@ -62,7 +61,7 @@ describe('AuthService', () => {
         expect.objectContaining({ statusCode: 401 })
       );
 
-      // 5ª tentativa falha -> bloqueia com 429
+      
       vi.spyOn((service as any).userRepository, 'incrementFailedAttempts').mockResolvedValue({
         cd_user: 1,
         tentativas_falhas: 5,
