@@ -13,7 +13,7 @@ import { PageHeader } from '../../components/common/PageHeader';
 import { ParticipantModal } from './ParticipantModal';
 import { participantService } from '../../services/participantService';
 import type { Cadeirante, Condutor } from '../../types';
-import { formatCPF, formatPhone } from '../../utils/formatters';
+import { cleanDigits, formatCPF, formatPhone } from '../../utils/formatters';
 import { useToast } from '../../hooks/useToast';
 import {
   Users,
@@ -30,6 +30,23 @@ import { mensagemDeErro } from '../../services/apiError';
 
 type StatusFilter = 'todos' | 'ativos' | 'inativos';
 type CadeiraFilter = 'todos' | 'com_cadeira' | 'sem_cadeira';
+
+// A tabela mostra o CPF formatado (000.000.000-00), mas o banco guarda só os
+// dígitos. Quando o termo parece um CPF (só números, pontos, traço ou espaços),
+// a comparação usa apenas os dígitos, para a busca funcionar com ou sem máscara.
+function correspondeABusca(
+  nome: string,
+  cpf: string | null | undefined,
+  termo: string
+): boolean {
+  const termoNormalizado = termo.trim().toLowerCase();
+  if (!termoNormalizado) return true;
+  if (nome.toLowerCase().includes(termoNormalizado)) return true;
+
+  const pareceCpf = /^[\d.\-\s]+$/.test(termoNormalizado);
+  const digitos = cleanDigits(termoNormalizado);
+  return pareceCpf && digitos !== '' && !!cpf && cleanDigits(cpf).includes(digitos);
+}
 
 export const ParticipantsPage: React.FC = () => {
   const { success, error } = useToast();
@@ -103,9 +120,7 @@ export const ParticipantsPage: React.FC = () => {
   // Filtered lists
   const filteredCadeirantes = useMemo(() => {
     return cadeirantes.filter((item) => {
-      const matchSearch =
-        item.nm_cadeirante.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (item.cpf && item.cpf.includes(searchTerm));
+      const matchSearch = correspondeABusca(item.nm_cadeirante, item.cpf, searchTerm);
       const matchStatus =
         statusFilter === 'todos'
           ? true
@@ -128,9 +143,7 @@ export const ParticipantsPage: React.FC = () => {
 
   const filteredCondutores = useMemo(() => {
     return condutores.filter((item) => {
-      const matchSearch =
-        item.nm_condutor.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (item.cpf && item.cpf.includes(searchTerm));
+      const matchSearch = correspondeABusca(item.nm_condutor, item.cpf, searchTerm);
       const matchStatus =
         statusFilter === 'todos'
           ? true
