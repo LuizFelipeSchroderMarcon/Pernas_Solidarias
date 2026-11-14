@@ -1,0 +1,35 @@
+import { api } from './api';
+import type { Evento, ApiSuccessResponse, ApiMessageResponse } from '../types';
+
+export interface EventFormData {
+  nm_evento: string;
+  dt_evento: string;
+}
+
+export const eventService = {
+  async getEvents(status?: 'futuros' | 'passados' | 'todos', search?: string): Promise<Evento[]> {
+    const response = await api.get<ApiSuccessResponse<Evento[]>>('/events', {
+      params: { status, search },
+    });
+    return response.data.data;
+  },
+
+  async getEventById(id: number): Promise<Evento> {
+    const response = await api.get<ApiSuccessResponse<Evento>>(`/events/${id}`);
+    return response.data.data;
+  },
+
+  async createEvent(data: EventFormData): Promise<Evento> {
+    const response = await api.post<ApiSuccessResponse<Evento>>('/events', data);
+    return response.data.data;
+  },
+
+  async updateEvent(id: number, data: EventFormData): Promise<Evento> {
+    const response = await api.put<ApiSuccessResponse<Evento>>(`/events/${id}`, data);
+    return response.data.data;
+  },
+
+  async deleteEvent(id: number): Promise<void> {
+    await api.delete<ApiMessageResponse>(`/events/${id}`);
+  },
+};
