@@ -22,6 +22,9 @@ import {
   Trash2,
   Layers,
   Download,
+  Clock,
+  CheckCircle2,
+  RotateCcw,
 } from 'lucide-react';
 import {toInputDateFormat } from '../../utils/formatters';
 import { mensagemDeErro } from '../../services/apiError';
@@ -33,6 +36,7 @@ export const EventsPage: React.FC = () => {
   const [events, setEvents] = useState<Evento[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState<'todos' | 'futuros' | 'passados'>('todos');
 
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -73,11 +77,45 @@ export const EventsPage: React.FC = () => {
     return `${year}-${month}-${day}`;
   }, []);
 
+  const counts = useMemo(() => {
+    let futuros = 0;
+    let passados = 0;
+    events.forEach((evt) => {
+      const isPast = toInputDateFormat(evt.dt_evento) < todayDateStr;
+      if (isPast) {
+        passados += 1;
+      } else {
+        futuros += 1;
+      }
+    });
+    return {
+      total: events.length,
+      futuros,
+      passados,
+    };
+  }, [events, todayDateStr]);
+
+  const hasFilters = Boolean(searchTerm.trim() || statusFilter !== 'todos');
+
+  const handleClearFilters = () => {
+    setSearchTerm('');
+    setStatusFilter('todos');
+  };
+
   const filteredEvents = useMemo(() => {
-    return events.filter((evt) =>
-      evt.nm_evento.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  }, [events, searchTerm]);
+    return events.filter((evt) => {
+      const matchesSearch = evt.nm_evento
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+      if (!matchesSearch) return false;
+
+      const isPast = toInputDateFormat(evt.dt_evento) < todayDateStr;
+      if (statusFilter === 'futuros' && isPast) return false;
+      if (statusFilter === 'passados' && !isPast) return false;
+
+      return true;
+    });
+  }, [events, searchTerm, statusFilter, todayDateStr]);
 
   const handleConfirmDelete = async () => {
     if (!deletingId) return;
@@ -122,14 +160,56 @@ export const EventsPage: React.FC = () => {
         }
       />
 
+      {/* Filter Tabs by event timeframe */}
+      <div className="flex items-center gap-2 border-b border-[#B9B9B9] dark:border-slate-800 pb-px overflow-x-auto">
+        <button
+          type="button"
+          onClick={() => setStatusFilter('todos')}
+          className={`flex items-center gap-2 px-5 py-3 text-sm font-bold border-b-2 transition-all cursor-pointer whitespace-nowrap ${
+            statusFilter === 'todos'
+              ? 'border-[#166534] text-[#166534] dark:text-[#4ADE80] dark:border-[#4ADE80] bg-[#15803D]/15 dark:bg-[#15803D]/30 rounded-t-xl'
+              : 'border-transparent text-[#525252] dark:text-slate-400 hover:text-black dark:hover:text-white'
+          }`}
+        >
+          <Calendar className="w-4 h-4" />
+          <span>Todos ({counts.total})</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setStatusFilter('futuros')}
+          className={`flex items-center gap-2 px-5 py-3 text-sm font-bold border-b-2 transition-all cursor-pointer whitespace-nowrap ${
+            statusFilter === 'futuros'
+              ? 'border-[#166534] text-[#166534] dark:text-[#4ADE80] dark:border-[#4ADE80] bg-[#15803D]/15 dark:bg-[#15803D]/30 rounded-t-xl'
+              : 'border-transparent text-[#525252] dark:text-slate-400 hover:text-black dark:hover:text-white'
+          }`}
+        >
+          <Clock className="w-4 h-4" />
+          <span>Eventos Futuros ({counts.futuros})</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setStatusFilter('passados')}
+          className={`flex items-center gap-2 px-5 py-3 text-sm font-bold border-b-2 transition-all cursor-pointer whitespace-nowrap ${
+            statusFilter === 'passados'
+              ? 'border-[#166534] text-[#166534] dark:text-[#4ADE80] dark:border-[#4ADE80] bg-[#15803D]/15 dark:bg-[#15803D]/30 rounded-t-xl'
+              : 'border-transparent text-[#525252] dark:text-slate-400 hover:text-black dark:hover:text-white'
+          }`}
+        >
+          <CheckCircle2 className="w-4 h-4" />
+          <span>Eventos Passado ({counts.passados})</span>
+        </button>
+      </div>
+
       {/* Search Filter matching Figma "Barra de pesquisa" (#D9D9D9 75%) */}
       <Card className="p-4">
         <Input
           placeholder="Buscar evento por nome..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          leftIcon={<Search className="w-4 h-4 text-[#525252]" />}
-          className="bg-[#D9D9D9]/75 border-[#B9B9B9] placeholder-[#525252] text-black"
+          leftIcon={<Search className="w-4 h-4 text-slate-400 dark:text-slate-400" />}
+          className="bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 placeholder-slate-400 dark:placeholder-slate-500 text-black dark:text-white"
         />
       </Card>
 
@@ -141,12 +221,14 @@ export const EventsPage: React.FC = () => {
           {filteredEvents.map((evt) => (
             <Card
               key={evt.cd_evento}
-              className="flex flex-col justify-between hover:shadow-md transition-shadow border-[#A4A4A4]"
+              className="flex flex-col justify-between hover:shadow-md transition-shadow border-slate-200 dark:border-slate-700"
             >
               <div>
                 <div className="flex items-start justify-between gap-2 mb-3">
-                  <div className="p-2.5 rounded-xl bg-[#15803D]/15 dark:bg-emerald-950/70 border border-[#166534]/20 dark:border-emerald-600/40 text-[#166534] dark:text-emerald-400">
-                    <Calendar className="w-5 h-5" />
+                  <div className="flex items-center gap-2">
+                    <div className="p-2.5 rounded-xl bg-[#15803D]/15 dark:bg-emerald-950/70 border border-[#166534]/20 dark:border-emerald-600/40 text-[#166534] dark:text-emerald-400">
+                      <Calendar className="w-5 h-5" />
+                    </div>
                   </div>
                   <div className="flex items-center gap-1">
                     <button
@@ -227,24 +309,39 @@ export const EventsPage: React.FC = () => {
         <Card className="p-0 overflow-hidden">
           <EmptyState
             icon={<Calendar className="w-8 h-8" />}
-            title="Nenhum evento encontrado"
+            title={
+              hasFilters
+                ? 'Nenhum evento encontrado'
+                : 'Nenhum evento de corrida cadastrado'
+            }
             description={
-              searchTerm
-                ? 'Nenhum evento corresponde à busca realizada.'
-                : 'Nenhum evento de corrida cadastrado.'
+              hasFilters
+                ? 'Nenhum resultado corresponde aos filtros aplicados.'
+                : 'Cadastre o primeiro evento para começar a gerenciar e formar duplas.'
             }
             action={
-              <Button
-                variant="primary"
-                size="sm"
-                onClick={() => {
-                  setEditingEvent(null);
-                  setIsModalOpen(true);
-                }}
-                leftIcon={<Plus className="w-4 h-4" />}
-              >
-                Criar Primeiro Evento
-              </Button>
+              hasFilters ? (
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={handleClearFilters}
+                  leftIcon={<RotateCcw className="w-4 h-4" />}
+                >
+                  Limpar Filtros
+                </Button>
+              ) : (
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={() => {
+                    setEditingEvent(null);
+                    setIsModalOpen(true);
+                  }}
+                  leftIcon={<Plus className="w-4 h-4" />}
+                >
+                  Criar Primeiro Evento
+                </Button>
+              )
             }
           />
         </Card>
