@@ -10,7 +10,10 @@
     "logs": "docker compose logs -f",
     "build": "docker compose build",
     "db:init": "docker compose exec backend npm run db:init",
-    "dev:local": "concurrently -n \"backend,frontend\" -c \"blue,green\" \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\""
+    "dev:local": "concurrently -n \"backend,frontend\" -c \"blue,green\" \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
+    "test": "npm test --prefix backend && npm test --prefix frontend",
+    "test:backend": "npm test --prefix backend",
+    "test:frontend": "npm test --prefix frontend"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"
