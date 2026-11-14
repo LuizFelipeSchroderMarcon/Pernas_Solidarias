@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Info, Sun, Moon } from 'lucide-react';
-import { useTheme } from '../../hooks/useTheme';
+import { Info } from 'lucide-react';
 
 export interface PageHeaderProps {
   title: string;
@@ -17,7 +16,6 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const { isDark, toggleTheme } = useTheme();
 
   // Close tooltip on click outside or escape key
   useEffect(() => {
@@ -97,30 +95,12 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
         </div>
       </div>
 
-      {/* Action buttons with Theme toggle always to their left */}
-      <div className="flex flex-wrap items-center gap-2.5 self-start sm:self-auto">
-        <button
-          type="button"
-          onClick={toggleTheme}
-          title={isDark ? 'Ativar modo claro' : 'Ativar modo escuro'}
-          aria-label={isDark ? 'Ativar modo claro' : 'Ativar modo escuro'}
-          className="flex items-center gap-2 px-3.5 py-2 rounded-xl border border-[#B9B9B9] dark:border-slate-700 bg-white dark:bg-slate-900 text-black dark:text-slate-200 hover:bg-[#D9D9D9] dark:hover:bg-slate-800 shadow-xs transition-all duration-200 cursor-pointer"
-        >
-          {isDark ? (
-            <>
-              <Sun className="w-4 h-4 text-amber-400" />
-              <span className="text-xs font-semibold">Modo Claro</span>
-            </>
-          ) : (
-            <>
-              <Moon className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
-              <span className="text-xs font-semibold">Modo Escuro</span>
-            </>
-          )}
-        </button>
-
-        {actions}
-      </div>
+      {/* Action buttons */}
+      {actions && (
+        <div className="flex flex-wrap items-center gap-2.5 self-start sm:self-auto">
+          {actions}
+        </div>
+      )}
     </div>
   );
 };
