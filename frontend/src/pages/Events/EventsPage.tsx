@@ -176,7 +176,6 @@ export const EventsPage: React.FC = () => {
                   {evt.nm_evento}
                 </h3>
                 <p className="text-xs font-semibold text-[#7C7C7C] dark:text-slate-300 mt-1 flex items-center gap-1.5">
-                  <Calendar className="w-3.5 h-3.5 text-[#166534] dark:text-emerald-400" />
                   <span>{formatDate(evt.dt_evento)}</span>
                 </p>
 
