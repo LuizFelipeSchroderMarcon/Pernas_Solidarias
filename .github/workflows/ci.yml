@@ -80,6 +80,9 @@ jobs:
       - name: Validar recriação limpa do schema (db:reset)
         run: npm run db:reset
 
+      - name: Executar testes automatizados do Backend (Vitest + Supertest)
+        run: npm run test
+
   frontend-ci:
     name: Frontend (Typecheck & Build)
     runs-on: ubuntu-latest
@@ -106,4 +109,7 @@ jobs:
 
       - name: Validar tipagem e Build de Produção (tsc + Vite)
         run: npm run build
+
+      - name: Executar testes automatizados do Frontend (Vitest)
+        run: npm run test
 
