@@ -11,6 +11,7 @@ import { eventService } from '../../services/eventService';
 import { pairService } from '../../services/pairService';
 import type { Cadeirante, Condutor, Evento } from '../../types';
 import { formatDate, toInputDateFormat } from '../../utils/formatters';
+import { PageHeader } from '../../components/common/PageHeader';
 import {
   Users,
   UserCheck,
@@ -19,7 +20,6 @@ import {
   PlusCircle,
   Download,
   ArrowRight,
-  Sparkles,
   Award,
 } from 'lucide-react';
 
@@ -97,46 +97,31 @@ export const DashboardPage: React.FC = () => {
 
   return (
     <div className="space-y-8">
-      {/* Welcome Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 p-6 sm:p-8 text-white shadow-xl shadow-blue-600/15">
-        <div className="relative z-10 max-w-2xl">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-xs font-semibold text-white mb-3">
-            <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-            Sistema de Gestão de Corridas
-          </span>
-          <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-            Painel do Coordenador
-          </h2>
-          <p className="text-sm text-blue-100 mt-2 leading-relaxed">
-            Bem-vindo ao Pernas Solidárias! Automatize a formação de duplas priorizando o histórico de
-            participações e exporte relatórios oficiais para as corridas.
-          </p>
-          <div className="flex flex-wrap gap-3 mt-5">
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => navigate('/duplas')}
-              leftIcon={<Layers className="w-4 h-4 text-blue-600" />}
-              className="bg-white text-blue-900 hover:bg-blue-50 font-semibold"
-            >
-              Formar Duplas
-            </Button>
+      {/* Page Header */}
+      <PageHeader
+        title="Painel do Coordenador"
+        description="Bem-vindo ao Pernas Solidárias! Automatize a formação de duplas priorizando o histórico de participações e exporte relatórios oficiais para as corridas."
+        actions={
+          <div className="flex flex-wrap items-center gap-2.5">
             <Button
               variant="outline"
               size="sm"
               onClick={() => navigate('/participantes')}
-              className="text-white border-white/40 hover:bg-white/10"
               leftIcon={<PlusCircle className="w-4 h-4" />}
             >
               Cadastrar Participante
             </Button>
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => navigate('/duplas')}
+              leftIcon={<Layers className="w-4 h-4" />}
+            >
+              Formar Duplas
+            </Button>
           </div>
-        </div>
-
-        {/* Decorative circle shapes */}
-        <div className="absolute -right-10 -bottom-10 w-72 h-72 bg-white/10 rounded-full blur-2xl pointer-events-none" />
-        <div className="absolute right-32 -top-10 w-48 h-48 bg-indigo-400/20 rounded-full blur-xl pointer-events-none" />
-      </div>
+        }
+      />
 
       {/* Metric Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -161,7 +146,7 @@ export const DashboardPage: React.FC = () => {
           value={events.length}
           subtitle="Corridas no sistema"
           icon={<Calendar className="w-6 h-6" />}
-          variant="purple"
+          variant="indigo"
           onClick={() => navigate('/eventos')}
         />
         <StatCard
@@ -176,16 +161,16 @@ export const DashboardPage: React.FC = () => {
 
       {/* Próximos Eventos */}
       <Card className="flex flex-col">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800 gap-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#D9D9D9] dark:border-slate-800 gap-3">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400">
+            <div className="p-2 rounded-xl bg-[#15803D]/15 dark:bg-[#15803D]/30 text-[#166534] dark:text-[#4ADE80]">
               <Calendar className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-slate-800 dark:text-slate-100">
+              <h3 className="text-base font-bold text-black dark:text-white">
                 Próximos Eventos
               </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-[#7C7C7C] dark:text-slate-400">
                 Corridas agendadas a partir de hoje
               </p>
             </div>
@@ -197,7 +182,7 @@ export const DashboardPage: React.FC = () => {
               </Badge>
             )}
             <Button
-              variant="outline"
+              variant="primary"
               size="sm"
               onClick={() => navigate('/eventos')}
               leftIcon={<PlusCircle className="w-3.5 h-3.5" />}
@@ -212,12 +197,12 @@ export const DashboardPage: React.FC = () => {
             {upcomingEvents.map((evt, index) => (
               <div
                 key={evt.cd_evento}
-                className="relative flex flex-col justify-between p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-950/50 hover:shadow-md hover:border-blue-400/50 dark:hover:border-blue-500/50 transition-all duration-200"
+                className="relative flex flex-col justify-between p-5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/80 shadow-xs hover:shadow-md hover:border-[#166534] dark:hover:border-[#22C55E] transition-all duration-200"
               >
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-2">
-                    <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 dark:text-blue-400">
-                      <Calendar className="w-3.5 h-3.5" />
+                    <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#7C7C7C] dark:text-slate-400">
+                      <Calendar className="w-3.5 h-3.5 text-black dark:text-slate-300" />
                       {formatDate(evt.dt_evento)}
                     </span>
                     {index === 0 && (
@@ -226,33 +211,39 @@ export const DashboardPage: React.FC = () => {
                       </Badge>
                     )}
                   </div>
-                  <h4 className="text-base font-bold text-slate-900 dark:text-white leading-snug">
+                  <h4 className="text-base font-bold text-black dark:text-white leading-snug">
                     {evt.nm_evento}
                   </h4>
-                  <div className="mt-3.5 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                    <span className="text-xs text-slate-500 dark:text-slate-400">
+                  <div className="mt-3.5 p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 flex items-center justify-between">
+                    <span className="text-xs text-[#525252] dark:text-slate-400">
                       Duplas formadas:
                     </span>
-                    <span className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                    <span className="text-sm font-bold text-black dark:text-white">
                       {evt.total_duplas ?? 0}
                     </span>
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-2 pt-4 mt-2 border-t border-slate-100 dark:border-slate-800">
+                <div className="flex flex-col gap-2 pt-4 mt-2 border-t border-slate-200 dark:border-slate-800">
                   <Button
-                    variant="primary"
+                    variant="secondary"
                     size="sm"
                     className="w-full"
                     onClick={() => navigate(`/duplas?evento=${evt.cd_evento}`)}
                     leftIcon={<Layers className="w-4 h-4" />}
                   >
-                    Gerenciar Duplas
+                    Formar duplas
                   </Button>
                   <Button
-                    variant="outline"
+                    variant="primary"
                     size="sm"
                     className="w-full"
+                    disabled={(evt.total_duplas ?? 0) === 0}
+                    title={
+                      (evt.total_duplas ?? 0) === 0
+                        ? 'Não é possível exportar relatório de evento sem duplas formadas'
+                        : 'Exportar Relatório'
+                    }
                     onClick={() => handleOpenExport(evt)}
                     leftIcon={<Download className="w-4 h-4" />}
                   >
@@ -264,13 +255,13 @@ export const DashboardPage: React.FC = () => {
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center text-center py-10">
-            <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800/80 flex items-center justify-center text-slate-400 mb-3">
+            <div className="w-12 h-12 rounded-2xl bg-[#D9D9D9] dark:bg-slate-800 flex items-center justify-center text-[#525252] dark:text-slate-300 mb-3">
               <Calendar className="w-6 h-6" />
             </div>
-            <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200">
+            <h4 className="text-sm font-bold text-black dark:text-white">
               Nenhum evento futuro agendado
             </h4>
-            <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mt-1">
+            <p className="text-xs text-[#7C7C7C] dark:text-slate-400 max-w-sm mt-1">
               Todas as corridas cadastradas já ocorreram ou ainda não há eventos agendados para hoje ou datas futuras.
             </p>
             <Button
@@ -288,12 +279,12 @@ export const DashboardPage: React.FC = () => {
 
       {/* Recent Events List Card */}
       <Card>
-        <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+        <div className="flex items-center justify-between pb-4 border-b border-[#D9D9D9] dark:border-slate-800">
           <div>
-            <h3 className="text-base font-bold text-slate-800 dark:text-slate-100">
+            <h3 className="text-base font-bold text-black dark:text-white">
               Eventos Recentes
             </h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
+            <p className="text-xs text-[#7C7C7C] dark:text-slate-400">
               Últimas corridas registradas no sistema
             </p>
           </div>
@@ -307,25 +298,31 @@ export const DashboardPage: React.FC = () => {
           </Button>
         </div>
 
-        <div className="divide-y divide-slate-100 dark:divide-slate-800 mt-2">
+        <div className="divide-y divide-[#D9D9D9] dark:divide-slate-800 mt-2">
           {events.slice(0, 5).map((evt) => (
             <div
               key={evt.cd_evento}
-              className="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 px-2 rounded-xl transition-colors"
+              className="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50 dark:hover:bg-slate-800/50 px-2 rounded-xl transition-colors"
             >
               <div>
-                <h4 className="text-sm font-semibold text-slate-900 dark:text-white">
+                <h4 className="text-sm font-semibold text-black dark:text-white">
                   {evt.nm_evento}
                 </h4>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                <p className="text-xs text-[#7C7C7C] dark:text-slate-400 mt-0.5">
                   Data: {formatDate(evt.dt_evento)}
                 </p>
               </div>
 
               <div className="flex items-center gap-2 self-end sm:self-auto">
                 <Button
-                  variant="outline"
+                  variant="secondary"
                   size="sm"
+                  disabled={(evt.total_duplas ?? 0) === 0}
+                  title={
+                    (evt.total_duplas ?? 0) === 0
+                      ? 'Não é possível exportar relatório de evento sem duplas formadas'
+                      : 'Exportar'
+                  }
                   onClick={() => handleOpenExport(evt)}
                   leftIcon={<Download className="w-3.5 h-3.5" />}
                 >
@@ -334,6 +331,12 @@ export const DashboardPage: React.FC = () => {
                 <Button
                   variant="primary"
                   size="sm"
+                  disabled={toInputDateFormat(evt.dt_evento) < todayDateStr}
+                  title={
+                    toInputDateFormat(evt.dt_evento) < todayDateStr
+                      ? 'Não é possível formar duplas para eventos que já ocorreram'
+                      : 'Gerenciar Duplas'
+                  }
                   onClick={() => navigate(`/duplas?evento=${evt.cd_evento}`)}
                   leftIcon={<Layers className="w-3.5 h-3.5" />}
                 >
@@ -344,7 +347,7 @@ export const DashboardPage: React.FC = () => {
           ))}
 
           {events.length === 0 && (
-            <p className="text-xs text-slate-500 text-center py-6">
+            <p className="text-xs text-[#7C7C7C] dark:text-slate-400 text-center py-6">
               Nenhum evento registrado até o momento.
             </p>
           )}

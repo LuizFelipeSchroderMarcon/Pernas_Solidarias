@@ -1,5 +1,6 @@
 import { EventRepository } from '../repositories/eventRepository';
 import { AppError } from '../middlewares/errorHandler';
+import { validarDataEvento } from '../utils/validarDataEvento';
 
 export class EventService {
   private eventRepository: EventRepository;
@@ -24,6 +25,12 @@ export class EventService {
     if (!data.nm_evento || !data.dt_evento) {
       throw new AppError('Nome do evento e data são obrigatórios.');
     }
+    if (!validarDataEvento(data.dt_evento)) {
+      throw new AppError(
+        'Data do evento inválida. Utilize o formato AAAA-MM-DD.',
+        400
+      );
+    }
 
     return this.eventRepository.create(data);
   }
@@ -33,6 +40,12 @@ export class EventService {
 
     if (!data.nm_evento || !data.dt_evento) {
       throw new AppError('Nome do evento e data são obrigatórios.');
+    }
+    if (!validarDataEvento(data.dt_evento)) {
+      throw new AppError(
+        'Data do evento inválida. Utilize o formato AAAA-MM-DD.',
+        400
+      );
     }
 
     return this.eventRepository.update(id, data);

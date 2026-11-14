@@ -7,6 +7,7 @@ import { Badge } from '../../components/common/Badge';
 import { Spinner } from '../../components/common/Spinner';
 import { EmptyState } from '../../components/common/EmptyState';
 import { ConfirmDialog } from '../../components/feedback/ConfirmDialog';
+import { PageHeader } from '../../components/common/PageHeader';
 import { ExportModal } from '../../components/export/ExportModal';
 import { EventModal } from './EventModal';
 import { eventService } from '../../services/eventService';
@@ -22,6 +23,7 @@ import {
   Layers,
   Download,
 } from 'lucide-react';
+import {toInputDateFormat } from '../../utils/formatters';
 import { mensagemDeErro } from '../../services/apiError';
 
 export const EventsPage: React.FC = () => {
@@ -63,6 +65,14 @@ export const EventsPage: React.FC = () => {
     loadEvents();
   }, []);
 
+  const todayDateStr = useMemo(() => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }, []);
+
   const filteredEvents = useMemo(() => {
     return events.filter((evt) =>
       evt.nm_evento.toLowerCase().includes(searchTerm.toLowerCase())
@@ -93,38 +103,33 @@ export const EventsPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-            Gestão de Eventos
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Cadastre as corridas e gerencie a formação de duplas
-          </p>
-        </div>
+      {/* Page Header */}
+      <PageHeader
+        title="Gestão de Eventos"
+        description="Cadastre as corridas e gerencie a formação de duplas."
+        actions={
+          <Button
+            variant="primary"
+            size="md"
+            onClick={() => {
+              setEditingEvent(null);
+              setIsModalOpen(true);
+            }}
+            leftIcon={<Plus className="w-4 h-4" />}
+          >
+            Novo Evento
+          </Button>
+        }
+      />
 
-        <Button
-          variant="primary"
-          size="md"
-          onClick={() => {
-            setEditingEvent(null);
-            setIsModalOpen(true);
-          }}
-          leftIcon={<Plus className="w-4 h-4" />}
-          className="shadow-sm shadow-blue-500/20"
-        >
-          Novo Evento
-        </Button>
-      </div>
-
-      {/* Search Filter */}
+      {/* Search Filter matching Figma "Barra de pesquisa" (#D9D9D9 75%) */}
       <Card className="p-4">
         <Input
           placeholder="Buscar evento por nome..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          leftIcon={<Search className="w-4 h-4" />}
+          leftIcon={<Search className="w-4 h-4 text-[#525252]" />}
+          className="bg-[#D9D9D9]/75 border-[#B9B9B9] placeholder-[#525252] text-black"
         />
       </Card>
 
@@ -136,11 +141,11 @@ export const EventsPage: React.FC = () => {
           {filteredEvents.map((evt) => (
             <Card
               key={evt.cd_evento}
-              className="flex flex-col justify-between hover:shadow-md transition-shadow"
+              className="flex flex-col justify-between hover:shadow-md transition-shadow border-[#A4A4A4]"
             >
               <div>
                 <div className="flex items-start justify-between gap-2 mb-3">
-                  <div className="p-2.5 rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400">
+                  <div className="p-2.5 rounded-xl bg-[#15803D]/15 dark:bg-emerald-950/70 border border-[#166534]/20 dark:border-emerald-600/40 text-[#166534] dark:text-emerald-400">
                     <Calendar className="w-5 h-5" />
                   </div>
                   <div className="flex items-center gap-1">
@@ -149,7 +154,7 @@ export const EventsPage: React.FC = () => {
                         setEditingEvent(evt);
                         setIsModalOpen(true);
                       }}
-                      className="p-1.5 text-slate-400 hover:text-blue-600 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-950/50 transition-colors"
+                      className="p-1.5 text-[#525252] dark:text-slate-300 hover:text-[#166534] dark:hover:text-emerald-400 rounded-lg hover:bg-[#16A34A]/20 dark:hover:bg-[#16A34A]/30 transition-colors cursor-pointer"
                       title="Editar evento"
                     >
                       <Edit2 className="w-4 h-4" />
@@ -159,7 +164,7 @@ export const EventsPage: React.FC = () => {
                         setDeletingId(evt.cd_evento);
                         setDeleteDialogOpen(true);
                       }}
-                      className="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-950/50 transition-colors"
+                      className="p-1.5 text-[#525252] dark:text-slate-300 hover:text-[#F51414] dark:hover:text-red-400 rounded-lg hover:bg-[#F51414]/15 dark:hover:bg-red-950/40 transition-colors cursor-pointer"
                       title="Excluir evento"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -167,15 +172,16 @@ export const EventsPage: React.FC = () => {
                   </div>
                 </div>
 
-                <h3 className="text-base font-bold text-slate-900 dark:text-white leading-snug">
+                <h3 className="text-base font-bold text-black dark:text-white leading-snug">
                   {evt.nm_evento}
                 </h3>
-                <p className="text-xs font-semibold text-blue-600 dark:text-blue-400 mt-1">
-                  📅 {formatDate(evt.dt_evento)}
+                <p className="text-xs font-semibold text-[#7C7C7C] dark:text-slate-300 mt-1 flex items-center gap-1.5">
+                  <Calendar className="w-3.5 h-3.5 text-[#166534] dark:text-emerald-400" />
+                  <span>{formatDate(evt.dt_evento)}</span>
                 </p>
 
-                <div className="mt-4 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                  <span className="text-xs text-slate-500 dark:text-slate-400">
+                <div className="mt-4 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 flex items-center justify-between">
+                  <span className="text-xs text-[#525252] dark:text-slate-300 font-medium">
                     Duplas Formadas
                   </span>
                   <Badge variant={evt.total_duplas ? 'success' : 'neutral'} size="sm">
@@ -184,21 +190,32 @@ export const EventsPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 mt-6 pt-4 border-t border-slate-100 dark:border-slate-800">
+              <div className="flex items-center gap-2 mt-6 pt-4 border-t border-[#D9D9D9] dark:border-slate-800">
                 <Button
-                  variant="primary"
+                  variant="secondary"
                   size="sm"
                   className="flex-1"
+                  disabled={toInputDateFormat(evt.dt_evento) < todayDateStr}
+                  title={
+                    toInputDateFormat(evt.dt_evento) < todayDateStr
+                      ? 'Não é possível formar duplas para eventos que já ocorreram'
+                      : 'Gerenciar Duplas'
+                  }
                   onClick={() => navigate(`/duplas?evento=${evt.cd_evento}`)}
                   leftIcon={<Layers className="w-4 h-4" />}
                 >
-                  Gerenciar Duplas
+                  Formar duplas
                 </Button>
                 <Button
-                  variant="outline"
+                  variant="primary"
                   size="sm"
+                  disabled={(evt.total_duplas ?? 0) === 0}
+                  title={
+                    (evt.total_duplas ?? 0) === 0
+                      ? 'Não é possível exportar relatório de evento sem duplas formadas'
+                      : 'Exportar Relatório'
+                  }
                   onClick={() => handleOpenExport(evt)}
-                  title="Exportar Relatório"
                   leftIcon={<Download className="w-4 h-4" />}
                 >
                   Exportar

@@ -9,6 +9,7 @@ import { ToggleSwitch } from '../../components/common/ToggleSwitch';
 import { Spinner } from '../../components/common/Spinner';
 import { EmptyState } from '../../components/common/EmptyState';
 import { ConfirmDialog } from '../../components/feedback/ConfirmDialog';
+import { PageHeader } from '../../components/common/PageHeader';
 import { ParticipantModal } from './ParticipantModal';
 import { participantService } from '../../services/participantService';
 import type { Cadeirante, Condutor } from '../../types';
@@ -23,8 +24,12 @@ import {
   Trash2,
   Phone,
   Armchair,
+  RotateCcw,
 } from 'lucide-react';
 import { mensagemDeErro } from '../../services/apiError';
+
+type StatusFilter = 'todos' | 'ativos' | 'inativos';
+type CadeiraFilter = 'todos' | 'com_cadeira' | 'sem_cadeira';
 
 // A tabela mostra o CPF formatado (000.000.000-00), mas o banco guarda só os
 // dígitos. Quando o termo parece um CPF (só números, pontos, traço ou espaços),
@@ -62,7 +67,26 @@ export const ParticipantsPage: React.FC = () => {
 
   // Filters
   const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<'todos' | 'ativos' | 'inativos'>('todos');
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('todos');
+  const [cadeiraFilter, setCadeiraFilter] = useState<CadeiraFilter>('todos');
+
+  const hasCadeiranteFilters = Boolean(
+    searchTerm.trim() || statusFilter !== 'todos' || cadeiraFilter !== 'todos'
+  );
+  const hasCondutorFilters = Boolean(
+    searchTerm.trim() || statusFilter !== 'todos'
+  );
+
+  const handleClearCadeiranteFilters = () => {
+    setSearchTerm('');
+    setStatusFilter('todos');
+    setCadeiraFilter('todos');
+  };
+
+  const handleClearCondutorFilters = () => {
+    setSearchTerm('');
+    setStatusFilter('todos');
+  };
 
   // Modals state
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -102,10 +126,20 @@ export const ParticipantsPage: React.FC = () => {
           ? true
           : statusFilter === 'ativos'
           ? item.ativo
-          : !item.ativo;
-      return matchSearch && matchStatus;
+          : statusFilter === 'inativos'
+          ? !item.ativo
+          : true;
+      const matchCadeira =
+        cadeiraFilter === 'todos'
+          ? true
+          : cadeiraFilter === 'com_cadeira'
+          ? Boolean(item.possui_cadeira_propria)
+          : cadeiraFilter === 'sem_cadeira'
+          ? !item.possui_cadeira_propria
+          : true;
+      return matchSearch && matchStatus && matchCadeira;
     });
-  }, [cadeirantes, searchTerm, statusFilter]);
+  }, [cadeirantes, searchTerm, statusFilter, cadeiraFilter]);
 
   const filteredCondutores = useMemo(() => {
     return condutores.filter((item) => {
@@ -115,7 +149,9 @@ export const ParticipantsPage: React.FC = () => {
           ? true
           : statusFilter === 'ativos'
             ? item.ativo
-            : !item.ativo;
+            : statusFilter === 'inativos'
+            ? !item.ativo
+            : true;
       return matchSearch && matchStatus;
     });
   }, [condutores, searchTerm, statusFilter]);
@@ -190,36 +226,31 @@ export const ParticipantsPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header with Title and Action Button */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-            Gestão de Participantes
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Cadastre, edite e gerencie o status de cadeirantes e condutores
-          </p>
-        </div>
-
-        <Button
-          variant="primary"
-          size="md"
-          onClick={handleOpenCreate}
-          leftIcon={<Plus className="w-4 h-4" />}
-          className="shadow-sm shadow-blue-500/20"
-        >
-          {activeTab === 'cadeirante' ? 'Novo Cadeirante' : 'Novo Condutor'}
-        </Button>
-      </div>
+      {/* Page Header */}
+      <PageHeader
+        title="Gestão de Participantes"
+        description="Cadastre, edite e gerencie o status de cadeirantes e condutores."
+        actions={
+          <Button
+            variant="primary"
+            size="md"
+            onClick={handleOpenCreate}
+            leftIcon={<Plus className="w-4 h-4" />}
+          >
+            {activeTab === 'cadeirante' ? 'Novo Cadeirante' : 'Novo Condutor'}
+          </Button>
+        }
+      />
 
       {/* Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-px">
+      <div className="flex items-center gap-2 border-b border-[#B9B9B9] dark:border-slate-800 pb-px">
         <button
           onClick={() => handleTabChange('cadeirante')}
-          className={`flex items-center gap-2 px-5 py-3 text-sm font-semibold border-b-2 transition-all cursor-pointer ${activeTab === 'cadeirante'
-              ? 'border-blue-600 text-blue-600 dark:text-blue-400 dark:border-blue-400'
-              : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'
-            }`}
+          className={`flex items-center gap-2 px-5 py-3 text-sm font-bold border-b-2 transition-all cursor-pointer ${
+            activeTab === 'cadeirante'
+              ? 'border-[#166534] text-[#166534] dark:text-[#4ADE80] dark:border-[#4ADE80] bg-[#15803D]/15 dark:bg-[#15803D]/30 rounded-t-xl'
+              : 'border-transparent text-[#525252] dark:text-slate-400 hover:text-black dark:hover:text-white'
+          }`}
         >
           <Users className="w-4 h-4" />
           <span>Cadeirantes ({cadeirantes.length})</span>
@@ -227,32 +258,50 @@ export const ParticipantsPage: React.FC = () => {
 
         <button
           onClick={() => handleTabChange('condutor')}
-          className={`flex items-center gap-2 px-5 py-3 text-sm font-semibold border-b-2 transition-all cursor-pointer ${activeTab === 'condutor'
-              ? 'border-blue-600 text-blue-600 dark:text-blue-400 dark:border-blue-400'
-              : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'
-            }`}
+          className={`flex items-center gap-2 px-5 py-3 text-sm font-bold border-b-2 transition-all cursor-pointer ${
+            activeTab === 'condutor'
+              ? 'border-[#166534] text-[#166534] dark:text-[#4ADE80] dark:border-[#4ADE80] bg-[#15803D]/15 dark:bg-[#15803D]/30 rounded-t-xl'
+              : 'border-transparent text-[#525252] dark:text-slate-400 hover:text-black dark:hover:text-white'
+          }`}
         >
           <UserCheck className="w-4 h-4" />
           <span>Condutores ({condutores.length})</span>
         </button>
       </div>
 
-      {/* Filter and Search Bar */}
+      {/* Filter and Search Bar matching Figma "Barra de pesquisa" (#D9D9D9 75%) */}
       <Card className="p-4">
-        <div className="flex flex-col sm:flex-row items-center gap-4">
+        <div className="flex flex-col md:flex-row items-center gap-4">
           <div className="flex-1 w-full">
             <Input
-              placeholder="Buscar por nome ou CPF..."
+              placeholder="Buscar por nome ou por CPF..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              leftIcon={<Search className="w-4 h-4" />}
+              leftIcon={<Search className="w-4 h-4 text-slate-400 dark:text-slate-400" />}
+              className="bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 placeholder-slate-400 dark:placeholder-slate-500 text-black dark:text-white"
             />
           </div>
 
-          <div className="w-full sm:w-48">
+          {activeTab === 'cadeirante' && (
+            <div className="w-full md:w-56">
+              <Select
+                aria-label="Filtrar por cadeira própria"
+                value={cadeiraFilter}
+                onChange={(e) => setCadeiraFilter(e.target.value as CadeiraFilter)}
+                options={[
+                  { value: 'todos', label: 'Cadeira: Todas' },
+                  { value: 'com_cadeira', label: 'Com Cadeira Própria' },
+                  { value: 'sem_cadeira', label: 'Sem Cadeira Própria' },
+                ]}
+              />
+            </div>
+          )}
+
+          <div className="w-full md:w-48">
             <Select
+              aria-label="Filtrar por status"
               value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value as any)}
+              onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
               options={[
                 { value: 'todos', label: 'Todos os Status' },
                 { value: 'ativos', label: 'Apenas Ativos' },
@@ -270,8 +319,8 @@ export const ParticipantsPage: React.FC = () => {
         ) : activeTab === 'cadeirante' ? (
           filteredCadeirantes.length > 0 ? (
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm text-slate-700 dark:text-slate-300">
-                <thead className="bg-slate-50 dark:bg-slate-800/60 text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-semibold border-b border-slate-100 dark:border-slate-800">
+              <table className="w-full text-left text-sm text-black dark:text-slate-100">
+                <thead className="bg-slate-100/90 dark:bg-slate-800 text-xs uppercase tracking-wider text-slate-800 dark:text-slate-200 font-bold border-b border-slate-200 dark:border-slate-700">
                   <tr>
                     <th className="px-6 py-4">Nome</th>
                     <th className="px-6 py-4">CPF</th>
@@ -282,24 +331,24 @@ export const ParticipantsPage: React.FC = () => {
                     <th className="px-6 py-4 text-right">Ações</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
                   {filteredCadeirantes.map((cad) => (
                     <tr
                       key={cad.cd_cadeirante}
-                      className="hover:bg-slate-50/50 dark:hover:bg-slate-850/50 transition-colors"
+                      className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
                     >
-                      <td className="px-6 py-4 font-semibold text-slate-900 dark:text-white">
+                      <td className="px-6 py-4 font-bold text-black dark:text-white">
                         {cad.nm_cadeirante}
                       </td>
-                      <td className="px-6 py-4 text-slate-600 dark:text-slate-400 font-mono text-xs">
+                      <td className="px-6 py-4 font-mono text-xs font-medium text-black dark:text-white">
                         {formatCPF(cad.cpf) || '-'}
                       </td>
                       <td className="px-6 py-4">
                         <a
                           href={`tel:${cad.telefone}`}
-                          className="inline-flex items-center gap-1.5 text-blue-600 hover:text-blue-700 dark:text-blue-400 hover:underline"
+                          className="inline-flex items-center gap-1.5 font-mono text-xs font-medium text-black dark:text-white hover:text-[#166534] dark:hover:text-[#4ADE80] hover:underline"
                         >
-                          <Phone className="w-3.5 h-3.5" />
+                          <Phone className="w-3.5 h-3.5 text-[#166534] dark:text-[#4ADE80]" />
                           <span>{formatPhone(cad.telefone)}</span>
                         </a>
                       </td>
@@ -330,14 +379,14 @@ export const ParticipantsPage: React.FC = () => {
                         <div className="flex items-center justify-end gap-1">
                           <button
                             onClick={() => handleOpenEdit(cad)}
-                            className="p-1.5 text-slate-400 hover:text-blue-600 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-950/50 transition-colors"
+                            className="p-1.5 text-[#525252] dark:text-slate-400 hover:text-[#166534] dark:hover:text-[#4ADE80] rounded-lg hover:bg-[#16A34A]/20 dark:hover:bg-[#16A34A]/30 transition-colors cursor-pointer"
                             title="Editar"
                           >
                             <Edit2 className="w-4 h-4" />
                           </button>
                           <button
                             onClick={() => handleOpenDelete(cad.cd_cadeirante)}
-                            className="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-950/50 transition-colors"
+                            className="p-1.5 text-[#525252] dark:text-slate-400 hover:text-[#F51414] dark:hover:text-red-400 rounded-lg hover:bg-[#F51414]/15 dark:hover:bg-red-950/40 transition-colors cursor-pointer"
                             title="Excluir"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -352,28 +401,39 @@ export const ParticipantsPage: React.FC = () => {
           ) : (
             <EmptyState
               icon={<Users className="w-8 h-8" />}
-              title="Nenhum cadeirante encontrado"
+              title={hasCadeiranteFilters ? 'Nenhum cadeirante encontrado' : 'Nenhum cadeirante cadastrado'}
               description={
-                searchTerm || statusFilter !== 'todos'
+                hasCadeiranteFilters
                   ? 'Nenhum resultado corresponde aos filtros aplicados.'
                   : 'Nenhum cadeirante cadastrado no sistema.'
               }
               action={
-                <Button
-                  variant="primary"
-                  size="sm"
-                  onClick={handleOpenCreate}
-                  leftIcon={<Plus className="w-4 h-4" />}
-                >
-                  Cadastrar Cadeirante
-                </Button>
+                hasCadeiranteFilters ? (
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={handleClearCadeiranteFilters}
+                    leftIcon={<RotateCcw className="w-4 h-4" />}
+                  >
+                    Limpar Filtros
+                  </Button>
+                ) : (
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    onClick={handleOpenCreate}
+                    leftIcon={<Plus className="w-4 h-4" />}
+                  >
+                    Cadastrar Cadeirante
+                  </Button>
+                )
               }
             />
           )
         ) : filteredCondutores.length > 0 ? (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm text-slate-700 dark:text-slate-300">
-              <thead className="bg-slate-50 dark:bg-slate-800/60 text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-semibold border-b border-slate-100 dark:border-slate-800">
+            <table className="w-full text-left text-sm text-black dark:text-slate-100">
+              <thead className="bg-slate-100/90 dark:bg-slate-800 text-xs uppercase tracking-wider text-slate-800 dark:text-slate-200 font-bold border-b border-slate-200 dark:border-slate-700">
                 <tr>
                   <th className="px-6 py-4">Nome</th>
                   <th className="px-6 py-4">CPF</th>
@@ -383,24 +443,24 @@ export const ParticipantsPage: React.FC = () => {
                   <th className="px-6 py-4 text-right">Ações</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+              <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
                 {filteredCondutores.map((cond) => (
                   <tr
                     key={cond.cd_condutor}
-                    className="hover:bg-slate-50/50 dark:hover:bg-slate-850/50 transition-colors"
+                    className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
                   >
-                    <td className="px-6 py-4 font-semibold text-slate-900 dark:text-white">
+                    <td className="px-6 py-4 font-bold text-black dark:text-white">
                       {cond.nm_condutor}
                     </td>
-                    <td className="px-6 py-4 text-slate-600 dark:text-slate-400 font-mono text-xs">
+                    <td className="px-6 py-4 font-mono text-xs font-medium text-black dark:text-white">
                       {formatCPF(cond.cpf) || '-'}
                     </td>
                     <td className="px-6 py-4">
                       <a
                         href={`tel:${cond.telefone}`}
-                        className="inline-flex items-center gap-1.5 text-blue-600 hover:text-blue-700 dark:text-blue-400 hover:underline"
+                        className="inline-flex items-center gap-1.5 font-mono text-xs font-medium text-black dark:text-white hover:text-[#166534] dark:hover:text-[#4ADE80] hover:underline"
                       >
-                        <Phone className="w-3.5 h-3.5" />
+                        <Phone className="w-3.5 h-3.5 text-[#166534] dark:text-[#4ADE80]" />
                         <span>{formatPhone(cond.telefone)}</span>
                       </a>
                     </td>
@@ -420,14 +480,14 @@ export const ParticipantsPage: React.FC = () => {
                       <div className="flex items-center justify-end gap-1">
                         <button
                           onClick={() => handleOpenEdit(cond)}
-                          className="p-1.5 text-slate-400 hover:text-blue-600 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-950/50 transition-colors"
+                          className="p-1.5 text-[#525252] dark:text-slate-400 hover:text-[#166534] dark:hover:text-[#4ADE80] rounded-lg hover:bg-[#16A34A]/20 dark:hover:bg-[#16A34A]/30 transition-colors cursor-pointer"
                           title="Editar"
                         >
                           <Edit2 className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => handleOpenDelete(cond.cd_condutor)}
-                          className="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-950/50 transition-colors"
+                          className="p-1.5 text-[#525252] dark:text-slate-400 hover:text-[#F51414] dark:hover:text-red-400 rounded-lg hover:bg-[#F51414]/15 dark:hover:bg-red-950/40 transition-colors cursor-pointer"
                           title="Excluir"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -442,21 +502,32 @@ export const ParticipantsPage: React.FC = () => {
         ) : (
           <EmptyState
             icon={<UserCheck className="w-8 h-8" />}
-            title="Nenhum condutor encontrado"
+            title={hasCondutorFilters ? 'Nenhum condutor encontrado' : 'Nenhum condutor cadastrado'}
             description={
-              searchTerm || statusFilter !== 'todos'
+              hasCondutorFilters
                 ? 'Nenhum resultado corresponde aos filtros aplicados.'
                 : 'Nenhum condutor cadastrado no sistema.'
             }
             action={
-              <Button
-                variant="primary"
-                size="sm"
-                onClick={handleOpenCreate}
-                leftIcon={<Plus className="w-4 h-4" />}
-              >
-                Cadastrar Condutor
-              </Button>
+              hasCondutorFilters ? (
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={handleClearCondutorFilters}
+                  leftIcon={<RotateCcw className="w-4 h-4" />}
+                >
+                  Limpar Filtros
+                </Button>
+              ) : (
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={handleOpenCreate}
+                  leftIcon={<Plus className="w-4 h-4" />}
+                >
+                  Cadastrar Condutor
+                </Button>
+              )
             }
           />
         )}

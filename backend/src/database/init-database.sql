@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS "USER" (
     email VARCHAR(150) NOT NULL UNIQUE,
     senha VARCHAR(255) NOT NULL,
     tentativas_falhas INT NOT NULL DEFAULT 0,
-    bloqueado_ate TIMESTAMP NULL,
+    bloqueado_ate TIMESTAMPTZ NULL,
     created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS CADEIRANTE (
     nm_cadeirante VARCHAR(255) NOT NULL,
     cpf CHAR(11) NOT NULL UNIQUE,
     telefone VARCHAR(20) NOT NULL,
-    tam_camisa VARCHAR(5) NOT NULL,
+    tam_camisa VARCHAR(30) NOT NULL,
     data_nascimento DATE,
     sexo VARCHAR(20),
     possui_cadeira_propria BOOLEAN NOT NULL DEFAULT FALSE,
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS CONDUTOR (
     nm_condutor VARCHAR(255) NOT NULL,
     cpf CHAR(11) NOT NULL UNIQUE,
     telefone VARCHAR(20) NOT NULL,
-    tam_camisa VARCHAR(5) NOT NULL,
+    tam_camisa VARCHAR(30) NOT NULL,
     data_nascimento DATE,
     sexo VARCHAR(20),
     ativo BOOLEAN NOT NULL DEFAULT TRUE,
@@ -54,12 +54,30 @@ CREATE INDEX IF NOT EXISTS idx_dupla_cadeirante ON public.DUPLA(cd_cadeirante);
 CREATE INDEX IF NOT EXISTS idx_dupla_condutor ON public.DUPLA(cd_condutor);
 
 -- Migrações idempotentes para bancos pré-existentes
+ALTER TABLE CADEIRANTE ALTER COLUMN tam_camisa TYPE VARCHAR(30);
+ALTER TABLE CONDUTOR ALTER COLUMN tam_camisa TYPE VARCHAR(30);
 ALTER TABLE CADEIRANTE ADD COLUMN IF NOT EXISTS data_nascimento DATE;
 ALTER TABLE CADEIRANTE ADD COLUMN IF NOT EXISTS sexo VARCHAR(20);
 ALTER TABLE CONDUTOR ADD COLUMN IF NOT EXISTS data_nascimento DATE;
 ALTER TABLE CONDUTOR ADD COLUMN IF NOT EXISTS sexo VARCHAR(20);
 ALTER TABLE "USER" ADD COLUMN IF NOT EXISTS tentativas_falhas INT NOT NULL DEFAULT 0;
-ALTER TABLE "USER" ADD COLUMN IF NOT EXISTS bloqueado_ate TIMESTAMP NULL;
+ALTER TABLE "USER" ADD COLUMN IF NOT EXISTS bloqueado_ate TIMESTAMPTZ NULL;
+
+DO $$
+BEGIN
+    IF EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_schema = 'public'
+          AND table_name = 'USER'
+          AND column_name = 'bloqueado_ate'
+          AND data_type = 'timestamp without time zone'
+    ) THEN
+        ALTER TABLE "USER"
+        ALTER COLUMN bloqueado_ate TYPE TIMESTAMPTZ
+        USING bloqueado_ate AT TIME ZONE current_setting('TIMEZONE');
+    END IF;
+END $$;
 
 -- Triggers para validação de unicidade de CPF entre Cadeirantes e Condutores
 CREATE OR REPLACE FUNCTION check_cpf_cross_table_cadeirante()
