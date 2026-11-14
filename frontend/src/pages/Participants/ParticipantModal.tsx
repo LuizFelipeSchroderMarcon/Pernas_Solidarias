@@ -8,6 +8,7 @@ import { formatCPF, formatPhone, cleanDigits, toInputDateFormat } from '../../ut
 import { useToast } from '../../hooks/useToast';
 import { participantService } from '../../services/participantService';
 import { mensagemDeErro } from '../../services/apiError';
+import { SHIRT_SIZE_OPTIONS } from '../../constants/shirtSizes';
 
 export interface ParticipantModalProps {
   isOpen: boolean;
@@ -155,10 +156,10 @@ export const ParticipantModal: React.FC<ParticipantModalProps> = ({
       onClose={onClose}
       title={title}
       subtitle="Preencha os dados do participante"
-      maxWidth="md"
+      maxWidth="xl"
       footer={
         <>
-          <Button variant="ghost" size="sm" onClick={onClose} disabled={isSubmitting}>
+          <Button variant="danger" size="sm" onClick={onClose} disabled={isSubmitting}>
             Cancelar
           </Button>
           <Button
@@ -175,7 +176,7 @@ export const ParticipantModal: React.FC<ParticipantModalProps> = ({
       <form onSubmit={handleSubmit} className="space-y-4">
         <Input
           label="Nome Completo"
-          placeholder="Ex: João da Silva"
+          placeholder="Digite o nome completo"
           value={nome}
           onChange={(e) => setNome(e.target.value)}
           error={errors.nome}
@@ -196,7 +197,7 @@ export const ParticipantModal: React.FC<ParticipantModalProps> = ({
 
           <Input
             label="Telefone / WhatsApp"
-            placeholder="(00) 00000-0000"
+            placeholder="(xx) xxxxx-xxxx"
             value={telefone}
             onChange={(e) => setTelefone(formatPhone(e.target.value))}
             maxLength={15}
@@ -235,35 +236,30 @@ export const ParticipantModal: React.FC<ParticipantModalProps> = ({
           onChange={(e) => setTamCamisa(e.target.value)}
           error={errors.tamCamisa}
           required
-          options={[
-            { value: 'P', label: 'P' },
-            { value: 'M', label: 'M' },
-            { value: 'G', label: 'G' },
-            { value: 'GG', label: 'GG' },
-            { value: 'XG', label: 'XG' },
-          ]}
+          options={SHIRT_SIZE_OPTIONS}
         />
 
         {type === 'cadeirante' && (
           <div className="pt-2">
-            <label className="flex items-center gap-3 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/60 cursor-pointer transition-colors">
+            <label className="flex items-center gap-3 p-3.5 rounded-xl border border-slate-300 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/60 cursor-pointer transition-colors">
               <input
                 type="checkbox"
-                className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500 border-slate-300"
+                className="w-4 h-4 accent-[#166534] rounded focus:ring-[#166534] border-[#B7B7B7]"
                 checked={possuiCadeiraPropria}
                 onChange={(e) => setPossuiCadeiraPropria(e.target.checked)}
               />
               <div className="flex flex-col text-left">
-                <span className="text-sm font-semibold text-slate-800 dark:text-slate-200">
-                  Possui Cadeira Própria de Corrida
+                <span className="text-sm font-semibold text-black dark:text-white">
+                  Possui cadeira própria? <span className="text-[#FF0000]">*</span>
                 </span>
-                <span className="text-xs text-slate-500 dark:text-slate-400">
+                <span className="text-xs text-[#7C7C7C] dark:text-slate-400">
                   Marque caso o participante tenha seu próprio equipamento
                 </span>
               </div>
             </label>
           </div>
         )}
+        <p className="text-xs font-semibold text-[#FF0000]">* Campo Obrigatório</p>
       </form>
     </Modal>
   );

@@ -60,6 +60,25 @@ export class PairRepository {
   }
 
   /**
+   * Creates a single pair and returns its full details.
+   */
+  async create(
+    eventId: number,
+    wheelchairUserId: number,
+    runnerId: number
+  ): Promise<DuplaDetalhada> {
+    const result = await query(
+      `INSERT INTO DUPLA (cd_evento, cd_cadeirante, cd_condutor)
+       VALUES ($1, $2, $3)
+       RETURNING cd_dupla`,
+      [eventId, wheelchairUserId, runnerId]
+    );
+    const newId = result.rows[0].cd_dupla;
+    const detailed = await this.findById(newId);
+    return detailed!;
+  }
+
+  /**
    * Inserts multiple pairs inside an atomic transaction.
    */
   async createMany(
@@ -105,12 +124,16 @@ export class PairRepository {
         cad.cpf AS cpf_cadeirante,
         cad.telefone AS telefone_cadeirante,
         cad.tam_camisa AS tam_camisa_cadeirante,
+        cad.data_nascimento AS data_nascimento_cadeirante,
+        cad.sexo AS sexo_cadeirante,
         cad.possui_cadeira_propria,
         con.cd_condutor,
         con.nm_condutor,
         con.cpf AS cpf_condutor,
         con.telefone AS telefone_condutor,
         con.tam_camisa AS tam_camisa_condutor,
+        con.data_nascimento AS data_nascimento_condutor,
+        con.sexo AS sexo_condutor,
         d.created_at
       FROM DUPLA d
       INNER JOIN EVENTO e ON e.cd_evento = d.cd_evento
@@ -138,12 +161,16 @@ export class PairRepository {
         cad.cpf AS cpf_cadeirante,
         cad.telefone AS telefone_cadeirante,
         cad.tam_camisa AS tam_camisa_cadeirante,
+        cad.data_nascimento AS data_nascimento_cadeirante,
+        cad.sexo AS sexo_cadeirante,
         cad.possui_cadeira_propria,
         con.cd_condutor,
         con.nm_condutor,
         con.cpf AS cpf_condutor,
         con.telefone AS telefone_condutor,
         con.tam_camisa AS tam_camisa_condutor,
+        con.data_nascimento AS data_nascimento_condutor,
+        con.sexo AS sexo_condutor,
         d.created_at
       FROM DUPLA d
       INNER JOIN EVENTO e ON e.cd_evento = d.cd_evento
@@ -205,6 +232,14 @@ export class PairRepository {
   }
 
   /**
+   * Deletes a specific pair by ID.
+   */
+  async deleteById(pairId: number): Promise<boolean> {
+    const result = await query('DELETE FROM DUPLA WHERE cd_dupla = $1', [pairId]);
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  /**
    * Retrieves pair history with optional filters (RF06, RF09).
    */
   async findHistory(filters: HistoryFilters): Promise<DuplaDetalhada[]> {
@@ -219,18 +254,22 @@ export class PairRepository {
         cad.cpf AS cpf_cadeirante,
         cad.telefone AS telefone_cadeirante,
         cad.tam_camisa AS tam_camisa_cadeirante,
+        cad.data_nascimento AS data_nascimento_cadeirante,
+        cad.sexo AS sexo_cadeirante,
         cad.possui_cadeira_propria,
         con.cd_condutor,
         con.nm_condutor,
         con.cpf AS cpf_condutor,
         con.telefone AS telefone_condutor,
         con.tam_camisa AS tam_camisa_condutor,
+        con.data_nascimento AS data_nascimento_condutor,
+        con.sexo AS sexo_condutor,
         d.created_at
       FROM DUPLA d
       INNER JOIN EVENTO e ON e.cd_evento = d.cd_evento
       INNER JOIN CADEIRANTE cad ON cad.cd_cadeirante = d.cd_cadeirante
       INNER JOIN CONDUTOR con ON con.cd_condutor = d.cd_condutor
-      WHERE 1=1
+      WHERE e.dt_evento < CURRENT_DATE
     `;
     const params: any[] = [];
 

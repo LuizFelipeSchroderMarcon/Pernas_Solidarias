@@ -29,19 +29,19 @@ export const Button: React.FC<ButtonProps> = ({
 
   const variants: Record<ButtonVariant, string> = {
     primary:
-      'bg-blue-600 hover:bg-blue-700 text-white shadow-sm hover:shadow shadow-blue-500/20 focus:ring-blue-500 active:scale-[0.98]',
+      'bg-[#166534] hover:bg-[#15803D] text-white font-semibold border border-[#166534] shadow-xs focus:ring-[#22C55E] active:scale-[0.98]',
     secondary:
-      'bg-slate-100 hover:bg-slate-200 text-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-100 focus:ring-slate-400 active:scale-[0.98]',
+      'bg-[#D9D9D9] hover:bg-[#c8c8c8] text-black dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-100 font-medium border border-[#B7B7B7] dark:border-slate-700 focus:ring-[#7C7C7C] active:scale-[0.98]',
     outline:
-      'border border-slate-300 hover:bg-slate-50 text-slate-700 dark:border-slate-700 dark:hover:bg-slate-800 dark:text-slate-200 focus:ring-slate-400 active:scale-[0.98]',
+      'bg-white dark:bg-slate-900 hover:bg-[#16A34A] hover:text-white dark:hover:bg-[#16A34A] dark:hover:text-white text-black dark:text-slate-200 border border-black/50 dark:border-slate-700 focus:ring-[#16A34A] active:scale-[0.98]',
     danger:
-      'bg-rose-600 hover:bg-rose-700 text-white shadow-sm shadow-rose-500/20 focus:ring-rose-500 active:scale-[0.98]',
+      'bg-[#F51414] hover:bg-[#F25353] text-white font-semibold border border-[#B7B7B7] shadow-xs focus:ring-[#F51414] active:scale-[0.98]',
     warning:
-      'bg-amber-600 hover:bg-amber-700 text-white shadow-sm shadow-amber-500/20 focus:ring-amber-500 active:scale-[0.98]',
+      'bg-amber-400 hover:bg-amber-500 text-black font-semibold shadow-xs focus:ring-amber-500 active:scale-[0.98]',
     ghost:
-      'bg-transparent hover:bg-slate-100 text-slate-700 dark:text-slate-300 dark:hover:bg-slate-800 focus:ring-slate-400',
+      'bg-transparent hover:bg-[#D9D9D9]/60 dark:hover:bg-slate-800 text-black dark:text-slate-200 focus:ring-[#7C7C7C]',
     success:
-      'bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm shadow-emerald-500/20 focus:ring-emerald-500 active:scale-[0.98]',
+      'bg-[#15803D] hover:bg-[#16A34A] text-white font-semibold border border-[#166534] shadow-xs focus:ring-[#22C55E] active:scale-[0.98]',
   };
 
   const sizes: Record<ButtonSize, string> = {

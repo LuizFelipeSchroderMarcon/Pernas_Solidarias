@@ -36,7 +36,7 @@ export const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
           disabled={disabled}
         />
         <div
-          className={`${switchSizes[size]} bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:bg-emerald-600 transition-colors duration-200 dark:bg-slate-700 ${
+          className={`${switchSizes[size]} bg-[#D9D9D9] dark:bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:bg-[#166534] dark:peer-checked:bg-emerald-600 transition-colors duration-200 ${
             disabled ? 'opacity-50 cursor-not-allowed' : ''
           }`}
         ></div>
@@ -46,10 +46,10 @@ export const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
       </div>
       {label && (
         <span
-          className={`text-xs font-medium ${
+          className={`text-xs font-semibold ${
             checked
-              ? 'text-emerald-700 dark:text-emerald-400 font-semibold'
-              : 'text-slate-500 dark:text-slate-400'
+              ? 'text-[#166534] dark:text-emerald-400 font-bold'
+              : 'text-[#7C7C7C] dark:text-slate-300'
           }`}
         >
           {label}

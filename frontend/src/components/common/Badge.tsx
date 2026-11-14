@@ -16,12 +16,12 @@ export const Badge: React.FC<BadgeProps> = ({
   className = '',
 }) => {
   const variants: Record<BadgeVariant, string> = {
-    primary: 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-800',
-    success: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800',
-    warning: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800',
-    danger: 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-800',
-    info: 'bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-950/60 dark:text-indigo-300 dark:border-indigo-800',
-    neutral: 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700',
+    primary: 'bg-[#15803D]/15 dark:bg-emerald-950/80 text-[#166534] dark:text-emerald-300 border-[#15803D]/40 dark:border-emerald-600/60 font-bold',
+    success: 'bg-[#22C55E]/20 dark:bg-emerald-900/50 text-[#166534] dark:text-emerald-300 border-[#16A34A]/50 dark:border-emerald-500/60 font-bold',
+    warning: 'bg-amber-100 dark:bg-amber-950/60 text-black dark:text-amber-200 border-amber-400 dark:border-amber-600 font-bold',
+    danger: 'bg-[#F51414]/20 dark:bg-red-950/60 text-[#F51414] dark:text-red-300 border-[#F51414] dark:border-red-600 font-bold',
+    info: 'bg-[#D9D9D9] dark:bg-slate-800 text-black dark:text-slate-200 border-[#A4A4A4] dark:border-slate-700 font-medium',
+    neutral: 'bg-[#D9D9D9]/80 dark:bg-slate-800 text-black dark:text-slate-200 border-[#B7B7B7] dark:border-slate-700 font-medium',
   };
 
   const sizes = {
