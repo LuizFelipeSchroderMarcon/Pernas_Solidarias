@@ -241,7 +241,7 @@ export const ParticipantModal: React.FC<ParticipantModalProps> = ({
 
         {type === 'cadeirante' && (
           <div className="pt-2">
-            <label className="flex items-center gap-3 p-3.5 rounded-xl border border-[#B7B7B7] hover:bg-[#EBEAEA]/50 cursor-pointer transition-colors">
+            <label className="flex items-center gap-3 p-3.5 rounded-xl border border-slate-300 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/60 cursor-pointer transition-colors">
               <input
                 type="checkbox"
                 className="w-4 h-4 accent-[#166534] rounded focus:ring-[#166534] border-[#B7B7B7]"
@@ -249,10 +249,10 @@ export const ParticipantModal: React.FC<ParticipantModalProps> = ({
                 onChange={(e) => setPossuiCadeiraPropria(e.target.checked)}
               />
               <div className="flex flex-col text-left">
-                <span className="text-sm font-semibold text-black">
+                <span className="text-sm font-semibold text-black dark:text-white">
                   Possui cadeira própria? <span className="text-[#FF0000]">*</span>
                 </span>
-                <span className="text-xs text-[#7C7C7C]">
+                <span className="text-xs text-[#7C7C7C] dark:text-slate-400">
                   Marque caso o participante tenha seu próprio equipamento
                 </span>
               </div>

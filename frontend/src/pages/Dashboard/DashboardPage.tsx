@@ -146,7 +146,7 @@ export const DashboardPage: React.FC = () => {
           value={events.length}
           subtitle="Corridas no sistema"
           icon={<Calendar className="w-6 h-6" />}
-          variant="purple"
+          variant="indigo"
           onClick={() => navigate('/eventos')}
         />
         <StatCard
@@ -161,16 +161,16 @@ export const DashboardPage: React.FC = () => {
 
       {/* Próximos Eventos */}
       <Card className="flex flex-col">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#D9D9D9] gap-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#D9D9D9] dark:border-slate-800 gap-3">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-[#15803D]/15 text-[#166534]">
+            <div className="p-2 rounded-xl bg-[#15803D]/15 dark:bg-[#15803D]/30 text-[#166534] dark:text-[#4ADE80]">
               <Calendar className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-black">
+              <h3 className="text-base font-bold text-black dark:text-white">
                 Próximos Eventos
               </h3>
-              <p className="text-xs text-[#7C7C7C]">
+              <p className="text-xs text-[#7C7C7C] dark:text-slate-400">
                 Corridas agendadas a partir de hoje
               </p>
             </div>
@@ -197,12 +197,12 @@ export const DashboardPage: React.FC = () => {
             {upcomingEvents.map((evt, index) => (
               <div
                 key={evt.cd_evento}
-                className="relative flex flex-col justify-between p-5 rounded-2xl border border-[#A4A4A4] bg-[#F7F6F6] hover:shadow-md hover:border-[#166534] transition-all duration-200"
+                className="relative flex flex-col justify-between p-5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/80 shadow-xs hover:shadow-md hover:border-[#166534] dark:hover:border-[#22C55E] transition-all duration-200"
               >
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-2">
-                    <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#7C7C7C]">
-                      <Calendar className="w-3.5 h-3.5 text-black" />
+                    <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#7C7C7C] dark:text-slate-400">
+                      <Calendar className="w-3.5 h-3.5 text-black dark:text-slate-300" />
                       {formatDate(evt.dt_evento)}
                     </span>
                     {index === 0 && (
@@ -211,20 +211,20 @@ export const DashboardPage: React.FC = () => {
                       </Badge>
                     )}
                   </div>
-                  <h4 className="text-base font-bold text-black leading-snug">
+                  <h4 className="text-base font-bold text-black dark:text-white leading-snug">
                     {evt.nm_evento}
                   </h4>
-                  <div className="mt-3.5 p-3 rounded-xl bg-white border border-[#B9B9B9] flex items-center justify-between">
-                    <span className="text-xs text-[#525252]">
+                  <div className="mt-3.5 p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 flex items-center justify-between">
+                    <span className="text-xs text-[#525252] dark:text-slate-400">
                       Duplas formadas:
                     </span>
-                    <span className="text-sm font-bold text-black">
+                    <span className="text-sm font-bold text-black dark:text-white">
                       {evt.total_duplas ?? 0}
                     </span>
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-2 pt-4 mt-2 border-t border-[#D9D9D9]">
+                <div className="flex flex-col gap-2 pt-4 mt-2 border-t border-slate-200 dark:border-slate-800">
                   <Button
                     variant="secondary"
                     size="sm"
@@ -238,6 +238,12 @@ export const DashboardPage: React.FC = () => {
                     variant="primary"
                     size="sm"
                     className="w-full"
+                    disabled={(evt.total_duplas ?? 0) === 0}
+                    title={
+                      (evt.total_duplas ?? 0) === 0
+                        ? 'Não é possível exportar relatório de evento sem duplas formadas'
+                        : 'Exportar Relatório'
+                    }
                     onClick={() => handleOpenExport(evt)}
                     leftIcon={<Download className="w-4 h-4" />}
                   >
@@ -249,13 +255,13 @@ export const DashboardPage: React.FC = () => {
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center text-center py-10">
-            <div className="w-12 h-12 rounded-2xl bg-[#D9D9D9] flex items-center justify-center text-[#525252] mb-3">
+            <div className="w-12 h-12 rounded-2xl bg-[#D9D9D9] dark:bg-slate-800 flex items-center justify-center text-[#525252] dark:text-slate-300 mb-3">
               <Calendar className="w-6 h-6" />
             </div>
-            <h4 className="text-sm font-bold text-black">
+            <h4 className="text-sm font-bold text-black dark:text-white">
               Nenhum evento futuro agendado
             </h4>
-            <p className="text-xs text-[#7C7C7C] max-w-sm mt-1">
+            <p className="text-xs text-[#7C7C7C] dark:text-slate-400 max-w-sm mt-1">
               Todas as corridas cadastradas já ocorreram ou ainda não há eventos agendados para hoje ou datas futuras.
             </p>
             <Button
@@ -273,12 +279,12 @@ export const DashboardPage: React.FC = () => {
 
       {/* Recent Events List Card */}
       <Card>
-        <div className="flex items-center justify-between pb-4 border-b border-[#D9D9D9]">
+        <div className="flex items-center justify-between pb-4 border-b border-[#D9D9D9] dark:border-slate-800">
           <div>
-            <h3 className="text-base font-bold text-black">
+            <h3 className="text-base font-bold text-black dark:text-white">
               Eventos Recentes
             </h3>
-            <p className="text-xs text-[#7C7C7C]">
+            <p className="text-xs text-[#7C7C7C] dark:text-slate-400">
               Últimas corridas registradas no sistema
             </p>
           </div>
@@ -292,17 +298,17 @@ export const DashboardPage: React.FC = () => {
           </Button>
         </div>
 
-        <div className="divide-y divide-[#D9D9D9] mt-2">
+        <div className="divide-y divide-[#D9D9D9] dark:divide-slate-800 mt-2">
           {events.slice(0, 5).map((evt) => (
             <div
               key={evt.cd_evento}
-              className="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-[#EBEAEA]/50 px-2 rounded-xl transition-colors"
+              className="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50 dark:hover:bg-slate-800/50 px-2 rounded-xl transition-colors"
             >
               <div>
-                <h4 className="text-sm font-semibold text-black">
+                <h4 className="text-sm font-semibold text-black dark:text-white">
                   {evt.nm_evento}
                 </h4>
-                <p className="text-xs text-[#7C7C7C] mt-0.5">
+                <p className="text-xs text-[#7C7C7C] dark:text-slate-400 mt-0.5">
                   Data: {formatDate(evt.dt_evento)}
                 </p>
               </div>
@@ -311,6 +317,12 @@ export const DashboardPage: React.FC = () => {
                 <Button
                   variant="secondary"
                   size="sm"
+                  disabled={(evt.total_duplas ?? 0) === 0}
+                  title={
+                    (evt.total_duplas ?? 0) === 0
+                      ? 'Não é possível exportar relatório de evento sem duplas formadas'
+                      : 'Exportar'
+                  }
                   onClick={() => handleOpenExport(evt)}
                   leftIcon={<Download className="w-3.5 h-3.5" />}
                 >
@@ -335,7 +347,7 @@ export const DashboardPage: React.FC = () => {
           ))}
 
           {events.length === 0 && (
-            <p className="text-xs text-[#7C7C7C] text-center py-6">
+            <p className="text-xs text-[#7C7C7C] dark:text-slate-400 text-center py-6">
               Nenhum evento registrado até o momento.
             </p>
           )}

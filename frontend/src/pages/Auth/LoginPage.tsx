@@ -3,9 +3,10 @@ import { useNavigate, useLocation, Navigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../../hooks/useAuth';
 import { useToast } from '../../hooks/useToast';
+import { useTheme } from '../../hooks/useTheme';
 import { Button } from '../../components/common/Button';
 import { Input } from '../../components/common/Input';
-import { Mail, Lock, LogIn } from 'lucide-react';
+import { Mail, Lock, LogIn, Sun, Moon } from 'lucide-react';
 import { mensagemDeErro } from '../../services/apiError';
 
 const LOGIN_BLOCKED_MAP_KEY = '@PernasSolidarias:loginBlockedMap';
@@ -132,6 +133,7 @@ export const LoginPage: React.FC = () => {
   const location = useLocation();
   const { login, isAuthenticated, isLoading: authLoading } = useAuth();
   const { success, error } = useToast();
+  const { isDark, toggleTheme } = useTheme();
 
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
@@ -227,10 +229,31 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#EBEAEA] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#F8FAFC] dark:bg-slate-950 flex items-center justify-center p-4 transition-colors duration-300">
+      {/* Theme toggle button */}
+      <button
+        type="button"
+        onClick={toggleTheme}
+        title={isDark ? 'Ativar modo claro' : 'Ativar modo escuro'}
+        aria-label={isDark ? 'Ativar modo claro' : 'Ativar modo escuro'}
+        className="fixed top-5 right-5 z-20 flex items-center gap-2 px-3.5 py-2 rounded-xl border border-[#B9B9B9] dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md text-black dark:text-slate-200 hover:bg-white dark:hover:bg-slate-800 shadow-xs transition-all duration-200 cursor-pointer"
+      >
+        {isDark ? (
+          <>
+            <Sun className="w-4 h-4 text-amber-400" />
+            <span className="text-xs font-semibold">Modo Claro</span>
+          </>
+        ) : (
+          <>
+            <Moon className="w-4 h-4 text-indigo-600" />
+            <span className="text-xs font-semibold">Modo Escuro</span>
+          </>
+        )}
+      </button>
+
       <div className="w-full max-w-lg relative z-10">
         {/* Login form card matching Figma "Login" frame */}
-        <div className="bg-white rounded-3xl p-8 sm:p-10 shadow-lg border border-[#C5C3C3]">
+        <div className="bg-white dark:bg-slate-900 rounded-3xl p-8 sm:p-10 shadow-lg border border-[#C5C3C3] dark:border-slate-800">
           {/* Logo and title */}
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center mb-3">
@@ -243,10 +266,10 @@ export const LoginPage: React.FC = () => {
                 }}
               />
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-black tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-black dark:text-white tracking-tight">
               Pernas Solidárias
             </h1>
-            <p className="text-sm text-black mt-1 font-medium">
+            <p className="text-sm text-black dark:text-slate-300 mt-1 font-medium">
               Sistema de Gerenciamento
             </p>
           </div>
@@ -255,7 +278,7 @@ export const LoginPage: React.FC = () => {
             <div
               role="status"
               aria-live="off"
-              className="mb-5 p-3.5 rounded-xl bg-[#F51414]/15 border border-[#F51414] text-black text-xs font-semibold"
+              className="mb-5 p-3.5 rounded-xl bg-[#F51414]/15 border border-[#F51414] text-black dark:text-rose-300 text-xs font-semibold"
             >
               <span>Acesso bloqueado temporariamente por excesso de tentativas. Tente novamente em </span>
               <span className="font-bold tabular-nums">
@@ -267,7 +290,7 @@ export const LoginPage: React.FC = () => {
             <div
               role="alert"
               aria-live="polite"
-              className="mb-5 p-3.5 rounded-xl bg-[#F51414]/15 border border-[#F51414] text-black text-xs font-semibold"
+              className="mb-5 p-3.5 rounded-xl bg-[#F51414]/15 border border-[#F51414] text-black dark:text-rose-300 text-xs font-semibold"
             >
               {errorMessage}
             </div>
@@ -275,7 +298,7 @@ export const LoginPage: React.FC = () => {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <Input
-              label="Login"
+              label="Login:"
               type="email"
               placeholder="Digite seu login"
               value={email}
@@ -284,11 +307,11 @@ export const LoginPage: React.FC = () => {
               autoFocus
               disabled={isLoading}
               leftIcon={<Mail className="w-4 h-4" />}
-              className="bg-[#FFFDFD] border-[#C5C3C3] placeholder-[#9E9D9D]"
+              className="bg-[#FFFDFD] dark:bg-slate-800 border-[#C5C3C3] dark:border-slate-700 placeholder-[#9E9D9D] dark:placeholder-slate-500 text-black dark:text-white"
             />
 
             <Input
-              label="Senha"
+              label="Senha:"
               type="password"
               placeholder="Digite sua senha"
               value={senha}
@@ -296,7 +319,7 @@ export const LoginPage: React.FC = () => {
               required
               disabled={isLoading || isBlocked}
               leftIcon={<Lock className="w-4 h-4" />}
-              className="bg-[#FFFDFD] border-[#C5C3C3] placeholder-[#9E9D9D]"
+              className="bg-[#FFFDFD] dark:bg-slate-800 border-[#C5C3C3] dark:border-slate-700 placeholder-[#9E9D9D] dark:placeholder-slate-500 text-black dark:text-white"
             />
 
             <div className="pt-2 flex justify-center">
@@ -313,6 +336,12 @@ export const LoginPage: React.FC = () => {
               </Button>
             </div>
           </form>
+        </div>
+
+        <div className="text-center mt-6">
+          <p className="text-xs text-[#7C7C7C] dark:text-slate-400 font-medium">
+            Pernas Solidárias • Inclusão e Solidariedade
+          </p>
         </div>
       </div>
     </div>

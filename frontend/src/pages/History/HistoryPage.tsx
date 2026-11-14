@@ -112,8 +112,8 @@ export const HistoryPage: React.FC = () => {
       {/* Filter Bar */}
       <Card className="p-5">
         <div className="space-y-4">
-          <div className="flex items-center gap-2 pb-2 border-b border-[#D9D9D9] text-xs font-bold uppercase tracking-wider text-[#525252]">
-            <Filter className="w-4 h-4" />
+          <div className="flex items-center gap-2 pb-2 border-b border-[#D9D9D9] dark:border-slate-800 text-xs font-bold uppercase tracking-wider text-[#525252] dark:text-slate-400">
+            <Filter className="w-4 h-4 text-[#166534] dark:text-[#4ADE80]" />
             <span>Filtros de Pesquisa</span>
           </div>
 
@@ -150,8 +150,8 @@ export const HistoryPage: React.FC = () => {
               placeholder="Digite o nome do evento"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              leftIcon={<Search className="w-4 h-4 text-[#525252]" />}
-              className="bg-[#D9D9D9]/75 border-[#B9B9B9] placeholder-[#525252]"
+              leftIcon={<Search className="w-4 h-4 text-[#525252] dark:text-slate-400" />}
+              className="bg-[#D9D9D9]/75 dark:bg-slate-800 border-[#B9B9B9] dark:border-slate-700 placeholder-[#525252] dark:placeholder-slate-400 text-black dark:text-white"
             />
           </div>
 
@@ -188,11 +188,11 @@ export const HistoryPage: React.FC = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredEvents.map((evt) => (
-            <Card key={evt.cd_evento} className="flex flex-col justify-between hover:shadow-md transition-shadow border-[#A4A4A4]">
+            <Card key={evt.cd_evento} className="flex flex-col justify-between hover:shadow-md transition-shadow border-[#A4A4A4] dark:border-slate-800">
               <div>
-                <div className="flex items-center justify-between gap-2 pb-3 border-b border-[#D9D9D9]">
-                  <span className="text-xs font-semibold text-[#7C7C7C] flex items-center gap-1.5">
-                    <Calendar className="w-3.5 h-3.5 text-black" />
+                <div className="flex items-center justify-between gap-2 pb-3 border-b border-[#D9D9D9] dark:border-slate-800">
+                  <span className="text-xs font-semibold text-[#7C7C7C] dark:text-slate-400 flex items-center gap-1.5">
+                    <Calendar className="w-3.5 h-3.5 text-black dark:text-slate-300" />
                     {formatDate(evt.dt_evento)}
                   </span>
                   <Badge variant="primary" size="sm">
@@ -200,15 +200,15 @@ export const HistoryPage: React.FC = () => {
                   </Badge>
                 </div>
 
-                <h3 className="font-extrabold text-base text-black mt-3 leading-snug">
+                <h3 className="font-extrabold text-base text-black dark:text-white mt-3 leading-snug">
                   {evt.nm_evento}
                 </h3>
-                <p className="text-xs text-[#7C7C7C] mt-1">
+                <p className="text-xs text-[#7C7C7C] dark:text-slate-400 mt-1">
                   Registrado em {formatDate(evt.created_at)}
                 </p>
               </div>
 
-              <div className="grid grid-cols-2 gap-2 mt-6 pt-4 border-t border-[#D9D9D9]">
+              <div className="grid grid-cols-2 gap-2 mt-6 pt-4 border-t border-[#D9D9D9] dark:border-slate-800">
                 <Button
                   variant="outline"
                   size="sm"

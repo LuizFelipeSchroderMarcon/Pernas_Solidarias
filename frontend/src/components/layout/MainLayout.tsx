@@ -12,7 +12,7 @@ export const MainLayout: React.FC = () => {
   });
 
   return (
-    <div className="min-h-screen bg-[#EBEAEA] text-black flex flex-col antialiased">
+    <div className="min-h-screen bg-[#F8FAFC] dark:bg-slate-950 text-black dark:text-slate-100 flex flex-col antialiased transition-colors duration-200">
       {/* Aba retrátil para reabrir o menu quando estiver recolhido */}
       {!isSidebarOpen && (
         <button

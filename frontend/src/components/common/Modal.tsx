@@ -56,31 +56,31 @@ export const Modal: React.FC<ModalProps> = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
+        className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
         onClick={onClose}
         aria-hidden="true"
       />
 
       {/* Modal dialog box */}
       <div
-        className={`relative w-full ${maxWidths[maxWidth]} bg-white border border-[#B7B7B7] rounded-2xl shadow-2xl z-10 overflow-hidden transform transition-all animate-in fade-in zoom-in-95 duration-200 flex flex-col my-auto max-h-[90vh] text-black`}
+        className={`relative w-full ${maxWidths[maxWidth]} bg-white dark:bg-slate-900 border border-[#B7B7B7] dark:border-slate-800 rounded-2xl shadow-2xl z-10 overflow-hidden transform transition-all animate-in fade-in zoom-in-95 duration-200 flex flex-col my-auto max-h-[90vh] text-black dark:text-slate-100`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
       >
         {/* Header */}
-        <div className="flex items-start justify-between px-6 py-5 border-b border-[#D9D9D9]">
+        <div className="flex items-start justify-between px-6 py-5 border-b border-[#D9D9D9] dark:border-slate-800">
           <div>
-            <h3 id="modal-title" className="text-lg font-bold text-black">
+            <h3 id="modal-title" className="text-lg font-bold text-black dark:text-white">
               {title}
             </h3>
             {subtitle && (
-              <p className="text-xs text-[#7C7C7C] mt-0.5">{subtitle}</p>
+              <p className="text-xs text-[#7C7C7C] dark:text-slate-400 mt-0.5">{subtitle}</p>
             )}
           </div>
           <button
             onClick={onClose}
-            className="text-black hover:text-[#F51414] p-1 rounded-lg hover:bg-[#D9D9D9] transition-colors cursor-pointer"
+            className="text-black dark:text-slate-300 hover:text-[#F51414] dark:hover:text-rose-400 p-1 rounded-lg hover:bg-[#D9D9D9] dark:hover:bg-slate-800 transition-colors cursor-pointer"
             aria-label="Fechar"
           >
             <X className="w-5 h-5" />
@@ -92,7 +92,7 @@ export const Modal: React.FC<ModalProps> = ({
 
         {/* Footer */}
         {footer && (
-          <div className="flex items-center justify-end gap-3 px-6 py-4 bg-[#EBEAEA]/60 border-t border-[#D9D9D9]">
+          <div className="flex items-center justify-end gap-3 px-6 py-4 bg-slate-50 dark:bg-slate-850 border-t border-slate-200 dark:border-slate-800">
             {footer}
           </div>
         )}

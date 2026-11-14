@@ -9,8 +9,11 @@ import {
   History,
   LogOut,
   ChevronLeft,
+  Sun,
+  Moon,
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
+import { useTheme } from '../../hooks/useTheme';
 
 export interface SidebarProps {
   isOpen: boolean;
@@ -20,6 +23,7 @@ export interface SidebarProps {
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
   const { logout, user } = useAuth();
+  const { isDark, toggleTheme } = useTheme();
 
   const handleNavClick = () => {
     if (typeof window !== 'undefined' && window.innerWidth < 1024) {
@@ -117,7 +121,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           })}
         </div>
 
-        {/* User profile & logout footer */}
+        {/* User profile, theme toggle & logout footer */}
         <div className="p-4 border-t-2 border-[#166534] bg-[#166534]/50 shrink-0">
           <div className="flex items-center justify-between gap-2.5 p-2 rounded-xl bg-[#166534]">
             <div className="flex items-center gap-2.5 min-w-0 pr-1">
@@ -131,15 +135,26 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 <span className="text-[10px] text-[#86EFAC] font-semibold">Sessão Ativa</span>
               </div>
             </div>
-            <button
-              type="button"
-              onClick={handleLogout}
-              title="Sair do sistema"
-              className="p-2 rounded-lg text-white hover:bg-[#F51414] hover:text-white transition-colors cursor-pointer shrink-0"
-              aria-label="Sair"
-            >
-              <LogOut className="w-4 h-4" />
-            </button>
+            <div className="flex items-center gap-1 shrink-0">
+              <button
+                type="button"
+                onClick={toggleTheme}
+                title={isDark ? 'Ativar modo claro' : 'Ativar modo escuro'}
+                className="p-2 rounded-lg text-white hover:bg-white/20 transition-colors cursor-pointer"
+                aria-label={isDark ? 'Ativar modo claro' : 'Ativar modo escuro'}
+              >
+                {isDark ? <Sun className="w-4 h-4 text-amber-300" /> : <Moon className="w-4 h-4 text-white" />}
+              </button>
+              <button
+                type="button"
+                onClick={handleLogout}
+                title="Sair do sistema"
+                className="p-2 rounded-lg text-white hover:bg-[#F51414] hover:text-white transition-colors cursor-pointer shrink-0"
+                aria-label="Sair"
+              >
+                <LogOut className="w-4 h-4" />
+              </button>
+            </div>
           </div>
         </div>
       </aside>

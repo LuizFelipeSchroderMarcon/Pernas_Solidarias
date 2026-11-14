@@ -230,13 +230,13 @@ export const ParticipantsPage: React.FC = () => {
       />
 
       {/* Tabs */}
-      <div className="flex items-center gap-2 border-b border-[#B9B9B9] pb-px">
+      <div className="flex items-center gap-2 border-b border-[#B9B9B9] dark:border-slate-800 pb-px">
         <button
           onClick={() => handleTabChange('cadeirante')}
           className={`flex items-center gap-2 px-5 py-3 text-sm font-bold border-b-2 transition-all cursor-pointer ${
             activeTab === 'cadeirante'
-              ? 'border-[#166534] text-[#166534] bg-[#15803D]/15 rounded-t-xl'
-              : 'border-transparent text-[#525252] hover:text-black'
+              ? 'border-[#166534] text-[#166534] dark:text-[#4ADE80] dark:border-[#4ADE80] bg-[#15803D]/15 dark:bg-[#15803D]/30 rounded-t-xl'
+              : 'border-transparent text-[#525252] dark:text-slate-400 hover:text-black dark:hover:text-white'
           }`}
         >
           <Users className="w-4 h-4" />
@@ -247,8 +247,8 @@ export const ParticipantsPage: React.FC = () => {
           onClick={() => handleTabChange('condutor')}
           className={`flex items-center gap-2 px-5 py-3 text-sm font-bold border-b-2 transition-all cursor-pointer ${
             activeTab === 'condutor'
-              ? 'border-[#166534] text-[#166534] bg-[#15803D]/15 rounded-t-xl'
-              : 'border-transparent text-[#525252] hover:text-black'
+              ? 'border-[#166534] text-[#166534] dark:text-[#4ADE80] dark:border-[#4ADE80] bg-[#15803D]/15 dark:bg-[#15803D]/30 rounded-t-xl'
+              : 'border-transparent text-[#525252] dark:text-slate-400 hover:text-black dark:hover:text-white'
           }`}
         >
           <UserCheck className="w-4 h-4" />
@@ -264,8 +264,8 @@ export const ParticipantsPage: React.FC = () => {
               placeholder="Buscar por nome ou por CPF..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              leftIcon={<Search className="w-4 h-4 text-[#525252]" />}
-              className="bg-[#D9D9D9]/75 border-[#B9B9B9] placeholder-[#525252] text-black"
+              leftIcon={<Search className="w-4 h-4 text-slate-400 dark:text-slate-400" />}
+              className="bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 placeholder-slate-400 dark:placeholder-slate-500 text-black dark:text-white"
             />
           </div>
 
@@ -306,8 +306,8 @@ export const ParticipantsPage: React.FC = () => {
         ) : activeTab === 'cadeirante' ? (
           filteredCadeirantes.length > 0 ? (
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm text-black">
-                <thead className="bg-[#D9D9D9]/70 text-xs uppercase tracking-wider text-black font-bold border-b border-[#B9B9B9]">
+              <table className="w-full text-left text-sm text-black dark:text-slate-100">
+                <thead className="bg-slate-100/90 dark:bg-slate-800 text-xs uppercase tracking-wider text-slate-800 dark:text-slate-200 font-bold border-b border-slate-200 dark:border-slate-700">
                   <tr>
                     <th className="px-6 py-4">Nome</th>
                     <th className="px-6 py-4">CPF</th>
@@ -318,24 +318,24 @@ export const ParticipantsPage: React.FC = () => {
                     <th className="px-6 py-4 text-right">Ações</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#D9D9D9]">
+                <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
                   {filteredCadeirantes.map((cad) => (
                     <tr
                       key={cad.cd_cadeirante}
-                      className="hover:bg-[#EBEAEA]/50 transition-colors"
+                      className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
                     >
-                      <td className="px-6 py-4 font-bold text-black">
+                      <td className="px-6 py-4 font-bold text-black dark:text-white">
                         {cad.nm_cadeirante}
                       </td>
-                      <td className="px-6 py-4 text-[#7C7C7C] font-mono text-xs">
+                      <td className="px-6 py-4 font-mono text-xs font-medium text-black dark:text-white">
                         {formatCPF(cad.cpf) || '-'}
                       </td>
                       <td className="px-6 py-4">
                         <a
                           href={`tel:${cad.telefone}`}
-                          className="inline-flex items-center gap-1.5 text-black hover:text-[#166534] font-medium hover:underline"
+                          className="inline-flex items-center gap-1.5 font-mono text-xs font-medium text-black dark:text-white hover:text-[#166534] dark:hover:text-[#4ADE80] hover:underline"
                         >
-                          <Phone className="w-3.5 h-3.5 text-[#166534]" />
+                          <Phone className="w-3.5 h-3.5 text-[#166534] dark:text-[#4ADE80]" />
                           <span>{formatPhone(cad.telefone)}</span>
                         </a>
                       </td>
@@ -366,14 +366,14 @@ export const ParticipantsPage: React.FC = () => {
                         <div className="flex items-center justify-end gap-1">
                           <button
                             onClick={() => handleOpenEdit(cad)}
-                            className="p-1.5 text-[#525252] hover:text-[#166534] rounded-lg hover:bg-[#16A34A]/20 transition-colors cursor-pointer"
+                            className="p-1.5 text-[#525252] dark:text-slate-400 hover:text-[#166534] dark:hover:text-[#4ADE80] rounded-lg hover:bg-[#16A34A]/20 dark:hover:bg-[#16A34A]/30 transition-colors cursor-pointer"
                             title="Editar"
                           >
                             <Edit2 className="w-4 h-4" />
                           </button>
                           <button
                             onClick={() => handleOpenDelete(cad.cd_cadeirante)}
-                            className="p-1.5 text-[#525252] hover:text-[#F51414] rounded-lg hover:bg-[#F51414]/15 transition-colors cursor-pointer"
+                            className="p-1.5 text-[#525252] dark:text-slate-400 hover:text-[#F51414] dark:hover:text-red-400 rounded-lg hover:bg-[#F51414]/15 dark:hover:bg-red-950/40 transition-colors cursor-pointer"
                             title="Excluir"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -419,8 +419,8 @@ export const ParticipantsPage: React.FC = () => {
           )
         ) : filteredCondutores.length > 0 ? (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm text-black">
-              <thead className="bg-[#D9D9D9]/70 text-xs uppercase tracking-wider text-black font-bold border-b border-[#B9B9B9]">
+            <table className="w-full text-left text-sm text-black dark:text-slate-100">
+              <thead className="bg-slate-100/90 dark:bg-slate-800 text-xs uppercase tracking-wider text-slate-800 dark:text-slate-200 font-bold border-b border-slate-200 dark:border-slate-700">
                 <tr>
                   <th className="px-6 py-4">Nome</th>
                   <th className="px-6 py-4">CPF</th>
@@ -430,24 +430,24 @@ export const ParticipantsPage: React.FC = () => {
                   <th className="px-6 py-4 text-right">Ações</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#D9D9D9]">
+              <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
                 {filteredCondutores.map((cond) => (
                   <tr
                     key={cond.cd_condutor}
-                    className="hover:bg-[#EBEAEA]/50 transition-colors"
+                    className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
                   >
-                    <td className="px-6 py-4 font-bold text-black">
+                    <td className="px-6 py-4 font-bold text-black dark:text-white">
                       {cond.nm_condutor}
                     </td>
-                    <td className="px-6 py-4 text-[#7C7C7C] font-mono text-xs">
+                    <td className="px-6 py-4 font-mono text-xs font-medium text-black dark:text-white">
                       {formatCPF(cond.cpf) || '-'}
                     </td>
                     <td className="px-6 py-4">
                       <a
                         href={`tel:${cond.telefone}`}
-                        className="inline-flex items-center gap-1.5 text-black hover:text-[#166534] font-medium hover:underline"
+                        className="inline-flex items-center gap-1.5 font-mono text-xs font-medium text-black dark:text-white hover:text-[#166534] dark:hover:text-[#4ADE80] hover:underline"
                       >
-                        <Phone className="w-3.5 h-3.5 text-[#166534]" />
+                        <Phone className="w-3.5 h-3.5 text-[#166534] dark:text-[#4ADE80]" />
                         <span>{formatPhone(cond.telefone)}</span>
                       </a>
                     </td>
@@ -467,14 +467,14 @@ export const ParticipantsPage: React.FC = () => {
                       <div className="flex items-center justify-end gap-1">
                         <button
                           onClick={() => handleOpenEdit(cond)}
-                          className="p-1.5 text-[#525252] hover:text-[#166534] rounded-lg hover:bg-[#16A34A]/20 transition-colors cursor-pointer"
+                          className="p-1.5 text-[#525252] dark:text-slate-400 hover:text-[#166534] dark:hover:text-[#4ADE80] rounded-lg hover:bg-[#16A34A]/20 dark:hover:bg-[#16A34A]/30 transition-colors cursor-pointer"
                           title="Editar"
                         >
                           <Edit2 className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => handleOpenDelete(cond.cd_condutor)}
-                          className="p-1.5 text-[#525252] hover:text-[#F51414] rounded-lg hover:bg-[#F51414]/15 transition-colors cursor-pointer"
+                          className="p-1.5 text-[#525252] dark:text-slate-400 hover:text-[#F51414] dark:hover:text-red-400 rounded-lg hover:bg-[#F51414]/15 dark:hover:bg-red-950/40 transition-colors cursor-pointer"
                           title="Excluir"
                         >
                           <Trash2 className="w-4 h-4" />

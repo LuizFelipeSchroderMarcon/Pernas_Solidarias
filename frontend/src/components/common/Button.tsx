@@ -31,15 +31,15 @@ export const Button: React.FC<ButtonProps> = ({
     primary:
       'bg-[#166534] hover:bg-[#15803D] text-white font-semibold border border-[#166534] shadow-xs focus:ring-[#22C55E] active:scale-[0.98]',
     secondary:
-      'bg-[#D9D9D9] hover:bg-[#c8c8c8] text-black font-medium border border-[#B7B7B7] focus:ring-[#7C7C7C] active:scale-[0.98]',
+      'bg-[#D9D9D9] hover:bg-[#c8c8c8] text-black dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-100 font-medium border border-[#B7B7B7] dark:border-slate-700 focus:ring-[#7C7C7C] active:scale-[0.98]',
     outline:
-      'bg-white hover:bg-[#16A34A] hover:text-white text-black border border-black/50 focus:ring-[#16A34A] active:scale-[0.98]',
+      'bg-white dark:bg-slate-900 hover:bg-[#16A34A] hover:text-white dark:hover:bg-[#16A34A] dark:hover:text-white text-black dark:text-slate-200 border border-black/50 dark:border-slate-700 focus:ring-[#16A34A] active:scale-[0.98]',
     danger:
       'bg-[#F51414] hover:bg-[#F25353] text-white font-semibold border border-[#B7B7B7] shadow-xs focus:ring-[#F51414] active:scale-[0.98]',
     warning:
       'bg-amber-400 hover:bg-amber-500 text-black font-semibold shadow-xs focus:ring-amber-500 active:scale-[0.98]',
     ghost:
-      'bg-transparent hover:bg-[#D9D9D9]/60 text-black focus:ring-[#7C7C7C]',
+      'bg-transparent hover:bg-[#D9D9D9]/60 dark:hover:bg-slate-800 text-black dark:text-slate-200 focus:ring-[#7C7C7C]',
     success:
       'bg-[#15803D] hover:bg-[#16A34A] text-white font-semibold border border-[#166534] shadow-xs focus:ring-[#22C55E] active:scale-[0.98]',
   };

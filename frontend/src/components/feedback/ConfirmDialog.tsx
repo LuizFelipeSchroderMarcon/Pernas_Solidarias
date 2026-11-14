@@ -53,7 +53,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
         <div className="p-2.5 rounded-xl bg-[#F51414]/15 text-[#F51414] shrink-0">
           <AlertTriangle className="w-6 h-6" />
         </div>
-        <p className="text-sm text-black leading-relaxed pt-0.5">
+        <p className="text-sm text-black dark:text-slate-200 leading-relaxed pt-0.5">
           {message}
         </p>
       </div>

@@ -44,10 +44,10 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
 
   return (
     <div
-      className={`flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200/60 dark:border-slate-800/80 ${className}`}
+      className={`flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-[#D9D9D9] dark:border-slate-800 transition-colors duration-200 ${className}`}
     >
       <div className="flex items-center gap-3">
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-dark tracking-tight">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
           {title}
         </h1>
 
@@ -95,9 +95,9 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
         </div>
       </div>
 
-      {/* Optional action buttons */}
+      {/* Action buttons */}
       {actions && (
-        <div className="flex flex-wrap items-center gap-3 self-start sm:self-auto">
+        <div className="flex flex-wrap items-center gap-2.5 self-start sm:self-auto">
           {actions}
         </div>
       )}
