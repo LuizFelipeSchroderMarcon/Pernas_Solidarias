@@ -202,7 +202,6 @@ export const DashboardPage: React.FC = () => {
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-2">
                     <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#7C7C7C] dark:text-slate-400">
-                      <Calendar className="w-3.5 h-3.5 text-black dark:text-slate-300" />
                       {formatDate(evt.dt_evento)}
                     </span>
                     {index === 0 && (
@@ -256,7 +255,6 @@ export const DashboardPage: React.FC = () => {
         ) : (
           <div className="flex flex-col items-center justify-center text-center py-10">
             <div className="w-12 h-12 rounded-2xl bg-[#D9D9D9] dark:bg-slate-800 flex items-center justify-center text-[#525252] dark:text-slate-300 mb-3">
-              <Calendar className="w-6 h-6" />
             </div>
             <h4 className="text-sm font-bold text-black dark:text-white">
               Nenhum evento futuro agendado
