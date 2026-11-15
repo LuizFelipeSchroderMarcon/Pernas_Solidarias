@@ -47,7 +47,7 @@ export const GraphicsPage: React.FC = () => {
       }
     };
 
-    loadRankings();
+    void loadRankings();
   }, []);
 
   if (isLoading) {
