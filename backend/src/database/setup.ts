@@ -17,7 +17,7 @@ export async function initDatabase() {
 
     // Seed initial coordinator user if table is empty
     const userCheck = await pool.query('SELECT COUNT(*) FROM "USER"');
-    const totalUsers = parseInt(userCheck.rows[0].count, 10);
+    const totalUsers = Number.parseInt(userCheck.rows[0].count, 10);
 
     if (totalUsers === 0) {
       const defaultEmail = 'admin@pernassolidarias.org.br';

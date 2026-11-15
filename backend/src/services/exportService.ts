@@ -271,7 +271,8 @@ export class ExportService {
       .replace(/[\u0300-\u036f]/g, '')
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '_')
-      .replace(/^_+|_+$/g, '');
+      .replace(/^_+/, '')
+      .replace(/_+$/, '');
   }
 
   private formatSexo(sexoVal?: string): string {
@@ -285,7 +286,7 @@ export class ExportService {
   private formatDate(dateVal?: string | Date): string {
     if (!dateVal) return '';
     if (dateVal instanceof Date) {
-      if (isNaN(dateVal.getTime())) return '';
+      if (Number.isNaN(dateVal.getTime())) return '';
       const year = dateVal.getUTCFullYear();
       const month = String(dateVal.getUTCMonth() + 1).padStart(2, '0');
       const day = String(dateVal.getUTCDate()).padStart(2, '0');
