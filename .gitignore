@@ -20,3 +20,13 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+
+# SonarQube Scanner
+.scannerwork/
+# Test Coverage
+coverage/
+backend/coverage/
+frontend/coverage/
+# Vite Cache
+.vite/
+frontend/.vite/

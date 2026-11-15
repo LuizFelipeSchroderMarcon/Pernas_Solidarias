@@ -31,14 +31,24 @@ export const exportService = {
     }
 
     if (!filename) {
-      const sanitizedName = eventName
-        ? eventName
-            .normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, '')
-            .toLowerCase()
-            .replace(/[^a-z0-9]+/g, '_')
-            .replace(/^_+|_+$/g, '')
-        : `evento_${eventId}`;
+      let sanitizedName = `evento_${eventId}`;
+      if (eventName) {
+        const clean = eventName
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '_');
+
+        let start = 0;
+        while (start < clean.length && clean[start] === '_') {
+          start++;
+        }
+        let end = clean.length;
+        while (end > start && clean[end - 1] === '_') {
+          end--;
+        }
+        sanitizedName = clean.slice(start, end) || `evento_${eventId}`;
+      }
 
       filename = `relacao_${sanitizedName}_${includeCpf ? 'com_cpf' : 'sem_cpf'}.${extension}`;
     }

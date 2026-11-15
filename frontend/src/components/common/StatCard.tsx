@@ -25,13 +25,8 @@ export const StatCard: React.FC<StatCardProps> = ({
     purple: 'bg-[#15803D]/15 dark:bg-[#15803D]/30 text-[#166534] dark:text-[#4ADE80]',
   };
 
-  return (
-    <div
-      onClick={onClick}
-      className={`bg-white dark:bg-slate-900 border border-[#B9B9B9] dark:border-slate-800 rounded-2xl p-5 shadow-xs flex items-center justify-between transition-all duration-200 ${
-        onClick ? 'hover:shadow-md hover:border-[#166534] dark:hover:border-[#22C55E] cursor-pointer' : ''
-      }`}
-    >
+  const content = (
+    <>
       <div className="flex flex-col">
         <span className="text-xs font-semibold uppercase tracking-wider text-[#525252] dark:text-slate-400">
           {title}
@@ -46,6 +41,24 @@ export const StatCard: React.FC<StatCardProps> = ({
       <div className={`p-3.5 rounded-2xl flex items-center justify-center shrink-0 ${iconVariants[variant]}`}>
         {icon}
       </div>
+    </>
+  );
+
+  if (onClick) {
+    return (
+      <button
+        type="button"
+        onClick={onClick}
+        className="w-full text-left bg-white dark:bg-slate-900 border border-[#B9B9B9] dark:border-slate-800 rounded-2xl p-5 shadow-xs flex items-center justify-between transition-all duration-200 hover:shadow-md hover:border-[#166534] dark:hover:border-[#22C55E] cursor-pointer"
+      >
+        {content}
+      </button>
+    );
+  }
+
+  return (
+    <div className="bg-white dark:bg-slate-900 border border-[#B9B9B9] dark:border-slate-800 rounded-2xl p-5 shadow-xs flex items-center justify-between transition-all duration-200">
+      {content}
     </div>
   );
 };

@@ -68,7 +68,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setIsLoading(false);
     };
 
-    checkAuth();
+    void checkAuth();
 
     const handleUnauthorized = () => {
       logout();

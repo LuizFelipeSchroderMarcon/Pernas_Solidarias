@@ -34,7 +34,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const handleLogout = () => {
     onClose();
     logout();
-    navigate('/login', { replace: true, state: null });
+    void navigate('/login', { replace: true, state: null });
   };
 
   const navItems = [
@@ -50,8 +50,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     <>
       {/* Mobile backdrop */}
       {isOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-xs lg:hidden"
+        <button
+          type="button"
+          aria-label="Fechar menu lateral"
+          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-xs lg:hidden w-full h-full border-none p-0 cursor-default"
           onClick={onClose}
         />
       )}

@@ -10,8 +10,8 @@ export class ExportController {
   async exportEvent(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const eventIdParam = req.params.eventId || req.params.cd_evento;
-      const eventId = parseInt(eventIdParam as string, 10);
-      if (isNaN(eventId)) {
+      const eventId = Number.parseInt(eventIdParam as string, 10);
+      if (Number.isNaN(eventId)) {
         res.status(400).json({ error: 'ID do evento inválido.' });
         return;
       }

@@ -66,7 +66,7 @@ export const EventsPage: React.FC = () => {
   };
 
   useEffect(() => {
-    loadEvents();
+    void loadEvents();
   }, []);
 
   const todayDateStr = useMemo(() => {

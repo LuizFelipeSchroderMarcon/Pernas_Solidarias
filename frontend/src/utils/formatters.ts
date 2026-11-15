@@ -33,7 +33,7 @@ export function formatDate(dateString: string | Date | null | undefined): string
   if (!dateString) return '-';
   try {
     const d = typeof dateString === 'string' ? new Date(dateString) : dateString;
-    if (isNaN(d.getTime())) return String(dateString);
+    if (Number.isNaN(d.getTime())) return String(dateString);
     // Handle timezone shift if date only (YYYY-MM-DD)
     if (typeof dateString === 'string' && dateString.length === 10 && dateString.includes('-')) {
       const [year, month, day] = dateString.split('-').map(Number);

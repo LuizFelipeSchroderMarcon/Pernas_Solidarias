@@ -42,7 +42,7 @@ export const HistoryPairsModal: React.FC<HistoryPairsModalProps> = ({
           setIsLoading(false);
         }
       };
-      fetchPairs();
+      void fetchPairs();
     } else {
       setPairs([]);
     }

@@ -266,12 +266,21 @@ export class ExportService {
   }
 
   private sanitizeEventName(name: string): string {
-    return name
+    const clean = name
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '')
       .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '_')
-      .replace(/^_+|_+$/g, '');
+      .replace(/[^a-z0-9]+/g, '_');
+
+    let start = 0;
+    while (start < clean.length && clean[start] === '_') {
+      start++;
+    }
+    let end = clean.length;
+    while (end > start && clean[end - 1] === '_') {
+      end--;
+    }
+    return clean.slice(start, end);
   }
 
   private formatSexo(sexoVal?: string): string {
@@ -285,7 +294,7 @@ export class ExportService {
   private formatDate(dateVal?: string | Date): string {
     if (!dateVal) return '';
     if (dateVal instanceof Date) {
-      if (isNaN(dateVal.getTime())) return '';
+      if (Number.isNaN(dateVal.getTime())) return '';
       const year = dateVal.getUTCFullYear();
       const month = String(dateVal.getUTCMonth() + 1).padStart(2, '0');
       const day = String(dateVal.getUTCDate()).padStart(2, '0');
