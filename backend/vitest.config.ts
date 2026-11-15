@@ -7,6 +7,12 @@ export default defineConfig({
     fileParallelism: false,
     testTimeout: 20000,
     include: ['tests/**/*.test.ts'],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'lcov'],
+      reportsDirectory: './coverage',
+      include: ['src/**/*.ts'],
+      exclude: ['src/database/**', 'src/server.ts'],
+    },
   },
 });
-

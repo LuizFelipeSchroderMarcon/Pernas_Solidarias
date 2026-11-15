@@ -13,7 +13,10 @@
     "dev:local": "concurrently -n \"backend,frontend\" -c \"blue,green\" \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
     "test": "npm test --prefix backend && npm test --prefix frontend",
     "test:backend": "npm test --prefix backend",
-    "test:frontend": "npm test --prefix frontend"
+    "test:frontend": "npm test --prefix frontend",
+    "test:coverage": "npm run test:coverage --prefix backend && npm run test:coverage --prefix frontend",
+    "sonar": "npx @sonar/scan -Dsonar.host.url=http://localhost:9000 -Dsonar.token=sqp_17281359ad6caae48d8add1a5f1d1d36adafd36e",
+    "sonar:coverage": "npm run test:coverage && npm run sonar"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"
