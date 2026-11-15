@@ -20,13 +20,13 @@ export async function initDatabase() {
     const totalUsers = Number.parseInt(userCheck.rows[0].count, 10);
 
     if (totalUsers === 0) {
-      const defaultEmail = 'admin@pernassolidarias.org.br';
-      const defaultPass = 'admin123';
+      const defaultEmail = process.env.INITIAL_ADMIN_EMAIL || 'admin@pernassolidarias.org.br';
+      const defaultPass = process.env.INITIAL_ADMIN_PASSWORD || 'admin123';
       const hash = await bcrypt.hash(defaultPass, 10);
       await pool.query('INSERT INTO "USER" (email, senha) VALUES ($1, $2)', [defaultEmail, hash]);
       console.log(`\n🔑 Usuário coordenador padrão criado com sucesso:`);
       console.log(`   E-mail: ${defaultEmail}`);
-      console.log(`   Senha:  ${defaultPass}\n`);
+      console.log(`   Senha:  ${defaultPass.replace(/./g, '*')}\n`);
     }
   } catch (error) {
     console.error('Erro ao inicializar o banco de dados:', error);
