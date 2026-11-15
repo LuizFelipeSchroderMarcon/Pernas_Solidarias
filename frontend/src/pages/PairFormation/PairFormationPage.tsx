@@ -145,7 +145,7 @@ export const PairFormationPage: React.FC = () => {
       }
     };
 
-    loadInitialData();
+    void loadInitialData();
   }, []);
 
   // Sync when searchParams change externally (ex: browser back/forward or direct navigation)
@@ -171,7 +171,7 @@ export const PairFormationPage: React.FC = () => {
   // Load pairs when selected event changes
   useEffect(() => {
     if (selectedEventId) {
-      loadEventPairs(Number(selectedEventId));
+      void loadEventPairs(Number(selectedEventId));
     } else {
       latestRequestRef.current += 1;
       setIsLoadingPairs(false);
@@ -237,7 +237,7 @@ export const PairFormationPage: React.FC = () => {
     if (pairs.length > 0) {
       setRegenerateDialogOpen(true);
     } else {
-      executeGeneratePairs();
+      void executeGeneratePairs();
     }
   };
 

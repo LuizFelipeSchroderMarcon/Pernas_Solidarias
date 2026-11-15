@@ -208,7 +208,7 @@ export const LoginPage: React.FC = () => {
       await login(trimmedEmail, senha);
       clearBlockedForEmail(trimmedEmail);
       success('Bem-vindo!', 'Login realizado com sucesso.');
-      navigate(destination, { replace: true });
+      void navigate(destination, { replace: true });
     } catch (err: unknown) {
       const msg = mensagemDeErro(err, 'Erro ao realizar login. Verifique suas credenciais.');
       const retrySeconds = extractRetrySeconds(err);

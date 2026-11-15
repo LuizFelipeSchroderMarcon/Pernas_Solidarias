@@ -60,7 +60,7 @@ export const EditPairModal: React.FC<EditPairModalProps> = ({
           }
         };
 
-        loadParticipants();
+        void loadParticipants();
       }
     }
   }, [isOpen, cadeirantesList, condutoresList]);

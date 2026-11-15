@@ -64,7 +64,7 @@ export const HistoryPage: React.FC = () => {
   };
 
   useEffect(() => {
-    loadData();
+    void loadData();
   }, []);
 
   const handleClearFilters = () => {

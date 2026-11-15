@@ -60,7 +60,7 @@ export const DashboardPage: React.FC = () => {
       }
     };
 
-    fetchDashboardData();
+    void fetchDashboardData();
   }, []);
 
   const activeCadeirantes = cadeirantes.filter((c) => c.ativo).length;
