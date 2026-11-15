@@ -1,11 +1,50 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { AuthController } from '../../src/controllers/authController';
-import { AnalyticsController } from '../../src/controllers/analyticsController';
-import { EventController } from '../../src/controllers/eventController';
-import { ExportController } from '../../src/controllers/exportController';
-import { RunnerController } from '../../src/controllers/runnerController';
-import { WheelchairUserController } from '../../src/controllers/wheelchairUserController';
-import { PairController } from '../../src/controllers/pairController';
+
+const {
+  mockEventService,
+  mockExportService,
+  mockRunnerService,
+  mockWheelchairUserService,
+  mockPairFormationService,
+} = vi.hoisted(() => ({
+  mockEventService: {
+    listAll: vi.fn(),
+    getById: vi.fn(),
+    create: vi.fn(),
+    update: vi.fn(),
+    delete: vi.fn(),
+  },
+  mockExportService: {
+    generateCsvPairs: vi.fn(),
+    generateExcelPairs: vi.fn(),
+  },
+  mockRunnerService: {
+    listAll: vi.fn(),
+    getById: vi.fn(),
+    create: vi.fn(),
+    update: vi.fn(),
+    toggleStatus: vi.fn(),
+    delete: vi.fn(),
+  },
+  mockWheelchairUserService: {
+    listAll: vi.fn(),
+    getById: vi.fn(),
+    create: vi.fn(),
+    update: vi.fn(),
+    toggleStatus: vi.fn(),
+    delete: vi.fn(),
+  },
+  mockPairFormationService: {
+    generateAutomaticPairs: vi.fn(),
+    savePairs: vi.fn(),
+    createPair: vi.fn(),
+    editPair: vi.fn(),
+    deletePair: vi.fn(),
+    listByEvent: vi.fn(),
+    clearEventPairs: vi.fn(),
+    getHistory: vi.fn(),
+  },
+}));
 
 vi.mock('../../src/services/authService', () => {
   return {
@@ -25,67 +64,33 @@ vi.mock('../../src/services/analyticsService', () => {
   };
 });
 
-vi.mock('../../src/services/eventService', () => {
-  return {
-    EventService: vi.fn().mockImplementation(() => ({
-      listAll: vi.fn().mockResolvedValue([{ cd_evento: 1, nm_evento: 'Corrida' }]),
-      getById: vi.fn().mockResolvedValue({ cd_evento: 1, nm_evento: 'Corrida' }),
-      create: vi.fn().mockResolvedValue({ cd_evento: 2, nm_evento: 'Novo Evento' }),
-      update: vi.fn().mockResolvedValue({ cd_evento: 1, nm_evento: 'Atualizado' }),
-      delete: vi.fn().mockResolvedValue(true),
-    })),
-  };
-});
+vi.mock('../../src/services/eventService', () => ({
+  EventService: vi.fn().mockImplementation(() => mockEventService),
+}));
 
-vi.mock('../../src/services/exportService', () => {
-  return {
-    ExportService: vi.fn().mockImplementation(() => ({
-      generateCsvPairs: vi.fn().mockResolvedValue({ csv: 'id;nome\n1;Joao', filename: 'duplas.csv' }),
-      generateExcelPairs: vi.fn().mockResolvedValue({ buffer: Buffer.from('excel'), filename: 'duplas.xlsx' }),
-    })),
-  };
-});
+vi.mock('../../src/services/exportService', () => ({
+  ExportService: vi.fn().mockImplementation(() => mockExportService),
+}));
 
-vi.mock('../../src/services/runnerService', () => {
-  return {
-    RunnerService: vi.fn().mockImplementation(() => ({
-      listAll: vi.fn().mockResolvedValue([]),
-      getById: vi.fn().mockResolvedValue({ cd_condutor: 1 }),
-      create: vi.fn().mockResolvedValue({ cd_condutor: 2 }),
-      update: vi.fn().mockResolvedValue({ cd_condutor: 1 }),
-      toggleStatus: vi.fn().mockResolvedValue({ cd_condutor: 1, ativo: false }),
-      delete: vi.fn().mockResolvedValue(true),
-    })),
-  };
-});
+vi.mock('../../src/services/runnerService', () => ({
+  RunnerService: vi.fn().mockImplementation(() => mockRunnerService),
+}));
 
-vi.mock('../../src/services/wheelchairUserService', () => {
-  return {
-    WheelchairUserService: vi.fn().mockImplementation(() => ({
-      listAll: vi.fn().mockResolvedValue([]),
-      getById: vi.fn().mockResolvedValue({ cd_cadeirante: 1 }),
-      create: vi.fn().mockResolvedValue({ cd_cadeirante: 2 }),
-      update: vi.fn().mockResolvedValue({ cd_cadeirante: 1 }),
-      toggleStatus: vi.fn().mockResolvedValue({ cd_cadeirante: 1, ativo: false }),
-      delete: vi.fn().mockResolvedValue(true),
-    })),
-  };
-});
+vi.mock('../../src/services/wheelchairUserService', () => ({
+  WheelchairUserService: vi.fn().mockImplementation(() => mockWheelchairUserService),
+}));
 
-vi.mock('../../src/services/pairFormationService', () => {
-  return {
-    PairFormationService: vi.fn().mockImplementation(() => ({
-      generateAutomaticPairs: vi.fn().mockResolvedValue({ total_duplas: 2, duplas: [] }),
-      savePairs: vi.fn().mockResolvedValue([]),
-      createPair: vi.fn().mockResolvedValue({ cd_dupla: 1 }),
-      editPair: vi.fn().mockResolvedValue({ cd_dupla: 1 }),
-      deletePair: vi.fn().mockResolvedValue(true),
-      listByEvent: vi.fn().mockResolvedValue({ duplas: [] }),
-      clearEventPairs: vi.fn().mockResolvedValue(true),
-      getHistory: vi.fn().mockResolvedValue([]),
-    })),
-  };
-});
+vi.mock('../../src/services/pairFormationService', () => ({
+  PairFormationService: vi.fn().mockImplementation(() => mockPairFormationService),
+}));
+
+import { AuthController } from '../../src/controllers/authController';
+import { AnalyticsController } from '../../src/controllers/analyticsController';
+import { EventController } from '../../src/controllers/eventController';
+import { ExportController } from '../../src/controllers/exportController';
+import { RunnerController } from '../../src/controllers/runnerController';
+import { WheelchairUserController } from '../../src/controllers/wheelchairUserController';
+import { PairController } from '../../src/controllers/pairController';
 
 describe('Controllers Unit Tests', () => {
   let req: any;
@@ -101,6 +106,38 @@ describe('Controllers Unit Tests', () => {
       setHeader: vi.fn().mockReturnThis(),
     };
     next = vi.fn();
+
+    mockEventService.listAll.mockResolvedValue([{ cd_evento: 1, nm_evento: 'Corrida' }]);
+    mockEventService.getById.mockResolvedValue({ cd_evento: 1, nm_evento: 'Corrida' });
+    mockEventService.create.mockResolvedValue({ cd_evento: 2, nm_evento: 'Novo Evento' });
+    mockEventService.update.mockResolvedValue({ cd_evento: 1, nm_evento: 'Atualizado' });
+    mockEventService.delete.mockResolvedValue(true);
+
+    mockExportService.generateCsvPairs.mockResolvedValue({ csv: 'id;nome\n1;Joao', filename: 'duplas.csv' });
+    mockExportService.generateExcelPairs.mockResolvedValue({ buffer: Buffer.from('excel'), filename: 'duplas.xlsx' });
+
+    mockRunnerService.listAll.mockResolvedValue([]);
+    mockRunnerService.getById.mockResolvedValue({ cd_condutor: 1 });
+    mockRunnerService.create.mockResolvedValue({ cd_condutor: 2 });
+    mockRunnerService.update.mockResolvedValue({ cd_condutor: 1 });
+    mockRunnerService.toggleStatus.mockResolvedValue({ cd_condutor: 1, ativo: false });
+    mockRunnerService.delete.mockResolvedValue(true);
+
+    mockWheelchairUserService.listAll.mockResolvedValue([]);
+    mockWheelchairUserService.getById.mockResolvedValue({ cd_cadeirante: 1 });
+    mockWheelchairUserService.create.mockResolvedValue({ cd_cadeirante: 2 });
+    mockWheelchairUserService.update.mockResolvedValue({ cd_cadeirante: 1 });
+    mockWheelchairUserService.toggleStatus.mockResolvedValue({ cd_cadeirante: 1, ativo: false });
+    mockWheelchairUserService.delete.mockResolvedValue(true);
+
+    mockPairFormationService.generateAutomaticPairs.mockResolvedValue({ total_duplas: 2, duplas: [] });
+    mockPairFormationService.savePairs.mockResolvedValue([]);
+    mockPairFormationService.createPair.mockResolvedValue({ cd_dupla: 1 });
+    mockPairFormationService.editPair.mockResolvedValue({ cd_dupla: 1 });
+    mockPairFormationService.deletePair.mockResolvedValue(true);
+    mockPairFormationService.listByEvent.mockResolvedValue({ duplas: [] });
+    mockPairFormationService.clearEventPairs.mockResolvedValue(true);
+    mockPairFormationService.getHistory.mockResolvedValue([]);
   });
 
   describe('AuthController', () => {
@@ -163,6 +200,30 @@ describe('Controllers Unit Tests', () => {
       await controller.delete(req, res, next);
       expect(res.status).toHaveBeenCalledWith(200);
     });
+
+    it('deve repassar erros de EventController para next', async () => {
+      const err = new Error('Falha no evento');
+      mockEventService.listAll.mockRejectedValueOnce(err);
+      await controller.index(req, res, next);
+      expect(next).toHaveBeenCalledWith(err);
+
+      mockEventService.getById.mockRejectedValueOnce(err);
+      req.params = { id: '1' };
+      await controller.show(req, res, next);
+      expect(next).toHaveBeenCalledWith(err);
+
+      mockEventService.create.mockRejectedValueOnce(err);
+      await controller.create(req, res, next);
+      expect(next).toHaveBeenCalledWith(err);
+
+      mockEventService.update.mockRejectedValueOnce(err);
+      await controller.update(req, res, next);
+      expect(next).toHaveBeenCalledWith(err);
+
+      mockEventService.delete.mockRejectedValueOnce(err);
+      await controller.delete(req, res, next);
+      expect(next).toHaveBeenCalledWith(err);
+    });
   });
 
   describe('ExportController', () => {
@@ -187,6 +248,15 @@ describe('Controllers Unit Tests', () => {
       req.query = { formato: 'xlsx' };
       await controller.exportEvent(req, res, next);
       expect(res.status).toHaveBeenCalledWith(200);
+    });
+
+    it('deve repassar erro de ExportController para next', async () => {
+      const err = new Error('Falha no export');
+      mockExportService.generateExcelPairs.mockRejectedValueOnce(err);
+      req.params = { eventId: '1' };
+      req.query = { formato: 'xlsx' };
+      await controller.exportEvent(req, res, next);
+      expect(next).toHaveBeenCalledWith(err);
     });
   });
 
@@ -224,6 +294,27 @@ describe('Controllers Unit Tests', () => {
       req.body = { nm_cadeirante: 'Cadeirante Novo' };
       await wheelchairController.create(req, res, next);
       expect(res.status).toHaveBeenCalledWith(201);
+    });
+
+    it('deve repassar erros de RunnerController e WheelchairUserController para next', async () => {
+      const err = new Error('Falha no banco');
+      mockRunnerService.listAll.mockRejectedValueOnce(err);
+      await runnerController.index(req, res, next);
+      expect(next).toHaveBeenCalledWith(err);
+
+      mockRunnerService.getById.mockRejectedValueOnce(err);
+      req.params = { id: '1' };
+      await runnerController.show(req, res, next);
+      expect(next).toHaveBeenCalledWith(err);
+
+      mockWheelchairUserService.listAll.mockRejectedValueOnce(err);
+      await wheelchairController.index(req, res, next);
+      expect(next).toHaveBeenCalledWith(err);
+
+      mockWheelchairUserService.getById.mockRejectedValueOnce(err);
+      req.params = { id: '1' };
+      await wheelchairController.show(req, res, next);
+      expect(next).toHaveBeenCalledWith(err);
     });
   });
 
@@ -269,6 +360,50 @@ describe('Controllers Unit Tests', () => {
       req.body = { pairs: 'nao-e-array' };
       await controller.savePairs(req, res, next);
       expect(res.status).toHaveBeenCalledWith(400);
+    });
+
+    it('deve repassar erros de PairController para next', async () => {
+      const err = new Error('Falha em duplas');
+      mockPairFormationService.generateAutomaticPairs.mockRejectedValueOnce(err);
+      req.params = { eventId: '1' };
+      await controller.generatePairs(req, res, next);
+      expect(next).toHaveBeenCalledWith(err);
+
+      mockPairFormationService.savePairs.mockRejectedValueOnce(err);
+      req.params = { eventId: '1' };
+      req.body = { pairs: [{ cd_cadeirante: 1, cd_condutor: 2 }] };
+      await controller.savePairs(req, res, next);
+      expect(next).toHaveBeenCalledWith(err);
+
+      mockPairFormationService.createPair.mockRejectedValueOnce(err);
+      req.body = { wheelchairUserId: '1', runnerId: '2' };
+      await controller.createPair(req, res, next);
+      expect(next).toHaveBeenCalledWith(err);
+
+      mockPairFormationService.editPair.mockRejectedValueOnce(err);
+      req.params = { pairId: '10' };
+      req.body = { cd_condutor: 2 };
+      await controller.editPair(req, res, next);
+      expect(next).toHaveBeenCalledWith(err);
+
+      mockPairFormationService.deletePair.mockRejectedValueOnce(err);
+      req.params = { pairId: '10' };
+      await controller.deletePair(req, res, next);
+      expect(next).toHaveBeenCalledWith(err);
+
+      mockPairFormationService.listByEvent.mockRejectedValueOnce(err);
+      req.params = { eventId: '1' };
+      await controller.listByEvent(req, res, next);
+      expect(next).toHaveBeenCalledWith(err);
+
+      mockPairFormationService.clearEventPairs.mockRejectedValueOnce(err);
+      req.params = { eventId: '1' };
+      await controller.clearPairs(req, res, next);
+      expect(next).toHaveBeenCalledWith(err);
+
+      mockPairFormationService.getHistory.mockRejectedValueOnce(err);
+      await controller.history(req, res, next);
+      expect(next).toHaveBeenCalledWith(err);
     });
   });
 });

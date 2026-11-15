@@ -6,6 +6,15 @@ import { Topbar } from '../src/components/layout/Topbar';
 import { Sidebar } from '../src/components/layout/Sidebar';
 import { ProtectedRoute } from '../src/components/layout/ProtectedRoute';
 import { ExportModal } from '../src/components/export/ExportModal';
+import { ParticipantModal } from '../src/pages/Participants/ParticipantModal';
+
+vi.mock('../src/hooks/useToast', () => ({
+  useToast: () => ({
+    success: vi.fn(),
+    error: vi.fn(),
+    info: vi.fn(),
+  }),
+}));
 
 vi.mock('../src/hooks/useAuth', () => ({
   useAuth: () => ({
@@ -70,5 +79,27 @@ describe('Layout and Modals (SSR Render Tests)', () => {
     expect(html).toContain('Excel (.xlsx)');
     expect(html).toContain('CSV (.csv)');
     expect(html).toContain('Privacidade e Dados (LGPD)');
+  });
+
+  it('deve renderizar ParticipantModal aberto para cadeirante e condutor', () => {
+    const htmlCadeirante = renderToString(
+      <ParticipantModal
+        isOpen={true}
+        onClose={() => {}}
+        onSuccess={() => {}}
+        type="cadeirante"
+      />
+    );
+    expect(htmlCadeirante).toContain('Possui cadeira própria?');
+
+    const htmlCondutor = renderToString(
+      <ParticipantModal
+        isOpen={true}
+        onClose={() => {}}
+        onSuccess={() => {}}
+        type="condutor"
+      />
+    );
+    expect(htmlCondutor).toContain('Nome Completo');
   });
 });

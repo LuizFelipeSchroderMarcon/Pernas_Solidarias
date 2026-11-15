@@ -165,6 +165,24 @@ describe('Frontend Services Unit Tests', () => {
         expect.objectContaining({ params: { includeCpf: true, format: 'xlsx' } })
       );
     });
+
+    it('deve sanitizar nome do arquivo quando nao houver content-disposition', async () => {
+      vi.mocked(api.get).mockResolvedValueOnce({
+        data: new Blob(['teste']),
+        headers: {},
+      });
+      await exportService.exportEventReport(1, false, 'csv', '___Corrida Inclusão 2026___');
+      expect(api.get).toHaveBeenCalledWith(
+        '/export/event/1',
+        expect.objectContaining({ params: { includeCpf: false, format: 'csv' } })
+      );
+
+      vi.mocked(api.get).mockResolvedValueOnce({
+        data: new Blob(['teste']),
+        headers: {},
+      });
+      await exportService.exportEventReport(2, true, 'xlsx');
+    });
   });
 
   describe('apiError utilities', () => {

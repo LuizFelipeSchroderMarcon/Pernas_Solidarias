@@ -40,7 +40,7 @@ describe('Common Components Unit Tests (SSR Render)', () => {
   });
 
   it('deve renderizar Card tanto estático quanto interativo', () => {
-    const htmlStatic = renderToString(<Card>Conteúdo do Card</Card>);
+    const htmlStatic = renderToString(<Card hoverEffect={true}>Conteúdo do Card</Card>);
     expect(htmlStatic).toContain('Conteúdo do Card');
 
     const htmlInteractive = renderToString(<Card onClick={() => {}}>Card Botão</Card>);
@@ -122,10 +122,11 @@ describe('Common Components Unit Tests (SSR Render)', () => {
 
   it('deve renderizar StatCard estático e interativo', () => {
     const html = renderToString(
-      <StatCard title="Total" value={100} icon={<span>*</span>} />
+      <StatCard title="Total" value={100} subtitle="Subtítulo do card" icon={<span>*</span>} />
     );
     expect(html).toContain('Total');
     expect(html).toContain('100');
+    expect(html).toContain('Subtítulo do card');
 
     const htmlBtn = renderToString(
       <StatCard title="Cliques" value={50} icon={<span>*</span>} onClick={() => {}} />

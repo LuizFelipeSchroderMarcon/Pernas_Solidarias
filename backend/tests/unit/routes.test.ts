@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { app } from '../../src/app';
 import { routes } from '../../src/routes';
 import { authRoutes } from '../../src/routes/authRoutes';
@@ -13,6 +13,14 @@ describe('Routes Definition & App Setup', () => {
   it('deve inicializar o app Express com middlewares configurados', () => {
     expect(app).toBeDefined();
     expect(typeof app.use).toBe('function');
+  });
+
+  it('deve carregar app com CORS_ORIGIN customizado', async () => {
+    vi.resetModules();
+    process.env.CORS_ORIGIN = 'http://site1.com, http://site2.com';
+    const { app: customApp } = await import('../../src/app');
+    expect(customApp).toBeDefined();
+    delete process.env.CORS_ORIGIN;
   });
 
   it('deve exportar todos os roteadores devidamente configurados', () => {
