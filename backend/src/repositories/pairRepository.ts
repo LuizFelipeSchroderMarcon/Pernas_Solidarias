@@ -2,9 +2,6 @@ import { pool, query } from '../database/connection';
 import { Dupla, DuplaDetalhada, HistoryFilters, PrioritizedParticipant } from '../models/types';
 
 export class PairRepository {
-  /**
-   * Fetches all active eligible wheelchair users, ordering by longest time without running (RN03, RN07).
-   */
   async findPrioritizedWheelchairUsers(
     excludeEventId: number
   ): Promise<PrioritizedParticipant[]> {
@@ -30,10 +27,7 @@ export class PairRepository {
     const result = await query(sql, [excludeEventId]);
     return result.rows;
   }
-
-  /**
-   * Fetches all active eligible runners with priority calculation (RN03, RN07).
-   */
+  
   async findPrioritizedRunners(
     excludeEventId: number
   ): Promise<PrioritizedParticipant[]> {
@@ -58,10 +52,7 @@ export class PairRepository {
     const result = await query(sql, [excludeEventId]);
     return result.rows;
   }
-
-  /**
-   * Creates a single pair and returns its full details.
-   */
+  
   async create(
     eventId: number,
     wheelchairUserId: number,
@@ -77,10 +68,7 @@ export class PairRepository {
     const detailed = await this.findById(newId);
     return detailed!;
   }
-
-  /**
-   * Inserts multiple pairs inside an atomic transaction.
-   */
+  
   async createMany(
     eventId: number,
     pairs: { wheelchairUserId: number; runnerId: number }[]
@@ -89,7 +77,6 @@ export class PairRepository {
     try {
       await client.query('BEGIN');
 
-      // Clear previous pairs for regeneration
       await client.query('DELETE FROM DUPLA WHERE cd_evento = $1', [eventId]);
 
       for (const pair of pairs) {
@@ -108,10 +95,7 @@ export class PairRepository {
       client.release();
     }
   }
-
-  /**
-   * Finds all detailed pairs for a given event.
-   */
+  
   async findByEventId(eventId: number): Promise<DuplaDetalhada[]> {
     const sql = `
       SELECT 
@@ -145,10 +129,7 @@ export class PairRepository {
     const result = await query(sql, [eventId]);
     return result.rows;
   }
-
-  /**
-   * Finds a single pair by ID with details.
-   */
+  
   async findById(pairId: number): Promise<DuplaDetalhada | null> {
     const sql = `
       SELECT 
@@ -181,10 +162,7 @@ export class PairRepository {
     const result = await query(sql, [pairId]);
     return result.rows[0] || null;
   }
-
-  /**
-   * Updates a pair manually.
-   */
+  
   async update(
     pairId: number,
     data: { wheelchairUserId: number; runnerId: number }
@@ -199,10 +177,7 @@ export class PairRepository {
     const result = await query(sql, [data.wheelchairUserId, data.runnerId, pairId]);
     return result.rows[0] || null;
   }
-
-  /**
-   * Checks if a participant is already allocated in another pair in the same event (RN02).
-   */
+  
   async isParticipantInEvent(
     eventId: number,
     participantType: 'wheelchair' | 'runner',
@@ -222,26 +197,17 @@ export class PairRepository {
     const result = await query(sql, params);
     return (result.rowCount ?? 0) > 0;
   }
-
-  /**
-   * Deletes all pairs of an event.
-   */
+  
   async deleteByEventId(eventId: number): Promise<number> {
     const result = await query('DELETE FROM DUPLA WHERE cd_evento = $1', [eventId]);
     return result.rowCount ?? 0;
   }
-
-  /**
-   * Deletes a specific pair by ID.
-   */
+  
   async deleteById(pairId: number): Promise<boolean> {
     const result = await query('DELETE FROM DUPLA WHERE cd_dupla = $1', [pairId]);
     return (result.rowCount ?? 0) > 0;
   }
-
-  /**
-   * Retrieves pair history with optional filters (RF06, RF09).
-   */
+  
   async findHistory(filters: HistoryFilters): Promise<DuplaDetalhada[]> {
     let sql = `
       SELECT 
@@ -304,5 +270,4 @@ export class PairRepository {
   }
 }
 
-// Alias for backward compatibility
 export { PairRepository as DuplaRepository };

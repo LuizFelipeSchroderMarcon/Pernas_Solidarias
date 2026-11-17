@@ -130,5 +130,4 @@ export class WheelchairUserService {
   }
 }
 
-// Alias for backward compatibility
 export { WheelchairUserService as CadeiranteService };

@@ -117,5 +117,4 @@ export class RunnerRepository {
   }
 }
 
-// Alias for backward compatibility
 export { RunnerRepository as CondutorRepository };

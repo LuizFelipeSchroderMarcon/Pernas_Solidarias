@@ -122,5 +122,4 @@ export class WheelchairUserRepository {
   }
 }
 
-// Alias for backward compatibility if imported anywhere
 export { WheelchairUserRepository as CadeiranteRepository };

@@ -21,7 +21,7 @@ export class WheelchairUserController {
 
   async show(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const id = parseInt(req.params.id as string, 10);
+      const id = Number.parseInt(req.params.id as string, 10);
       const data = await wheelchairUserService.getById(id);
       res.status(200).json({ data });
     } catch (error) {
@@ -43,7 +43,7 @@ export class WheelchairUserController {
 
   async update(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const id = parseInt(req.params.id as string, 10);
+      const id = Number.parseInt(req.params.id as string, 10);
       const data = await wheelchairUserService.update(id, req.body);
       res.status(200).json({
         message: 'Cadeirante atualizado com sucesso!',
@@ -56,7 +56,7 @@ export class WheelchairUserController {
 
   async toggleStatus(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const id = parseInt(req.params.id as string, 10);
+      const id = Number.parseInt(req.params.id as string, 10);
       const data = await wheelchairUserService.toggleStatus(id);
       res.status(200).json({
         message: 'Status do cadeirante alterado com sucesso!',
@@ -69,7 +69,7 @@ export class WheelchairUserController {
 
   async delete(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const id = parseInt(req.params.id as string, 10);
+      const id = Number.parseInt(req.params.id as string, 10);
       await wheelchairUserService.delete(id);
       res.status(200).json({
         message: 'Cadeirante removido com sucesso!',
@@ -80,5 +80,4 @@ export class WheelchairUserController {
   }
 }
 
-// Alias for backward compatibility
 export { WheelchairUserController as CadeiranteController };

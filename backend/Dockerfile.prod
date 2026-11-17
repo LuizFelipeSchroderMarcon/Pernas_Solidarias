@@ -1,0 +1,33 @@
+# ==============================================================================
+# Multi-stage Dockerfile - Backend (Produção)
+# ==============================================================================
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+RUN npm run build
+
+# Stage 2: Runtime enxuto
+FROM node:20-alpine AS runner
+
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+COPY package*.json ./
+RUN npm install --omit=dev --ignore-scripts
+
+# Copia arquivos compilados e assets gerados
+COPY --from=builder /app/dist ./dist
+
+# Utiliza usuário não-root integrado da imagem node
+USER node
+
+EXPOSE 3000
+
+CMD ["node", "dist/server.js"]
+

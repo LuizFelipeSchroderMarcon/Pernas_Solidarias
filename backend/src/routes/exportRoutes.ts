@@ -7,7 +7,6 @@ const exportController = new ExportController();
 
 exportRoutes.use(authMiddleware);
 
-// Export pairs by event (/export/event/:eventId)
 exportRoutes.get('/event/:eventId', exportController.exportEvent);
 
 export { exportRoutes, exportRoutes as exportacaoRoutes };

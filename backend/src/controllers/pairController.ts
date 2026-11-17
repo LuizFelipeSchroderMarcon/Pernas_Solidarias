@@ -4,14 +4,12 @@ import { PairFormationService } from '../services/pairFormationService';
 const pairFormationService = new PairFormationService();
 
 export class PairController {
-  /**
-   * Triggers automatic pair formation for an event (RF03, RF04).
-   */
+  
   async generatePairs(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const eventIdParam = req.params.eventId || req.params.cd_evento;
-      const eventId = parseInt(eventIdParam as string, 10);
-      if (isNaN(eventId)) {
+      const eventId = Number.parseInt(eventIdParam as string, 10);
+      if (Number.isNaN(eventId)) {
         res.status(400).json({ error: 'ID do evento inválido.' });
         return;
       }
@@ -27,14 +25,11 @@ export class PairController {
     }
   }
 
-  /**
-   * Saves all pairs for an event atomically (committing changes/draft).
-   */
   async savePairs(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const eventIdParam = req.params.eventId || req.params.cd_evento;
-      const eventId = parseInt(eventIdParam as string, 10);
-      if (isNaN(eventId)) {
+      const eventId = Number.parseInt(eventIdParam as string, 10);
+      if (Number.isNaN(eventId)) {
         res.status(400).json({ error: 'ID do evento inválido.' });
         return;
       }
@@ -55,17 +50,14 @@ export class PairController {
     }
   }
 
-  /**
-   * Creates a single pair manually for an event.
-   */
   async createPair(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const eventIdParam = req.params.eventId || req.params.cd_evento;
-      const eventId = parseInt(eventIdParam as string, 10);
+      const eventId = Number.parseInt(eventIdParam as string, 10);
       const wheelchairUserId = req.body.wheelchairUserId || req.body.cd_cadeirante;
       const runnerId = req.body.runnerId || req.body.cd_condutor;
 
-      if (isNaN(eventId) || !wheelchairUserId || !runnerId) {
+      if (Number.isNaN(eventId) || !wheelchairUserId || !runnerId) {
         res.status(400).json({
           error: 'Parâmetros inválidos. Informe o evento, cadeirante e condutor.',
         });
@@ -74,8 +66,8 @@ export class PairController {
 
       const createdPair = await pairFormationService.createPair(
         eventId,
-        parseInt(wheelchairUserId, 10),
-        parseInt(runnerId, 10)
+        Number.parseInt(wheelchairUserId, 10),
+        Number.parseInt(runnerId, 10)
       );
 
       res.status(201).json({
@@ -87,14 +79,11 @@ export class PairController {
     }
   }
 
-  /**
-   * Deletes a specific pair.
-   */
   async deletePair(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const pairIdParam = req.params.pairId || req.params.cd_dupla;
-      const pairId = parseInt(pairIdParam as string, 10);
-      if (isNaN(pairId)) {
+      const pairId = Number.parseInt(pairIdParam as string, 10);
+      if (Number.isNaN(pairId)) {
         res.status(400).json({ error: 'ID da dupla inválido.' });
         return;
       }
@@ -106,14 +95,11 @@ export class PairController {
     }
   }
 
-  /**
-   * Lists pairs formed for a specific event (RF06).
-   */
   async listByEvent(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const eventIdParam = req.params.eventId || req.params.cd_evento;
-      const eventId = parseInt(eventIdParam as string, 10);
-      if (isNaN(eventId)) {
+      const eventId = Number.parseInt(eventIdParam as string, 10);
+      if (Number.isNaN(eventId)) {
         res.status(400).json({ error: 'ID do evento inválido.' });
         return;
       }
@@ -127,17 +113,14 @@ export class PairController {
     }
   }
 
-  /**
-   * Manually edits a pair (RF05, RN02, RN08).
-   */
   async editPair(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const pairIdParam = req.params.pairId || req.params.cd_dupla;
-      const pairId = parseInt(pairIdParam as string, 10);
+      const pairId = Number.parseInt(pairIdParam as string, 10);
       const wheelchairUserId = req.body.wheelchairUserId || req.body.cd_cadeirante;
       const runnerId = req.body.runnerId || req.body.cd_condutor;
 
-      if (isNaN(pairId) || !wheelchairUserId || !runnerId) {
+      if (Number.isNaN(pairId) || !wheelchairUserId || !runnerId) {
         res.status(400).json({
           error: 'Parâmetros inválidos. Informe o cadeirante e o condutor da dupla.',
         });
@@ -146,8 +129,8 @@ export class PairController {
 
       const updatedPair = await pairFormationService.editPair(
         pairId,
-        parseInt(wheelchairUserId, 10),
-        parseInt(runnerId, 10)
+        Number.parseInt(wheelchairUserId, 10),
+        Number.parseInt(runnerId, 10)
       );
 
       res.status(200).json({
@@ -159,14 +142,11 @@ export class PairController {
     }
   }
 
-  /**
-   * Clears pairs of an event.
-   */
   async clearPairs(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const eventIdParam = req.params.eventId || req.params.cd_evento;
-      const eventId = parseInt(eventIdParam as string, 10);
-      if (isNaN(eventId)) {
+      const eventId = Number.parseInt(eventIdParam as string, 10);
+      if (Number.isNaN(eventId)) {
         res.status(400).json({ error: 'ID do evento inválido.' });
         return;
       }
@@ -178,9 +158,6 @@ export class PairController {
     }
   }
 
-  /**
-   * Retrieves pair history with filters (RF06, RF09).
-   */
   async history(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { cd_evento, eventId, data_inicio, startDate, data_fim, endDate, search } = req.query;
@@ -190,7 +167,7 @@ export class PairController {
       const endDateParam = endDate || data_fim;
 
       const filters = {
-        eventId: eventIdParam ? parseInt(eventIdParam as string, 10) : undefined,
+        eventId: eventIdParam ? Number.parseInt(eventIdParam as string, 10) : undefined,
         startDate: startDateParam as string | undefined,
         endDate: endDateParam as string | undefined,
         search: search as string | undefined,

@@ -98,7 +98,7 @@ export const ParticipantsPage: React.FC = () => {
   };
 
   useEffect(() => {
-    loadData();
+    void loadData();
   }, []);
 
   // Filtered lists

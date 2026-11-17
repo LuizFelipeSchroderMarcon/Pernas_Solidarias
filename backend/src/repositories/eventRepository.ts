@@ -92,5 +92,4 @@ export class EventRepository {
   }
 }
 
-// Alias for backward compatibility
 export { EventRepository as EventoRepository };

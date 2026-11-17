@@ -60,7 +60,7 @@ export const EditPairModal: React.FC<EditPairModalProps> = ({
           }
         };
 
-        loadParticipants();
+        void loadParticipants();
       }
     }
   }, [isOpen, cadeirantesList, condutoresList]);
@@ -138,10 +138,6 @@ export const EditPairModal: React.FC<EditPairModalProps> = ({
       }
     >
       <form onSubmit={handleSubmit} className="space-y-5">
-        <div className="p-3.5 rounded-xl bg-[#15803D]/15 dark:bg-[#15803D]/25 border border-[#166534] dark:border-[#22C55E] text-black dark:text-slate-200 text-xs leading-relaxed font-medium">
-          💡 A alteração manual preserva a integridade de 1 cadeirante + 1 condutor por dupla no
-          mesmo evento.
-        </div>
         <Select
           label="Cadeirante da Dupla"
           value={selectedCadeirante}

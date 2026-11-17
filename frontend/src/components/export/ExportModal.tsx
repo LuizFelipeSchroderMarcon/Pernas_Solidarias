@@ -73,9 +73,9 @@ export const ExportModal: React.FC<ExportModalProps> = ({
       <div className="flex flex-col gap-6 py-2">
         {/* Formato de Exportação */}
         <div className="flex flex-col gap-2.5">
-          <label className="text-xs font-bold uppercase tracking-wider text-[#525252] dark:text-slate-400">
+          <span className="text-xs font-bold uppercase tracking-wider text-[#525252] dark:text-slate-400">
             1. Formato do Arquivo
-          </label>
+          </span>
           <div className="grid grid-cols-2 gap-3">
             <button
               type="button"
@@ -117,9 +117,9 @@ export const ExportModal: React.FC<ExportModalProps> = ({
 
         {/* Confirmação de inclusão de CPF */}
         <div className="flex flex-col gap-2.5">
-          <label className="text-xs font-bold uppercase tracking-wider text-[#525252] dark:text-slate-400">
+          <span className="text-xs font-bold uppercase tracking-wider text-[#525252] dark:text-slate-400">
             2. Privacidade e Dados (LGPD)
-          </label>
+          </span>
           <div className="grid grid-cols-2 gap-3">
             <button
               type="button"

@@ -7,7 +7,7 @@
     "dev": "tsx watch src/server.ts",
     "db:init": "tsx src/database/setup.ts",
     "db:reset": "tsx src/database/reset.ts",
-    "build": "tsc",
+    "build": "tsc && node -e \"const fs = require('fs'); fs.mkdirSync('dist/database', { recursive: true }); fs.copyFileSync('src/database/init-database.sql', 'dist/database/init-database.sql');\"",
     "start": "node dist/server.js",
     "test": "vitest run tests/unit",
     "test:unit": "vitest run tests/unit",

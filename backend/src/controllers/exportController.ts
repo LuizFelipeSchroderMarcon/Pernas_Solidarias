@@ -4,14 +4,12 @@ import { ExportService } from '../services/exportService';
 const exportService = new ExportService();
 
 export class ExportController {
-  /**
-   * Exports pairs of an event in .xlsx or .csv (RF07, RF10, RF11, RN06).
-   */
+  
   async exportEvent(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const eventIdParam = req.params.eventId || req.params.cd_evento;
-      const eventId = parseInt(eventIdParam as string, 10);
-      if (isNaN(eventId)) {
+      const eventId = Number.parseInt(eventIdParam as string, 10);
+      if (Number.isNaN(eventId)) {
         res.status(400).json({ error: 'ID do evento inválido.' });
         return;
       }
@@ -41,5 +39,4 @@ export class ExportController {
   }
 }
 
-// Alias for backward compatibility
 export { ExportController as ExportacaoController };
