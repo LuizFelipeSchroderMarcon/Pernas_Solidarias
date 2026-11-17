@@ -34,11 +34,7 @@ export class PairFormationService {
     return eventDateStr < todayStr;
   }
 
-  /**
-   * Executes automatic pairing based on participation history (RF03, RF04, RN01-RN04, RN07, FA02).
-   */
   async generateAutomaticPairs(eventId: number, preview = false): Promise<PairFormationResult> {
-    // 1. Validate if event exists
     const event = await this.eventRepository.findById(eventId);
     if (!event) {
       throw new AppError('Evento não encontrado.', 404);
@@ -48,11 +44,9 @@ export class PairFormationService {
       throw new AppError('Não é possível formar duplas para eventos que já ocorreram.', 400);
     }
 
-    // 2. Fetch active participants ordered by priority (RN03, RN07)
     const wheelchairUsers = await this.pairRepository.findPrioritizedWheelchairUsers(eventId);
     const runners = await this.pairRepository.findPrioritizedRunners(eventId);
 
-    // 3. Handle edge cases (FA02)
     if (wheelchairUsers.length === 0 && runners.length === 0) {
       throw new AppError('Não há cadeirantes nem condutores ativos cadastrados para formar duplas.', 400);
     }
@@ -63,10 +57,8 @@ export class PairFormationService {
       throw new AppError('Não há condutores ativos disponíveis para este evento.', 400);
     }
 
-    // 4. Calculate total pairs to form (RN04)
     const totalPairs = Math.min(wheelchairUsers.length, runners.length);
 
-    // 5. Match 1:1 respecting priority (RN01, RN03)
     const pairsToInsert: { wheelchairUserId: number; runnerId: number }[] = [];
     for (let i = 0; i < totalPairs; i++) {
       pairsToInsert.push({
@@ -108,10 +100,8 @@ export class PairFormationService {
       };
     }
 
-    // 6. Persist pairs in database
     await this.pairRepository.createMany(eventId, pairsToInsert);
 
-    // 7. Retrieve detailed saved pairs
     const savedPairs = await this.pairRepository.findByEventId(eventId);
 
     return {
@@ -123,9 +113,6 @@ export class PairFormationService {
     };
   }
 
-  /**
-   * Lists all pairs for a specific event (RF06).
-   */
   async listByEvent(eventId: number): Promise<{ evento: any; duplas: DetailedPair[] }> {
     const event = await this.eventRepository.findById(eventId);
     if (!event) {
@@ -136,21 +123,16 @@ export class PairFormationService {
     return { evento: event, duplas: pairs };
   }
 
-  /**
-   * Creates a single pair manually and validates participants (RN01, RN02, RN08).
-   */
   async createPair(
     eventId: number,
     wheelchairUserId: number,
     runnerId: number
   ): Promise<DetailedPair> {
-    // 1. Validate event exists
     const event = await this.eventRepository.findById(eventId);
     if (!event) {
       throw new AppError('Evento não encontrado.', 404);
     }
 
-    // 2. Validate wheelchair user
     const wheelchairUser = await this.wheelchairUserRepository.findById(wheelchairUserId);
     if (!wheelchairUser) {
       throw new AppError('Cadeirante informado não encontrado.', 404);
@@ -159,7 +141,6 @@ export class PairFormationService {
       throw new AppError('O cadeirante selecionado está inativo no sistema.', 400);
     }
 
-    // 3. Validate runner
     const runner = await this.runnerRepository.findById(runnerId);
     if (!runner) {
       throw new AppError('Condutor informado não encontrado.', 404);
@@ -168,7 +149,6 @@ export class PairFormationService {
       throw new AppError('O condutor selecionado está inativo no sistema.', 400);
     }
 
-    // 4. Validate wheelchair uniqueness in event (RN02)
     const isWheelchairAllocated = await this.pairRepository.isParticipantInEvent(
       eventId,
       'wheelchair',
@@ -181,7 +161,6 @@ export class PairFormationService {
       );
     }
 
-    // 5. Validate runner uniqueness in event (RN02)
     const isRunnerAllocated = await this.pairRepository.isParticipantInEvent(
       eventId,
       'runner',
@@ -194,19 +173,14 @@ export class PairFormationService {
       );
     }
 
-    // 6. Insert pair and return details
     return this.pairRepository.create(eventId, wheelchairUserId, runnerId);
   }
 
-  /**
-   * Allows manual editing of a pair (RF05, RN01, RN02, RN08).
-   */
   async editPair(
     pairId: number,
     wheelchairUserId: number,
     runnerId: number
   ): Promise<DetailedPair> {
-    // 1. Validate pair exists
     const existingPair = await this.pairRepository.findById(pairId);
     if (!existingPair) {
       throw new AppError('Dupla não encontrada.', 404);
@@ -217,7 +191,6 @@ export class PairFormationService {
       throw new AppError('Não é possível editar duplas de eventos que já ocorreram.', 400);
     }
 
-    // 2. Validate wheelchair user
     const wheelchairUser = await this.wheelchairUserRepository.findById(wheelchairUserId);
     if (!wheelchairUser) {
       throw new AppError('Cadeirante informado não encontrado.', 404);
@@ -226,7 +199,6 @@ export class PairFormationService {
       throw new AppError('O cadeirante selecionado está inativo no sistema.', 400);
     }
 
-    // 3. Validate runner
     const runner = await this.runnerRepository.findById(runnerId);
     if (!runner) {
       throw new AppError('Condutor informado não encontrado.', 404);
@@ -235,7 +207,6 @@ export class PairFormationService {
       throw new AppError('O condutor selecionado está inativo no sistema.', 400);
     }
 
-    // 4. Validate wheelchair user uniqueness in event (RN02)
     const isWheelchairUserAllocated = await this.pairRepository.isParticipantInEvent(
       eventId,
       'wheelchair',
@@ -249,7 +220,6 @@ export class PairFormationService {
       );
     }
 
-    // 5. Validate runner uniqueness in event (RN02)
     const isRunnerAllocated = await this.pairRepository.isParticipantInEvent(
       eventId,
       'runner',
@@ -263,10 +233,8 @@ export class PairFormationService {
       );
     }
 
-    // 6. Update pair
     await this.pairRepository.update(pairId, { wheelchairUserId, runnerId });
 
-    // 7. Return updated detailed pair
     const updatedPair = await this.pairRepository.findById(pairId);
     if (!updatedPair) {
       throw new AppError('Erro ao carregar a dupla atualizada.', 500);
@@ -275,9 +243,6 @@ export class PairFormationService {
     return updatedPair;
   }
 
-  /**
-   * Clears all pairs of an event.
-   */
   async clearEventPairs(eventId: number): Promise<void> {
     const event = await this.eventRepository.findById(eventId);
     if (!event) {
@@ -288,10 +253,7 @@ export class PairFormationService {
     }
     await this.pairRepository.deleteByEventId(eventId);
   }
-
-  /**
-   * Deletes a single pair by ID.
-   */
+  
   async deletePair(pairId: number): Promise<void> {
     const existing = await this.pairRepository.findById(pairId);
     if (!existing) {
@@ -300,9 +262,6 @@ export class PairFormationService {
     await this.pairRepository.deleteById(pairId);
   }
 
-  /**
-   * Validates and saves a list of pairs for an event atomically.
-   */
   async savePairs(
     eventId: number,
     pairsInput: Array<{
@@ -371,13 +330,9 @@ export class PairFormationService {
     return this.pairRepository.findByEventId(eventId);
   }
 
-  /**
-   * Retrieves pair history with filters (RF06, RF09).
-   */
   async getHistory(filters: HistoryFilters): Promise<DetailedPair[]> {
     return this.pairRepository.findHistory(filters);
   }
 }
 
-// Alias for backward compatibility
 export { PairFormationService as FormacaoDuplasService };

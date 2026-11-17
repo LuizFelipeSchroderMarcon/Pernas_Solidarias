@@ -63,7 +63,7 @@ export class AuthService {
       throw new AppError('Credenciais inválidas.', 401);
     }
 
-    // Check brute-force lockout (FA01 / RNF04)
+    // Check brute-force lockout
     const activeRemainingSeconds =
       typeof user.remaining_seconds === 'number'
         ? user.remaining_seconds

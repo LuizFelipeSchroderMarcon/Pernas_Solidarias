@@ -65,5 +65,4 @@ export class EventController {
   }
 }
 
-// Alias for backward compatibility
 export { EventController as EventoController };

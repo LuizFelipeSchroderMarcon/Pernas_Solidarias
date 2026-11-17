@@ -13,10 +13,8 @@ routes.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// Authentication routes
 routes.use('/auth', authRoutes);
 
-// Core resource routes (standardized in English)
 routes.use('/wheelchair-users', wheelchairUserRoutes);
 routes.use('/runners', runnerRoutes);
 routes.use('/events', eventRoutes);

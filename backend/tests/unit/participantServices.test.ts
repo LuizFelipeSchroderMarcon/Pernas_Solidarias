@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { WheelchairUserService } from '../../src/services/wheelchairUserService';
 import { RunnerService } from '../../src/services/runnerService';
-import { AppError } from '../../src/middlewares/errorHandler';
 
 describe('Serviços de Participantes e Validações de CPF', () => {
   let wheelchairService: WheelchairUserService;
@@ -112,10 +111,10 @@ describe('Serviços de Participantes e Validações de CPF', () => {
         possui_cadeira_propria: true,
         ativo: true,
       });
-      expect(updated.nm_cadeirante).toBe('Novo');
+      expect(updated?.nm_cadeirante).toBe('Novo');
 
       const toggled = await wheelchairService.toggleStatus(1);
-      expect(toggled.ativo).toBe(false);
+      expect(toggled?.ativo).toBe(false);
     });
 
     it('deve impedir exclusão se o cadeirante tiver duplas vinculadas (RN05)', async () => {
@@ -185,20 +184,18 @@ describe('Serviços de Participantes e Validações de CPF', () => {
       vi.spyOn(rRepo, 'delete').mockResolvedValue(true);
 
       expect((await runnerService.getById(1)).cd_condutor).toBe(1);
-      expect(
-        (
-          await runnerService.update(1, {
-            nm_condutor: 'Condutor Atualizado',
-            cpf: '12345678901',
-            telefone: '47999998888',
-            tam_camisa: 'G',
-            data_nascimento: '1990-05-10',
-            sexo: 'M',
-            ativo: true,
-          })
-        ).nm_condutor
-      ).toBe('Condutor Atualizado');
-      expect((await runnerService.toggleStatus(1)).ativo).toBe(false);
+      const updatedRunner = await runnerService.update(1, {
+        nm_condutor: 'Condutor Atualizado',
+        cpf: '12345678901',
+        telefone: '47999998888',
+        tam_camisa: 'G',
+        data_nascimento: '1990-05-10',
+        sexo: 'M',
+        ativo: true,
+      });
+      expect(updatedRunner?.nm_condutor).toBe('Condutor Atualizado');
+      const toggledRunner = await runnerService.toggleStatus(1);
+      expect(toggledRunner?.ativo).toBe(false);
       await expect(runnerService.delete(1)).resolves.not.toThrow();
     });
 

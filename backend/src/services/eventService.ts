@@ -64,5 +64,4 @@ export class EventService {
   }
 }
 
-// Alias for backward compatibility
 export { EventService as EventoService };

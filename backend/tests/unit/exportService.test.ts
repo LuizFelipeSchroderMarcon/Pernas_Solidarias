@@ -150,7 +150,7 @@ describe('ExportService Unit Tests', () => {
       expect(anyService.formatDate('2026-11-15')).toBe('15/11/2026');
 
       expect(anyService.formatCpf(undefined)).toBe('');
-      expect(anyService.formatCpf('12345')).toBe('12345'); // tamanho inválido
+      expect(anyService.formatCpf('12345')).toBe('12345');
 
       expect(anyService.sanitizeEventName('___Evento Especial! 2026___')).toBe('evento_especial_2026');
     });

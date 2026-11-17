@@ -85,7 +85,7 @@ describe('EventService e validarDataEvento', () => {
     repoMock.update = vi.fn().mockResolvedValue({ cd_evento: 1, nm_evento: 'Atualizado' });
 
     const updated = await service.update(1, { nm_evento: 'Atualizado', dt_evento: '2026-12-01' });
-    expect(updated.nm_evento).toBe('Atualizado');
+    expect(updated?.nm_evento).toBe('Atualizado');
 
     await expect(service.update(1, { nm_evento: 'Atualizado', dt_evento: 'invalid-date' })).rejects.toThrow(AppError);
 
