@@ -41,7 +41,7 @@ describe('Repositories Unit Tests', () => {
 
       expect(await repo.findById(1)).toEqual({ cd_evento: 1 });
       expect(await repo.create({ nm_evento: 'Novo', dt_evento: '2026-10-10' })).toEqual({ cd_evento: 2 });
-      expect(await repo.update(1, { nm_evento: 'Novo' })).toEqual({ cd_evento: 1, nm_evento: 'Novo' });
+      expect(await repo.update(1, { nm_evento: 'Novo', dt_evento: '2026-10-10' })).toEqual({ cd_evento: 1, nm_evento: 'Novo' });
       await repo.delete(1);
     });
   });
@@ -64,7 +64,15 @@ describe('Repositories Unit Tests', () => {
       expect(await runnerRepo.findById(1)).toBeDefined();
       expect(await runnerRepo.findByCpf('12345678901')).toBeDefined();
       expect(await runnerRepo.create({ nm_condutor: 'C', cpf: '1', telefone: '1', tam_camisa: 'M', data_nascimento: '1990-01-01', sexo: 'M' })).toBeDefined();
-      expect(await runnerRepo.update(1, { nm_condutor: 'C2' })).toBeDefined();
+      expect(
+        await runnerRepo.update(1, {
+          nm_condutor: 'C2',
+          cpf: '1',
+          telefone: '1',
+          tam_camisa: 'M',
+          ativo: true,
+        })
+      ).toBeDefined();
       expect(await runnerRepo.toggleStatus(1)).toBeDefined();
       expect(await runnerRepo.hasPairs(1)).toBe(true);
       await runnerRepo.delete(1);
@@ -89,7 +97,16 @@ describe('Repositories Unit Tests', () => {
       expect(await wheelchairRepo.findById(1)).toBeDefined();
       expect(await wheelchairRepo.findByCpf('12345678901')).toBeDefined();
       expect(await wheelchairRepo.create({ nm_cadeirante: 'A', cpf: '1', telefone: '1', tam_camisa: 'M', data_nascimento: '1990-01-01', sexo: 'F' })).toBeDefined();
-      expect(await wheelchairRepo.update(1, { nm_cadeirante: 'A2' })).toBeDefined();
+      expect(
+        await wheelchairRepo.update(1, {
+          nm_cadeirante: 'A2',
+          cpf: '1',
+          telefone: '1',
+          tam_camisa: 'M',
+          possui_cadeira_propria: false,
+          ativo: true,
+        })
+      ).toBeDefined();
       expect(await wheelchairRepo.toggleStatus(1)).toBeDefined();
       expect(await wheelchairRepo.hasPairs(1)).toBe(false);
       await wheelchairRepo.delete(1);
@@ -112,8 +129,8 @@ describe('Repositories Unit Tests', () => {
       expect(await pairRepo.findByEventId(1)).toHaveLength(1);
       expect(await pairRepo.findById(1)).toBeDefined();
       expect(await pairRepo.create(1, 1, 2)).toBeDefined();
-      expect(await pairRepo.update(1, 1, 3)).toBeDefined();
-      expect(await pairRepo.isParticipantInEvent(1, 1, 'cadeirante')).toBe(true);
+      expect(await pairRepo.update(1, { wheelchairUserId: 1, runnerId: 3 })).toBeDefined();
+      expect(await pairRepo.isParticipantInEvent(1, 'wheelchair', 1)).toBe(true);
       await pairRepo.deleteById(1);
       await pairRepo.deleteByEventId(1);
       expect(await pairRepo.findHistory({ eventId: 1, startDate: '2026-01-01', endDate: '2026-12-31', search: 'João' })).toHaveLength(1);
