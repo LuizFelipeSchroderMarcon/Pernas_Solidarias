@@ -80,5 +80,4 @@ export class RunnerController {
   }
 }
 
-// Alias for backward compatibility
 export { RunnerController as CondutorController };

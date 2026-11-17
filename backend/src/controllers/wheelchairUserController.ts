@@ -80,5 +80,4 @@ export class WheelchairUserController {
   }
 }
 
-// Alias for backward compatibility
 export { WheelchairUserController as CadeiranteController };

@@ -4,9 +4,7 @@ import { PairFormationService } from '../services/pairFormationService';
 const pairFormationService = new PairFormationService();
 
 export class PairController {
-  /**
-   * Triggers automatic pair formation for an event (RF03, RF04).
-   */
+  
   async generatePairs(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const eventIdParam = req.params.eventId || req.params.cd_evento;
@@ -27,9 +25,6 @@ export class PairController {
     }
   }
 
-  /**
-   * Saves all pairs for an event atomically (committing changes/draft).
-   */
   async savePairs(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const eventIdParam = req.params.eventId || req.params.cd_evento;
@@ -55,9 +50,6 @@ export class PairController {
     }
   }
 
-  /**
-   * Creates a single pair manually for an event.
-   */
   async createPair(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const eventIdParam = req.params.eventId || req.params.cd_evento;
@@ -87,9 +79,6 @@ export class PairController {
     }
   }
 
-  /**
-   * Deletes a specific pair.
-   */
   async deletePair(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const pairIdParam = req.params.pairId || req.params.cd_dupla;
@@ -106,9 +95,6 @@ export class PairController {
     }
   }
 
-  /**
-   * Lists pairs formed for a specific event (RF06).
-   */
   async listByEvent(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const eventIdParam = req.params.eventId || req.params.cd_evento;
@@ -127,9 +113,6 @@ export class PairController {
     }
   }
 
-  /**
-   * Manually edits a pair (RF05, RN02, RN08).
-   */
   async editPair(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const pairIdParam = req.params.pairId || req.params.cd_dupla;
@@ -159,9 +142,6 @@ export class PairController {
     }
   }
 
-  /**
-   * Clears pairs of an event.
-   */
   async clearPairs(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const eventIdParam = req.params.eventId || req.params.cd_evento;
@@ -178,9 +158,6 @@ export class PairController {
     }
   }
 
-  /**
-   * Retrieves pair history with filters (RF06, RF09).
-   */
   async history(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { cd_evento, eventId, data_inicio, startDate, data_fim, endDate, search } = req.query;

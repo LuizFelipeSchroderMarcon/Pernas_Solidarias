@@ -128,5 +128,4 @@ export class RunnerService {
   }
 }
 
-// Alias for backward compatibility
 export { RunnerService as CondutorService };
