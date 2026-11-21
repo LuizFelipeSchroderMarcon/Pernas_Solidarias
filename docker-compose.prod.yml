@@ -1,8 +1,8 @@
 services:
-  # 1. Banco de Dados PostgreSQL (Produção)
+  # 1. Banco de Dados PostgreSQL (Produção / Homologação)
   db:
     image: postgres:16-alpine
-    container_name: pernas_db_prod
+    container_name: pernas_db_${AMBIENTE:-prod}
     restart: always
     environment:
       POSTGRES_USER: ${DB_USER:-postgres}
@@ -16,12 +16,13 @@ services:
       timeout: 5s
       retries: 5
 
-  # 2. API Backend (Produção)
+  # 2. API Backend (Produção / Homologação)
   backend:
+    image: ghcr.io/luizfelipeschrodermarcon/pernas-solidarias-backend:${TAG_IMAGEM:-latest}
     build:
       context: ./backend
       dockerfile: Dockerfile.prod
-    container_name: pernas_backend_prod
+    container_name: pernas_backend_${AMBIENTE:-prod}
     restart: always
     environment:
       NODE_ENV: production
@@ -39,23 +40,44 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    ports:
-      - "3000:3000"
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/health').then((r) => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
 
-  # 3. Frontend Web SPA com Nginx (Produção)
+  # 3. Frontend Web SPA + Proxy Reverso /api com Nginx (Produção / Homologação)
   frontend:
+    image: ghcr.io/luizfelipeschrodermarcon/pernas-solidarias-frontend:${TAG_IMAGEM:-latest}
     build:
       context: ./frontend
       dockerfile: Dockerfile.prod
       args:
-        VITE_API_URL: ${VITE_API_URL}
-    container_name: pernas_frontend_prod
+        VITE_API_URL: ${VITE_API_URL:-/api}
+    container_name: pernas_frontend_${AMBIENTE:-prod}
     restart: always
-    ports:
-      - "80:80"
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:80/ >/dev/null 2>&1 || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # 4. Cloudflare Tunnel (acesso público HTTPS sem abrir portas na EC2)
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: pernas_tunnel_${AMBIENTE:-prod}
+    restart: always
+    command: tunnel --no-autoupdate run
+    environment:
+      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN}
+    depends_on:
+      frontend:
+        condition: service_healthy
 
 volumes:
   postgres_prod_data:
-

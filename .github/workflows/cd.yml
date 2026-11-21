@@ -1,0 +1,85 @@
+name: CD - Publicar Imagens GHCR
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+    paths-ignore:
+      - 'RFC/**'
+      - '**/*.md'
+      - '**/*.fig'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  ci:
+    name: Validar CI antes do deploy
+    uses: ./.github/workflows/ci.yml
+
+  publish:
+    name: Build e Push no GHCR
+    needs: ci
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Autenticar no GitHub Container Registry (GHCR)
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Definir tags por branch (main -> prod, dev -> hml)
+        id: meta
+        run: |
+          SHORT_SHA="${GITHUB_SHA::7}"
+          OWNER_LOWER="$(echo "${GITHUB_REPOSITORY_OWNER}" | tr '[:upper:]' '[:lower:]')"
+          if [[ "${GITHUB_REF_NAME}" == "main" ]]; then
+            BRANCH_TAG="latest"
+            SHA_TAG="sha-${SHORT_SHA}"
+          else
+            BRANCH_TAG="dev"
+            SHA_TAG="dev-sha-${SHORT_SHA}"
+          fi
+          echo "owner=${OWNER_LOWER}" >> "$GITHUB_OUTPUT"
+          echo "branch_tag=${BRANCH_TAG}" >> "$GITHUB_OUTPUT"
+          echo "sha_tag=${SHA_TAG}" >> "$GITHUB_OUTPUT"
+
+      - name: Build e Push da imagem Backend
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend
+          file: ./backend/Dockerfile.prod
+          push: true
+          tags: |
+            ghcr.io/${{ steps.meta.outputs.owner }}/pernas-solidarias-backend:${{ steps.meta.outputs.branch_tag }}
+            ghcr.io/${{ steps.meta.outputs.owner }}/pernas-solidarias-backend:${{ steps.meta.outputs.sha_tag }}
+          cache-from: type=gha,scope=backend
+          cache-to: type=gha,mode=max,scope=backend
+
+      - name: Build e Push da imagem Frontend
+        uses: docker/build-push-action@v6
+        with:
+          context: ./frontend
+          file: ./frontend/Dockerfile.prod
+          push: true
+          build-args: |
+            VITE_API_URL=/api
+          tags: |
+            ghcr.io/${{ steps.meta.outputs.owner }}/pernas-solidarias-frontend:${{ steps.meta.outputs.branch_tag }}
+            ghcr.io/${{ steps.meta.outputs.owner }}/pernas-solidarias-frontend:${{ steps.meta.outputs.sha_tag }}
+          cache-from: type=gha,scope=frontend
+          cache-to: type=gha,mode=max,scope=frontend
