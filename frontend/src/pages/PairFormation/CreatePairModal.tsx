@@ -4,7 +4,7 @@ import { Select } from '../../components/common/Select';
 import { Button } from '../../components/common/Button';
 import type { Cadeirante, Condutor, DuplaDetalhada } from '../../types';
 import { useToast } from '../../hooks/useToast';
-import { UserPlus, CheckCircle2 } from 'lucide-react';
+import { UserPlus } from 'lucide-react';
 
 export interface CreatePairModalProps {
   isOpen: boolean;
@@ -92,9 +92,6 @@ export const CreatePairModal: React.FC<CreatePairModalProps> = ({
     }
   };
 
-  const selectedCad = activeCadeirantes.find((c) => c.cd_cadeirante === Number(selectedCadeiranteId));
-  const selectedCond = activeCondutores.find((c) => c.cd_condutor === Number(selectedCondutorId));
-
   return (
     <Modal
       isOpen={isOpen}
@@ -163,15 +160,6 @@ export const CreatePairModal: React.FC<CreatePairModalProps> = ({
             }),
           ]}
         />
-
-        {selectedCad && selectedCond && (
-          <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900 text-xs text-emerald-800 dark:text-emerald-200 flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-            <span>
-              Dupla pronta: <strong>{selectedCad.nm_cadeirante}</strong> + <strong>{selectedCond.nm_condutor}</strong>
-            </span>
-          </div>
-        )}
       </form>
     </Modal>
   );
