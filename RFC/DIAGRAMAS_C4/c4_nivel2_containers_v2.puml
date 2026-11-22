@@ -10,27 +10,41 @@ skinparam defaultFontName Arial
 skinparam defaultFontSize 13
 
 ' ─── Título ───────────────────────────────────────────────────────────────────
-title [Nível 2] Diagrama de Containers — Sistema Pernas Solidárias
+title [Nível 2] Diagrama de Containers — Sistema Pernas Solidárias (Produção AWS)
 
-' ─── Ator e sistema externo ───────────────────────────────────────────────────
-Person(coordenador, "Coordenador da ONG", "Único usuário do sistema.\nAcessa via navegador web.")
+' ─── Ator e sistemas externos ─────────────────────────────────────────────────
+Person(coordenador, "Coordenador da ONG", "Usuário autenticado do sistema.\nAcessa a aplicação e o painel de\nmonitoramento via navegador web.")
 
-' ─── Boundary: Sistema Pernas Solidárias ─────────────────────────────────────
-System_Boundary(sistema, "Sistema Pernas Solidárias") {
+System_Ext(cloudflare, "Cloudflare Edge & Zero Trust", "DNS, término de HTTPS/TLS,\nproteção contra bots e roteamento\nvia Cloudflare Tunnel.")
 
-    Container(frontend, "Aplicação Web (SPA)", "React + TypeScript\nTailwind CSS", "Interface de usuário acessada\npelo navegador. Responsável\npelas telas de login, gestão de\nparticipantes, eventos, formação\nde duplas e gráficos.")
+' ─── Boundary: Instância AWS EC2 (Docker Compose) ─────────────────────────────
+System_Boundary(sistema, "AWS EC2 — Docker Compose (Rede Interna Isolada)") {
 
-    Container(backend, "API REST", "Node.js + Express", "Processa as regras de negócio:\nautenticação, formação automática\nde duplas com priorização por\nhistórico, e geração dos arquivos\nde exportação.")
+    Container(tunnel, "Cloudflare Tunnel", "cloudflared", "Abre conexão de saída criptografada\naté a Cloudflare. Elimina a necessidade\nde portas HTTP/HTTPS abertas na EC2.")
 
-    Container(banco, "Banco de Dados", "PostgreSQL", "Armazena de forma persistente\nos dados de cadeirantes,\ncondutores, eventos, duplas\ne histórico de participações.")
+    Container(frontend, "Frontend Web + Proxy Reverso", "React 19 + Vite\nNginx 1.27 Alpine", "Serve a SPA estática e atua como\nproxy reverso para /api/*,\ngarantindo mesma origem (sem CORS).")
+
+    Container(backend, "API REST", "Node.js 20 + Express 5\nTypeScript + prom-client", "Processa regras de negócio:\nautenticação JWT, CRUDs, formação\nde duplas, exportação Excel e\nmétricas internas em /metrics.")
+
+    ContainerDb(banco, "Banco de Dados", "PostgreSQL 16 Alpine", "Armazena de forma persistente\nusuários, cadeirantes, condutores,\neventos, duplas e histórico.")
+
+    Container(prometheus, "Prometheus", "Prometheus v2.55", "Coleta métricas HTTP e de runtime\nNode.js do backend a cada 15s\n(retenção de 7 dias / 512 MB).")
+
+    Container(grafana, "Grafana", "Grafana OSS 11.3", "Dashboards de observabilidade\n(status da API, RPS, erros 5xx,\nlatência p95, CPU e memória).")
 
 }
 
 ' ─── Relacionamentos ─────────────────────────────────────────────────────────
-Rel(coordenador, frontend, "Interage com a interface\ndo sistema", "HTTPS / Navegador")
+Rel(coordenador, cloudflare, "Acessa sistema e monitoramento", "HTTPS")
+Rel(cloudflare, tunnel, "Encaminha requisições pelo túnel", "Cloudflare Tunnel")
 
-Rel(frontend, backend, "Realiza chamadas para\nobter e enviar dados", "JSON / HTTPS")
+Rel(tunnel, frontend, "Roteia pernassolidarias.social.br", "HTTP :80")
+Rel(tunnel, grafana, "Roteia monitor.pernassolidarias.social.br", "HTTP :3000")
 
-Rel(backend, banco, "Lê e persiste\nos dados do sistema", "SQL / TCP")
+Rel(frontend, backend, "Encaminha chamadas /api/*", "HTTP / JSON :3000")
+Rel(backend, banco, "Lê e persiste dados", "SQL / TCP :5432")
+
+Rel(prometheus, backend, "Coleta métricas internas (/metrics)", "HTTP :3000")
+Rel(grafana, prometheus, "Consulta séries temporais (PromQL)", "HTTP :9090")
 
 @enduml
