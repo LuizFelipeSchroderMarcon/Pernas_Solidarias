@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { routes } from './routes';
 import { errorHandler } from './middlewares/errorHandler';
+import { metricsHandler, metricsMiddleware } from './middlewares/metricsMiddleware';
 
 const app = express();
 
@@ -18,6 +19,9 @@ app.use(
   })
 );
 app.use(express.json());
+app.use(metricsMiddleware);
+
+app.get('/metrics', metricsHandler);
 
 app.use('/api', routes);
 

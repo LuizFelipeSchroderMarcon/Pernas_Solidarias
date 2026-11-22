@@ -79,5 +79,42 @@ services:
       frontend:
         condition: service_healthy
 
+  # 5. Prometheus (coleta de métricas internas da API — retenção curta para t3.micro)
+  prometheus:
+    image: prom/prometheus:v2.55.1
+    container_name: pernas_prometheus_${AMBIENTE:-prod}
+    restart: always
+    mem_limit: 192m
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=7d'
+      - '--storage.tsdb.retention.size=512MB'
+    volumes:
+      - ./deploy/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_prod_data:/prometheus
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  # 6. Grafana (dashboards de observabilidade acessados via Cloudflare Tunnel)
+  grafana:
+    image: grafana/grafana-oss:11.3.0
+    container_name: pernas_grafana_${AMBIENTE:-prod}
+    restart: always
+    mem_limit: 192m
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD}
+      GF_USERS_ALLOW_SIGN_UP: 'false'
+      GF_SERVER_ROOT_URL: ${GRAFANA_ROOT_URL:-https://monitor.pernassolidarias.social.br}
+    volumes:
+      - grafana_prod_data:/var/lib/grafana
+      - ./deploy/monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+    depends_on:
+      - prometheus
+
 volumes:
   postgres_prod_data:
+  prometheus_prod_data:
+  grafana_prod_data:
