@@ -19,6 +19,11 @@ on:
       - '**/*.fig'
   workflow_dispatch:
   workflow_call:
+    inputs:
+      skip_sonar:
+        type: boolean
+        required: false
+        default: false
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
@@ -85,7 +90,7 @@ jobs:
         run: npm run test:coverage
 
       - name: Publicar relatório LCOV do Backend
-        if: github.event_name != 'workflow_call'
+        if: ${{ !inputs.skip_sonar }}
         uses: actions/upload-artifact@v4
         with:
           name: backend-coverage
@@ -123,7 +128,7 @@ jobs:
         run: npm run test:coverage
 
       - name: Publicar relatório LCOV do Frontend
-        if: github.event_name != 'workflow_call'
+        if: ${{ !inputs.skip_sonar }}
         uses: actions/upload-artifact@v4
         with:
           name: frontend-coverage
@@ -133,7 +138,7 @@ jobs:
   sonarcloud:
     name: SonarCloud Code Analysis
     needs: [backend-ci, frontend-ci]
-    if: github.event_name != 'workflow_call'
+    if: ${{ !inputs.skip_sonar }}
     runs-on: ubuntu-latest
 
     steps:
