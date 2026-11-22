@@ -81,8 +81,16 @@ jobs:
       - name: Validar recriação limpa do schema (db:reset)
         run: npm run db:reset
 
-      - name: Executar testes automatizados do Backend (Vitest + Supertest)
-        run: npm run test
+      - name: Executar testes automatizados do Backend com cobertura (Vitest)
+        run: npm run test:coverage
+
+      - name: Publicar relatório LCOV do Backend
+        if: github.event_name != 'workflow_call'
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage
+          path: backend/coverage/lcov.info
+          retention-days: 1
 
   frontend-ci:
     name: Frontend (Typecheck & Build)
@@ -111,6 +119,43 @@ jobs:
       - name: Validar tipagem e Build de Produção (tsc + Vite)
         run: npm run build
 
-      - name: Executar testes automatizados do Frontend (Vitest)
-        run: npm run test
+      - name: Executar testes automatizados do Frontend com cobertura (Vitest)
+        run: npm run test:coverage
+
+      - name: Publicar relatório LCOV do Frontend
+        if: github.event_name != 'workflow_call'
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-coverage
+          path: frontend/coverage/lcov.info
+          retention-days: 1
+
+  sonarcloud:
+    name: SonarCloud Code Analysis
+    needs: [backend-ci, frontend-ci]
+    if: github.event_name != 'workflow_call'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout completo do repositório (necessário para blame/new code)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Baixar relatório LCOV do Backend
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-coverage
+          path: backend/coverage
+
+      - name: Baixar relatório LCOV do Frontend
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-coverage
+          path: frontend/coverage
+
+      - name: Executar análise no SonarCloud
+        uses: SonarSource/sonarqube-scan-action@v4
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
