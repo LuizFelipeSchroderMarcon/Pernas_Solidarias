@@ -241,26 +241,30 @@ export const ParticipantModal: React.FC<ParticipantModalProps> = ({
 
         {type === 'cadeirante' && (
           <div className="pt-2">
-            <label
-              htmlFor="possuiCadeiraPropria"
-              className="flex items-center gap-3 p-3.5 rounded-xl border border-slate-300 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/60 cursor-pointer transition-colors"
-            >
+            <div className="flex items-center gap-3 p-3.5 rounded-xl border border-slate-300 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
               <input
                 id="possuiCadeiraPropria"
                 type="checkbox"
-                className="w-4 h-4 accent-[#166534] rounded focus:ring-[#166534] border-[#B7B7B7]"
+                aria-describedby="possuiCadeiraPropria-desc"
+                className="w-4 h-4 accent-[#166534] rounded focus:ring-[#166534] border-[#B7B7B7] cursor-pointer"
                 checked={possuiCadeiraPropria}
                 onChange={(e) => setPossuiCadeiraPropria(e.target.checked)}
               />
-              <span className="flex flex-col text-left">
-                <span className="text-sm font-semibold text-black dark:text-white">
+              <div className="flex flex-col text-left flex-1">
+                <label
+                  htmlFor="possuiCadeiraPropria"
+                  className="text-sm font-semibold text-black dark:text-white cursor-pointer"
+                >
                   Possui cadeira própria? <span className="text-[#FF0000]">*</span>
-                </span>
-                <span className="text-xs text-[#7C7C7C] dark:text-slate-400">
+                </label>
+                <span
+                  id="possuiCadeiraPropria-desc"
+                  className="text-xs text-[#7C7C7C] dark:text-slate-400"
+                >
                   Marque caso o participante tenha seu próprio equipamento
                 </span>
-              </span>
-            </label>
+              </div>
+            </div>
           </div>
         )}
         <p className="text-xs font-semibold text-[#FF0000]">* Campo Obrigatório</p>
