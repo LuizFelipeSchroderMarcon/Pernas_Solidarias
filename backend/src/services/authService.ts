@@ -1,10 +1,18 @@
 import bcrypt from 'bcrypt';
+import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import { UserRepository } from '../repositories/userRepository';
 import { AppError } from '../middlewares/errorHandler';
 import { SERVER_BOOT_ID } from '../config/serverInstance';
 
-const DUMMY_BCRYPT_HASH = '$2b$10$CwTycUXWue0Thq9StjUM0uJ8u5D3Z5n4F5f5e5g5h5i5j5k5l5m5n';
+let dummyHashPromise: Promise<string> | null = null;
+
+function getDummyBcryptHash(): Promise<string> {
+  if (!dummyHashPromise) {
+    dummyHashPromise = bcrypt.hash(crypto.randomBytes(32).toString('hex'), 10);
+  }
+  return dummyHashPromise;
+}
 
 export class AuthService {
   private userRepository: UserRepository;
@@ -59,7 +67,7 @@ export class AuthService {
     const emailNormalizado = email.trim().toLowerCase();
     const user = await this.userRepository.findByEmail(emailNormalizado);
     if (!user || !user.senha) {
-      await bcrypt.compare(password, DUMMY_BCRYPT_HASH);
+      await bcrypt.compare(password, await getDummyBcryptHash());
       throw new AppError('Credenciais inválidas.', 401);
     }
 
