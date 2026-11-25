@@ -6,8 +6,9 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 
-# Copia o código fonte
-COPY . .
+# Copia o código fonte e configuração TypeScript
+COPY tsconfig.json ./
+COPY src ./src
 
 EXPOSE 3000
 
