@@ -42,7 +42,7 @@ jobs:
         image: postgres:16-alpine
         env:
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_HOST_AUTH_METHOD: trust
           POSTGRES_DB: pernas_solidarias
         ports:
           - 5432:5432
@@ -58,7 +58,6 @@ jobs:
       DB_HOST: localhost
       DB_PORT: 5432
       DB_USER: postgres
-      DB_PASSWORD: postgres
       DB_NAME: pernas_solidarias
       JWT_SECRET: ci_test_jwt_secret_pernas_solidarias_2026
       JWT_EXPIRES_IN: 1d
@@ -75,7 +74,7 @@ jobs:
           cache-dependency-path: backend/package-lock.json
 
       - name: Instalar dependências do Backend
-        run: npm install --no-audit --no-fund
+        run: npm ci --ignore-scripts --no-audit --no-fund
 
       - name: Validar tipagem e Build (TypeScript)
         run: npm run build
@@ -119,7 +118,7 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
 
       - name: Instalar dependências do Frontend
-        run: npm install --no-audit --no-fund
+        run: npm ci --ignore-scripts --no-audit --no-fund
 
       - name: Validar tipagem e Build de Produção (tsc + Vite)
         run: npm run build
