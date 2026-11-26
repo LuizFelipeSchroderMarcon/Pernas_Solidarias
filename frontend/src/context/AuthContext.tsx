@@ -14,20 +14,33 @@ interface AuthContextData {
 
 export const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
+const sanitizeUser = (raw: unknown): User | null => {
+  if (!raw || typeof raw !== 'object') {
+    return null;
+  }
+
+  const candidate = raw as Record<string, unknown>;
+  const cdUser = Number(candidate.cd_user);
+  const email = typeof candidate.email === 'string' ? candidate.email.trim() : '';
+
+  if (!Number.isInteger(cdUser) || cdUser <= 0 || !email) {
+    return null;
+  }
+
+  const sanitized: User = {
+    cd_user: cdUser,
+    email,
+  };
+
+  if (typeof candidate.created_at === 'string' && !Number.isNaN(Date.parse(candidate.created_at))) {
+    sanitized.created_at = candidate.created_at;
+  }
+
+  return sanitized;
+};
+
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(() => {
-    try {
-      const savedUser = localStorage.getItem('@PernasSolidarias:user');
-      if (!savedUser || savedUser === 'undefined' || savedUser === 'null') {
-        localStorage.removeItem('@PernasSolidarias:user');
-        return null;
-      }
-      return JSON.parse(savedUser);
-    } catch {
-      localStorage.removeItem('@PernasSolidarias:user');
-      return null;
-    }
-  });
+  const [user, setUser] = useState<User | null>(null);
 
   const [token, setToken] = useState<string | null>(() => {
     const savedToken = localStorage.getItem('@PernasSolidarias:token');
@@ -52,10 +65,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       const storedToken = localStorage.getItem('@PernasSolidarias:token');
       if (storedToken && storedToken !== 'undefined' && storedToken !== 'null') {
         try {
-          const { user } = await authService.me();
-          if (user) {
-            setUser(user);
-            localStorage.setItem('@PernasSolidarias:user', JSON.stringify(user));
+          const { user: fetchedUser } = await authService.me();
+          const validUser = sanitizeUser(fetchedUser);
+          if (validUser) {
+            setUser(validUser);
           } else {
             logout();
           }
@@ -82,13 +95,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const login = async (email: string, pass: string) => {
     const res = await authService.login(email, pass);
-    if (!res || !res.token || !res.user) {
+    const validUser = sanitizeUser(res?.user);
+    if (!res || typeof res.token !== 'string' || !res.token || !validUser) {
       throw new Error('Resposta de autenticação inválida.');
     }
     localStorage.setItem('@PernasSolidarias:token', res.token);
-    localStorage.setItem('@PernasSolidarias:user', JSON.stringify(res.user));
     setToken(res.token);
-    setUser(res.user);
+    setUser(validUser);
   };
 
   return (
