@@ -88,6 +88,9 @@ jobs:
       - name: Executar testes automatizados do Backend com cobertura (Vitest)
         run: npm run test:coverage
 
+      - name: Executar testes de integração do Backend (Vitest + Supertest + PostgreSQL)
+        run: npm run test:integration
+
       - name: Publicar relatório LCOV do Backend
         if: ${{ !inputs.skip_sonar }}
         uses: actions/upload-artifact@v4
